@@ -1,0 +1,72 @@
+﻿@{
+    ViewData["Title"] = "PasswordReset - ";
+}
+
+<style>
+    form.forgot-password-form {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 20px;
+        padding: 40px 30px;
+        color: #fff;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(8px);
+        margin: 0 auto;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+        form.forgot-password-form input {
+            width: 100%;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            transition: background 0.3s ease;
+        }
+
+            form.forgot-password-form input::placeholder {
+                color: #ccc;
+            }
+
+            form.forgot-password-form input:focus {
+                background: rgba(255, 255, 255, 0.15);
+                outline: none;
+                box-shadow: 0 0 5px #4da3ff;
+                color: #fff;
+            }
+
+        form.forgot-password-form button {
+            width: 100%;
+            padding: 8px 0; /* Yüksekliği düşürdük */
+            background-color: #4da3ff;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem; /* Yazı boyutunu biraz küçülttük */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+
+            form.forgot-password-form button:hover {
+                background-color: #1e80e0;
+            }
+
+        form.forgot-password-form hr {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 1.5rem 0;
+        }
+</style>
+
+<form action="/SifreUnuttum" method="post" autocomplete="off" class="forgot-password-form">
+    <h3 class="text-center mb-4">Şifremi Unuttum</h3>
+    <input required type="email" name="email" placeholder="E-Posta Adresiniz" />
+    <hr />
+    <button type="submit">Gönder</button>
+</form>

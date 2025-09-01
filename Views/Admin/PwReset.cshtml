@@ -1,0 +1,14 @@
+﻿@model PwReset
+
+<h2>Şifreyi Yenile</h2>
+
+<form method="post">
+    <input type="hidden" name="Token" value="@Model.Token" />
+
+    <div class="form-group">
+        <label for="Password">Yeni Şifre:</label>
+        <input type="password" id="Password" name="pw" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Şifreyi Güncelle</button>
+</form>

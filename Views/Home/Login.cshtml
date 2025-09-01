@@ -1,0 +1,286 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />,
+@model Register
+
+@{
+    ViewData["Title"] = "Login - ";
+}
+<style>
+    body {
+        background-image: url('/img/soft-gradient.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: fixed;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .login-container {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 20px;
+        padding: 40px 30px;
+        color: #fff;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(8px);
+        margin: 0 auto;
+    }
+
+        .login-container input {
+            width: 100%;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+            .login-container input::placeholder {
+                color: #ccc;
+            }
+
+            .login-container input:focus {
+                background: rgba(255, 255, 255, 0.15) !important;
+                outline: none;
+                box-shadow: 0 0 5px #4da3ff;
+                color: #fff;
+            }
+
+    .btn-login {
+        background-color: #4da3ff;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-login:hover {
+            background-color: #1e80e0;
+        }
+
+    .login-container input:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .auth-links {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+        .auth-links a {
+            display: inline-block;
+            margin: 0 10px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #a7cdf0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+            .auth-links a:hover {
+                color: #4da3ff;
+                text-decoration: underline;
+            }
+
+    .social-login {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .social-login-title {
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+        color: #ccc;
+    }
+
+    .social-icons a {
+        margin: 0 8px;
+        color: white;
+        font-size: 1.4rem;
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+        .social-icons a:hover {
+            color: #4da3ff;
+            transform: scale(1.2);
+        }
+
+    .position-relative .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 72%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #ccc;
+        font-size: 1.1rem;
+        line-height: 1;
+        height: auto; /* 💥 BU satır önemli */
+    }
+
+    .action-buttons a {
+        display: inline-block;
+        margin-top: 15px;
+        margin-right: 15px;
+        font-size: 0.95rem;
+        color: #a7cdf0;
+    }
+
+        .action-buttons a i {
+            margin-right: 5px;
+        }
+
+        .action-buttons a:hover {
+            text-decoration: underline;
+            color: #4da3ff;
+        }
+
+    .auth-btn {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #a7cdf0;
+        border: 1px solid #4da3ff;
+        padding: 10px 20px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+        .auth-btn:hover {
+            background-color: #4da3ff;
+            color: #fff;
+            border-color: #4da3ff;
+            text-decoration: none;
+        }
+
+    .social-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        border-radius: 30px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        text-decoration: none;
+        color: #fff;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+        .social-btn:hover {
+            transform: scale(1.05);
+            text-decoration: none;
+        }
+
+    /* Özel renkler */
+    .google {
+        background-color: #db4437;
+    }
+
+        .google:hover {
+            background-color: #c1351d;
+        }
+
+    .github {
+        background-color: #333;
+    }
+
+        .github:hover {
+            background-color: #242424;
+        }
+
+    .twitter {
+        background-color: #1da1f2;
+    }
+
+        .twitter:hover {
+            background-color: #0d8ddb;
+        }
+</style>
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="login-container">
+        <h3 class="text-center mb-4">Giriş Yap</h3>
+
+        @if (TempData["AuthError"] != null)
+        {
+            <div class="alert alert-danger text-center" role="alert">
+                @TempData["AuthError"]
+            </div>
+        }
+
+        <form action="/Login" method="post" autocomplete="off">
+            <div class="mb-3">
+                <label for="nickname" class="form-label">Kullanıcı Adı</label>
+                <input required type="text" class="form-control" id="nickname" name="nickname" placeholder="Kullanıcı adınızı girin" />
+            </div>
+
+            <div class="mb-3 position-relative">
+                <label for="password" class="form-label">Şifre</label>
+                <input required type="password" class="form-control pe-5" id="password" name="password" placeholder="Şifrenizi girin" />
+                <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"></i>
+            </div>
+
+            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
+
+            <button type="submit" class="btn btn-login w-100 text-white mt-3">Giriş Yap</button>
+        </form>
+        @* twitter ile giris yap da eklenecek *@
+
+        <div class="social-login mt-4">
+            <div class="social-login-title text-center mb-3">veya sosyal medya ile giriş yap</div>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="/Home/GoogleLogin" title="Google ile Giriş" class="social-btn google">
+                    <i class="fab fa-google me-2"></i> Google
+                </a>
+                <a href="/Home/GithubLogin" title="Github ile Giriş" class="social-btn github">
+                    <i class="fab fa-github me-2"></i> GitHub
+                </a>
+                @*  <a href="#" title="X ile Giriş" class="social-btn twitter">
+                <i class="fab fa-twitter me-2"></i> X (Twitter)
+                </a> *@
+            </div>
+        </div>
+
+
+        <div class="auth-links-button-group mt-4 d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/Sifre-unuttum" class="btn auth-btn">
+                <i class="fa-solid fa-unlock-keyhole me-2"></i> Şifremi Unuttum
+            </a>
+            <a href="/home/register" class="btn auth-btn">
+                <i class="fa-solid fa-user-plus me-2"></i> Kayıt Ol
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        const toggleIcon = document.querySelector(".toggle-password");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleIcon.classList.remove("fa-eye");
+            toggleIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            toggleIcon.classList.remove("fa-eye-slash");
+            toggleIcon.classList.add("fa-eye");
+        }
+    }
+</script>
+
+<script src="https://www.google.com/recaptcha/api.js?render=@Configuration["Recaptcha:SiteKey"]"></script>
+<script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute('@Configuration["Recaptcha:SecretKey"]', { action: 'register' })
+            .then(function (token) {
+                document.getElementById('g-recaptcha-response').value = token;
+            });
+    });
+</script>

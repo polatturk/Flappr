@@ -3,29 +3,180 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Flappr</title>
+    <title>@ViewData["Title"] Flappr </title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Flappr.styles.css" asp-append-version="true" />
+    <link rel="icon" href="/İmg/Flappr-logo2.png" type="image/jpeg" />
+
+    @RenderSection("Styles", false)
+
 </head>
-<body>
+<body style="background-image: url('/İmg/soft-gradient-solid-color-4k-yl-1920x1080.jpg'); background-size: cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center;">
+    <style>
+        header nav.navbar {
+            background-color: rgba(0, 0, 0, 0.7);
+            box-shadow: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 0.5rem 1rem;
+        }
+
+            header nav.navbar .container-fluid {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            header nav.navbar .navbar-brand {
+                font-weight: 700;
+                font-size: 1.6rem;
+                color: #4da3ff !important;
+                letter-spacing: 1.2px;
+                user-select: none;
+            }
+
+            header nav.navbar .navbar-collapse {
+                flex-grow: 1;
+                display: flex !important;
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            header nav.navbar .navbar-nav {
+                display: flex;
+                gap: 12px;
+            }
+
+            header nav.navbar .nav-link {
+                color: #eee !important;
+                background-color: transparent;
+                padding: 8px 18px;
+                border-radius: 12px;
+                font-weight: 600;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+                user-select: none;
+                border: 2px solid transparent;
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+            }
+
+                header nav.navbar .nav-link:hover,
+                header nav.navbar .nav-link:focus {
+                    background-color: #4da3ff;
+                    color: #fff !important;
+                    border-color: #4da3ff;
+                    text-decoration: none;
+                }
+
+            header nav.navbar .nav-item.profile-link a {
+                font-weight: 700;
+                color: #1e80e0 !important;
+            }
+
+        .navbar-user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1rem;
+            color: #ccc;
+            font-weight: 600;
+        }
+
+            .navbar-user-info span {
+                color: #4da3ff;
+                user-select: none;
+            }
+
+            .navbar-user-info a {
+                color: #ff6b6b;
+                font-weight: 700;
+                text-decoration: none;
+                padding: 6px 14px;
+                border-radius: 12px;
+                border: 2px solid transparent;
+                transition: all 0.3s ease;
+                user-select: none;
+                background-color: transparent;
+            }
+
+                .navbar-user-info a:hover {
+                    background-color: #ff4c4c;
+                    border-color: #ff4c4c;
+                    color: #fff;
+                    text-decoration: none;
+                }
+
+        /* Hamburger toggler */
+        .navbar-toggler {
+            border-color: #4da3ff;
+            padding: 4px 8px;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%234da3ff' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+
+        @@media (max-width: 576px) {
+            header nav.navbar .navbar-collapse {
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 10px;
+                justify-content: flex-start;
+            }
+
+            .navbar-user-info {
+                margin-top: 10px;
+                justify-content: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Flappr</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <style>
+                    .navbar-brand img {
+                        width: 150px; /* orantıyı korur, yana doğru uzar */
+                        transition: all 0.3s ease; /* istersen hover gibi animasyon için */
+                    }
+                </style>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="/İmg/Flappr-logo.png" alt="Flappr Logo" style="height:40px;" />
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="navbar-collapse collapse d-sm-flex justify-content-center">
+                    <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Anasayfa</a>
                         </li>
+                        @if (ViewData["Nickname"] != null)
+                        {
+                            <li class="nav-item profile-link">
+                                <a class="nav-link" href="/profil/@ViewData["Nickname"]">Profil</a>
+                            </li>
+                        }
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Search">Ara</a>
                         </li>
                     </ul>
+                </div>
+
+                <div class="navbar-user-info">
+                    @if (ViewData["nickname"] != null)
+                    {
+                        <span>Hoşgeldin! <strong>@ViewData["nickname"]</strong></span>
+                        <a href="/home/cikis">Çıkış Yap</a>
+                    }
+                    else
+                    {
+                        <a class="nav-link" href="/home/login">Giriş Yap</a>
+                    }
                 </div>
             </div>
         </nav>

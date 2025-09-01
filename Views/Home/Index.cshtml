@@ -1,8 +1,95 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿﻿@using System.Globalization
+@model List<Flap>
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@section Scripts {
+
+    <script defer>
+        function toggleCommentInput() {
+            const commentInput = document.querySelector('#comment-input');
+            commentInput.classList.toggle('hidden');
+        }
+
+        function handleLikeButtonClick(button) {
+            button.innerHTML = '<svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"></path></svg>\n Beğendi';
+
+            const heartContainer = document.querySelector('.heart-container');
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heartContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 1000);
+        }
+
+        function handleFollowButtonClick(button) {
+            button.innerHTML = ' Takip Edildi';
+            button.disabled = true;
+        }
+    </script>
+}
+
+@if (ViewData["nickname"] != null)
+{
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-body">
+                <form action="/AddFlap" method="post" autocomplete="off">
+                    <div class="d-flex align-items-center mb-3">
+                        <select class="form-select w-auto" id="visibilitySelect" name="visibility">
+                            <option value="true">Public</option>
+                            <option value="false">Private</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="detail" class="form-control" id="FlapContent" rows="3" placeholder="Neler oluyor?"></textarea>
+                    </div>
+                    <br>
+                    <div class="d-flex justify-content-between mb-3">
+                        <button type="submit" class="btn btn-success ">Flapla</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@foreach (var item in Model)
+{
+    <body class="bg-gray-200">
+        <div class="max-w-xl mx-auto mt-10">
+            <div class="bg-white p-4 rounded-lg shadow-md">
+                <div class="flex items-start">
+                    <a href="/profil/@item.Nickname">
+                        <img class="w-12 h-12 rounded-full" src="/uploads/images.jpg" alt="Profile Photo">
+                    </a>
+                    <div class="ml-4">
+                        <div class="flex items-center">
+                            <h2 class="font-bold text-lg">
+                                <a href="/profil/@item.Nickname"> @item.Username </a>
+                            </h2>
+                            <span class="ml-2 text-gray-500">@@@item.Nickname</span>
+                        </div>
+                        <div class="text-gray-500 text-sm">Takipçi: 1234 | Takip Edilen: 567</div> 
+                        <p class="mt-2 text-gray-800">@item.Detail</p>
+                        @* <img class="mt-2 rounded-lg" src="https://via.placeholder.com/300" alt="Flap Media"> *@
+                        <div class="text-gray-500 text-sm mt-2">@item.CreatedDate.ToString("g", CultureInfo.GetCultureInfo("tr"))</div>
+                        <div class="d-flex align-items-center mt-4">
+                            <div class="text-blue-500 hover:text-blue-600 ml-4">
+                                <a href="/Flap/@item.Id">Gönderiye Git</a>
+                            </div>
+                            <div class="ml-4">
+                                Yorum Sayısı: @item.YorumSayisi
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+}

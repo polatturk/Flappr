@@ -1,0 +1,74 @@
+﻿@model Register
+
+@* eksikler var bunlar da duzelicek *@
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+
+}
+@section Scripts
+{
+    <script>
+        document.getElementById('updateForm').addEventListener('submit', function (event) {
+            const fileInput = document.getElementById('photo');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const maxSize = 2 * 1024 * 1024; // 2MB
+                const img = new Image();
+                img.src = URL.createObjectURL(file);
+
+                img.onload = function () {
+                    if (file.size > maxSize) {
+                        alert('Dosya boyutu 2MB\'dan fazla olamaz.');
+                        event.preventDefault();
+                        return;
+                    }
+                }
+            }
+        });
+    </script>
+}
+
+<div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6">Bilgileri Güncelle</h2>
+    <form id="updateForm" action="/duzenle/@Model.Id" method="post" autocomplete="off">
+        <div class="mb-4">
+            <label for="name" class="block text-gray-700 font-semibold mb-2">Ad Soyad</label>
+            <input type="text" id="name" name="username" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+        </div>
+        <div class="flex items-center justify-between">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Güncelle</button>
+        </div>
+    </form>
+</div>
+
+<div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6">Bilgileri Güncelle</h2>
+    <form id="updateForm" action="/duzenle/@Model.Id" method="post" autocomplete="off">
+        <div class="mb-4">
+            <label for="password" class="block text-gray-700 font-semibold mb-2">Şifre</label>
+            <input type="password" id="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+        </div>
+        <div class="flex items-center justify-between">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Güncelle</button>
+        </div>
+    </form>
+</div>
+
+<div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6">Bilgileri Güncelle</h2>
+    <form id="updateForm" action="/duzenlepp/@Model.Id" method="post" enctype="multipart/form-data" autocomplete="off">
+        <div class="mb-6">
+            <label for="photo" class="block text-gray-700 font-semibold mb-2">Fotoğraf</label>
+            <input required type="file" id="photo" name="image" accept="image/png, image/jpeg" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <small class="text-gray-500">Maksimum boyut: 2MB</small>
+        </div>
+        <input type="hidden" name="nickname" value="@Model.Nickname" />
+        <div class="flex items-center justify-between">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Güncelle</button>
+        </div>
+    </form>
+</div>
+

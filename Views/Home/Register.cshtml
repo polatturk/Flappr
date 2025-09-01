@@ -1,0 +1,209 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+@model Register
+
+@{
+    ViewData["Title"] = "Register - ";
+}
+
+<style>
+    body {
+        background-image: url('/img/soft-gradient.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: fixed;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .register-form {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 20px;
+        padding: 40px 30px;
+        color: #fff;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(8px);
+        margin: 0 auto;
+    }
+
+        .register-form p {
+            margin-bottom: 1.2rem;
+        }
+
+        .register-form input {
+            width: 100%;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+            .register-form input::placeholder {
+                color: #ccc;
+            }
+
+            .register-form input:focus {
+                background: rgba(255, 255, 255, 0.15) !important;
+                outline: none;
+                box-shadow: 0 0 5px #4da3ff;
+                color: #fff;
+            }
+
+        .register-form button {
+            width: 100%;
+            padding: 10px 0;
+            background-color: #4da3ff;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .register-form button:hover {
+                background-color: #1e80e0;
+            }
+
+    .social-login {
+        text-align: center;
+        margin-top: 25px;
+    }
+
+    .social-login-title {
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+        color: #ccc;
+    }
+
+    .social-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        border-radius: 30px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        text-decoration: none;
+        color: #fff;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        margin: 5px;
+    }
+
+        .social-btn:hover {
+            transform: scale(1.05);
+            text-decoration: none;
+        }
+
+    .google {
+        background-color: #db4437;
+    }
+
+        .google:hover {
+            background-color: #c1351d;
+        }
+
+    .github {
+        background-color: #333;
+    }
+
+        .github:hover {
+            background-color: #242424;
+        }
+
+    .twitter {
+        background-color: #1da1f2;
+    }
+
+        .twitter:hover {
+            background-color: #0d8ddb;
+        }
+
+    .auth-links-button-group {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .auth-btn {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #a7cdf0;
+        border: 1px solid #4da3ff;
+        padding: 10px 20px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        margin: 5px;
+    }
+
+        .auth-btn i {
+            margin-right: 5px;
+        }
+
+        .auth-btn:hover {
+            background-color: #4da3ff;
+            color: #fff;
+            border-color: #4da3ff;
+            text-decoration: none;
+        }
+</style>
+
+<form action="/KayitOl" method="post" autocomplete="off" class="register-form">
+    <h3 class="text-center mb-4">Kayıt Ol</h3>
+    <p>
+        <input required type="email" name="Mail" placeholder="E-Mail Adresiniz" value="@Model.Mail" />
+    </p>
+    <p>
+        <input required type="text" name="Nickname" placeholder="Kullanıcı Adı" value="@Model.Nickname" />
+    </p>
+    <p>
+        <input required type="text" name="Username" placeholder="İsim Soyisim" value="@Model.Username" />
+    </p>
+    <p>
+        <input required type="password" name="Password" placeholder="Şifre" />
+    </p>
+    <p>
+        <input required type="password" name="Pwconfirmend" placeholder="Tekrar Şifre Giriniz" />
+    </p>
+
+    <!-- reCAPTCHA tokenu için gizli input -->
+    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
+
+    <button type="submit">Kayıt Ol</button>
+    @* linkler register icin duzenlenecek ve twitter ile kayit ol da eklenecek *@
+    <div class="social-login mt-4">
+        <div class="social-login-title text-center mb-3">veya sosyal medya ile kayıt Ol</div>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/Home/GoogleLogin" title="Google ile Kayıt" class="social-btn google">
+                <i class="fab fa-google me-2"></i> Google
+            </a>
+            <a href="/Home/GithubLogin" title="Github ile Kayıt" class="social-btn github">
+                <i class="fab fa-github me-2"></i> GitHub
+            </a>
+            @*  <a href="#" title="X ile Kayıt" class="social-btn twitter">
+            <i class="fab fa-twitter me-2"></i> X (Twitter)
+            </a> *@
+        </div>
+    </div>
+</form>
+
+<script src="https://www.google.com/recaptcha/api.js?render=@Configuration["Recaptcha:SiteKey"]"></script>
+<script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute('@Configuration["Recaptcha:SecretKey"]', { action: 'register' })
+            .then(function (token) {
+                document.getElementById('g-recaptcha-response').value = token;
+            });
+    });
+</script>
+
