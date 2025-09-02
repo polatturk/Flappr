@@ -1,5 +1,5 @@
-﻿@model AramaModel
-
+﻿@* @model AramaModel
+ *@
 @{
     ViewData["Title"] = "Search - ";
 }
@@ -105,10 +105,10 @@
 <div class="search-container">
     <h2>Kullanıcı Arama</h2>
 
-    <form asp-action="Search" method="post" autocomplete="off">
+   @*  <form asp-action="Search" method="post" autocomplete="off">
         <input type="text" asp-for="SearchTerm" placeholder="Kullanıcı adı" />
         <button type="submit">Ara</button>
-    </form>
+    </form> *@
 
     @if (Model.Sonuc != null && Model.Sonuc.Any())
     {
