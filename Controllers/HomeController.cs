@@ -364,6 +364,63 @@ namespace Flappr.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        [Route("/AddFlap")]
+        public IActionResult AddFlap(Flap model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Message = "Eksik veya hatalý iþlem yaptýn.";
+                return View("Message");
+            }
+
+            model.CreatedDate = DateTime.Now;
+            model.UserId = (int)HttpContext.Session.GetInt32("userId");
+
+            _context.Flaps.Add(model);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+
+        [Route("/Flap/{Id}")]
+        public IActionResult Flap(int Id)
+        {
+            var flapEntity = _context.Flaps
+                .Include(f => f.Username)
+                .FirstOrDefault(f => f.Id == Id);
+
+            if (flapEntity == null)
+            {
+                ViewBag.Message = "Böyle bir Flap yok";
+                return View("Message");
+            }
+
+            ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
+
+            ViewBag.AddYorum = CheckLogin();
+
+            var detailFlap = new FlapRequest
+            {
+                Flap = flapEntity,
+                Comments = _context.Comments
+                    .Include(c => c.Username)
+                    .Where(c => c.FlapId == Id)
+                    .OrderByDescending(c => c.CreatedTime)
+                    .ToList()
+            };
+
+            if (flapEntity.UserId == HttpContext.Session.GetInt32("userId"))
+            {
+                ViewBag.yetki = "full";
+            }
+
+            ViewBag.id = HttpContext.Session.GetInt32("userId");
+
+            return View(detailFlap);
+        }
+
         //devam edilecek...
 
         //[Route("/profil/{nickname}")]
@@ -407,82 +464,6 @@ namespace Flappr.Controllers
 
 
         //    return View(profil);
-        //}
-
-        //[HttpPost]
-        //[Route("/AddFlap")]
-        //public IActionResult AddFlap(Flap model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        ViewBag.Message = "Eksik veya hatalý iþlem yaptýn.";
-        //        return View("Message");
-        //    }
-
-        //    model.CreatedDate = DateTime.Now;
-        //    model.UserId = (int)HttpContext.Session.GetInt32("userId");
-
-        //    using var connection = new SqlConnection(connectionString);
-        //    var sql =
-        //        "INSERT INTO Flaps (Detail, UserId, CreatedDate, Visibility) VALUES (@Detail, @UserId, @CreatedDate, @Visibility)";
-
-        //    var data = new
-        //    {
-        //        model.Detail,
-        //        model.UserId,
-        //        model.CreatedDate,
-        //        model.Visibility
-        //    };
-
-        //    var rowsAffected = connection.Execute(sql, data);
-
-        //    return RedirectToAction("Index");
-        //}
-
-        //[Route("/Flap/{Id}")]
-        //public IActionResult Flap(int Id)
-        //{
-        //    if (!FlapVarMi(Id))
-        //    {
-        //        ViewBag.Message = "böyle bir Flap yok";
-        //        return View("Message");
-        //    }
-
-        //    ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
-
-
-        //    ViewBag.AddYorum = true;
-        //    if (!CheckLogin())
-        //    {
-        //        ViewBag.AddYorum = false;
-        //    }
-
-        //    var detailFlap = new DetailFlap();
-
-        //    using (var connection = new SqlConnection(connectionString))
-        //    {
-        //        var sql =
-        //            "SELECT Flaps.Id ,UserId ,Detail, users.Username as Username, CreatedDate, users.Nickname as Nickname, users.ImgUrl as ImgUrl FROM Flaps LEFT JOIN users on Flaps.UserId = users.Id WHERE Flaps.Id = @Id";
-        //        var Flap = connection.QueryFirstOrDefault<Flap>(sql, new { Id = Id });
-        //        detailFlap.Flap = Flap;
-        //    }
-
-        //    using (var connection = new SqlConnection(connectionString))
-        //    {
-        //        var sql =
-        //            "SELECT  comments.Id ,UserId ,Summary, users.Username, users.Nickname, users.ImgUrl, CreatedTime FROM comments LEFT JOIN users on users.Id = comments.UserId WHERE FlapId = @Id ORDER BY CreatedTime DESC";
-        //        var comments = connection.Query<Comment>(sql, new { Id }).ToList();
-        //        detailFlap.Comments = comments;
-        //    }
-
-        //    if (detailFlap.Flap.UserId == HttpContext.Session.GetInt32("userId"))
-        //    {
-        //        ViewBag.yetki = "full";
-        //    }
-
-        //    ViewBag.id = HttpContext.Session.GetInt32("userId");
-
-        //    return View(detailFlap);
         //}
 
         //[HttpPost]
