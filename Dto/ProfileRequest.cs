@@ -4,7 +4,7 @@ namespace Flappr.Dto
 {
     public class ProfileRequest
     {
-        public List<Flap> Flaps { get; set; } = new List<Flap>();
+        public List<FlapDto> Flaps { get; set; } = new List<FlapDto>();
         public UserDto User { get; set; }
     }
     public class FlapDto

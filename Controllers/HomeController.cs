@@ -11,6 +11,8 @@ using System.Security.Claims;
 using Flappr.Data;
 using Microsoft.EntityFrameworkCore;
 using Flappr.Dto;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.AspNetCore.Identity;
 
 namespace Flappr.Controllers
 {
@@ -423,190 +425,223 @@ namespace Flappr.Controllers
 
         //devam edilecek...
 
-        //[Route("/profil/{nickname}")]
-        //public IActionResult Profile(string nickname)
-        //{
-        //    ViewData["nickname"] = HttpContext.Session.GetString("nickname");
-        //    int? userId = KullaniciGetir(nickname);
-        //    if (userId == null)
-        //    {
-        //        ViewBag.Message = "Böyle bir kullanýcý yok!";
-        //        return View("Message");
-        //    }
+        [Route("/profil/{nickname}")]
+        public async Task<IActionResult> Profile(string nickname)
+        {
+            ViewData["nickname"] = HttpContext.Session.GetString("nickname");
 
-        //    var profil = new Profile();
-        //    using (var connection = new SqlConnection(connectionString))
-        //    {
-        //        if (userId == HttpContext.Session.GetInt32("userId"))
-        //        {
-        //            ViewBag.profile = true;
-        //            var sql =
-        //                "SELECT Detail, users.Username , CreatedDate, Visibility  FROM Flaps LEFT JOIN users on Flaps.UserId = users.Id WHERE UserId = @userId ORDER BY CreatedDate DESC";
-        //            var Flaps = connection.Query<Flap>(sql, new { UserId = userId }).ToList();
-        //            profil.Flaps = Flaps;
-        //        }
-        //        else
-        //        {
-        //            ViewBag.profile = false;
-        //            var sql =
-        //                "SELECT Detail, users.Username as Username, CreatedDate, Visibility  FROM Flaps LEFT JOIN users on Flaps.UserId = users.Id WHERE UserId = @userId AND Visibility = 1 ORDER BY CreatedDate DESC";
-        //            var Flaps = connection.Query<Flap>(sql, new { UserId = userId }).ToList();
-        //            profil.Flaps = Flaps;
-        //        }
-        //    }
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Nickname == nickname);
 
-        //    using (var connection = new SqlConnection(connectionString))
-        //    {
-        //        var sql = "SELECT * FROM Users WHERE Id = @userId";
-        //        var profile = connection.QueryFirstOrDefault<Register>(sql, new { UserId = userId });
-        //        profil.User = profile;
-        //    }
+            if (user == null)
+            {
+                ViewBag.Message = "Böyle bir kullanýcý yok!";
+                return View("Message");
+            }
 
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                Nickname = user.Nickname,
+                Username = user.Username,
+                Mail = user.Mail,
+                ImgUrl = user.ImgUrl,
+                RoleId = user.RoleId,
+                RoleName = user.RoleName
+            };
 
-        //    return View(profil);
-        //}
+            bool isOwner = user.Id == HttpContext.Session.GetInt32("userId");
+            ViewBag.profile = isOwner;
 
-        //[HttpPost]
-        //[Route("/addyorum")]
-        //public async Task<IActionResult> AddYorum(Comment model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return RedirectToAction("Index");
-        //    }
+            var flapsQuery = _context.Flaps
+                .Where(f => f.UserId == user.Id);
 
-        //    model.CreatedTime = DateTime.Now;
-        //    model.UserId = (int)HttpContext.Session.GetInt32("userId");
+            if (!isOwner)
+            {
+                flapsQuery = flapsQuery.Where(f => f.Visibility);
+            }
 
-        //    using var connection = new SqlConnection(connectionString);
-        //    var sql =
-        //        "INSERT INTO comments (Summary, CreatedTime, UserId, FlapId) VALUES (@Summary, @CreatedTime, @UserId, @FlapId)";
+            var flapDtos = await flapsQuery
+                .OrderByDescending(f => f.CreatedDate)
+                .Select(f => new FlapDto
+                {
+                    Id = f.Id,
+                    Detail = f.Detail,
+                    Username = f.Username,
+                    Nickname = f.Nickname,
+                    ImgUrl = f.ImgUrl,
+                    Visibility = f.Visibility,
+                    CreatedDate = f.CreatedDate,
+                    YorumSayisi = f.YorumSayisi
+                })
+                .ToListAsync();
 
-        //    try
-        //    {
-        //        var affectedRows = connection.Execute(sql, model);
+            var profilDto = new ProfileRequest
+            {
+                User = userDto,
+                Flaps = flapDtos
+            };
 
-        //        using var cnt = new SqlConnection(connectionString);
-        //        var cntsql =
-        //            "SELECT users.Mail, Flaps.Detail, users.Username " +
-        //            "FROM comments " +
-        //            "LEFT JOIN Flaps on comments.FlapId = Flaps.Id " +
-        //            "LEFT JOIN users on Flaps.UserId = users.Id " +
-        //            "WHERE comments.FlapId = @FlapId";
+            return View(profilDto);
+        }
 
-        //        var FlapInfo = cnt.QueryFirstOrDefault<FlapInfo>(cntsql, new { FlapId = model.FlapId });
+        [HttpPost]
+        [Route("/addyorum")]
+        public async Task<IActionResult> AddYorum(Comment model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Index");
+            }
 
-        //        using var reader = new StreamReader("wwwroot/mailTemp/mailtemp.html");
-        //        var template = await reader.ReadToEndAsync();
-        //        var mailbody = template
-        //            .Replace("{{Username}}", FlapInfo.Username)
-        //            .Replace("{{FlapDetail}}", FlapInfo.Detail);
+            model.CreatedTime = DateTime.Now;
+            model.UserId = (int)HttpContext.Session.GetInt32("userId");
 
-        //        string subject = "Flappýnýza bildirim var";
-        //        await SendEmailAsync(FlapInfo.Mail, subject, mailbody);
+            try
+            {
+                _context.Comments.Add(model);
+                await _context.SaveChangesAsync();
 
-        //        return RedirectToAction("Flap", new { Id = model.FlapId });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return RedirectToAction("Index");
-        //    }
-        //}
+                var FlapInfo = await (from f in _context.Flaps
+                                      join u in _context.Users on f.UserId equals u.Id
+                                      where f.Id == model.FlapId
+                                      select new FlapInfoDto
+                                      {
+                                          Username = u.Username,
+                                          Detail = f.Detail,
+                                          Mail = u.Mail
+                                      }).FirstOrDefaultAsync();
 
+                if (FlapInfo != null)
+                {
+                    using var reader = new StreamReader("wwwroot/mailTemp/mailtemp.html");
+                    var template = await reader.ReadToEndAsync();
+                    var mailbody = template
+                        .Replace("{{Username}}", FlapInfo.Username)
+                        .Replace("{{FlapDetail}}", FlapInfo.Detail);
 
-        //[Route("/YorumSil/{Id}")]
-        //public IActionResult DeleteYorum(int Id, int FlapId)
-        //{
-        //    using var connection = new SqlConnection(connectionString);
+                    string subject = "Flappýnýza bildirim var";
+                    await SendEmailAsync(FlapInfo.Mail, subject, mailbody);
+                }
 
+                return RedirectToAction("Flap", new { Id = model.FlapId });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Index");
+            }
+        }
 
-        //    var sql = "DELETE FROM comments WHERE Id = @Id";
-        //    var rowsAffected = connection.Execute(sql, new { Id = Id });
+        [Route("/YorumSil/{Id}")]
+        public IActionResult DeleteYorum(int Id, int FlapId)
+        {
+            var comment = _context.Comments.Find(Id);
+            if (comment != null)
+            {
+                _context.Comments.Remove(comment);
+                _context.SaveChanges();
+            }
 
-        //    return RedirectToAction("Flap", new { Id = FlapId });
-        //}
+            return RedirectToAction("Flap", new { Id = FlapId });
+        }
 
-        //[Route("/Flapsil/{Id}")]
-        //public IActionResult FlapSil(int Id, string nickname)
-        //{
+        [Route("/Flapsil/{Id}")]
+        public IActionResult FlapSil(int Id, string nickname)
+        {
+            var flap = _context.Flaps.Find(Id);
+            if (flap != null)
+            {
+                _context.Flaps.Remove(flap);
+                _context.SaveChanges();
+            }
 
-        //    using var connection = new SqlConnection(connectionString);
+            return RedirectToAction("Profile", new { nickname });
+        }
 
-        //    var sql = "DELETE FROM Flaps WHERE Id = @Id";
-        //    var rowsAffected = connection.Execute(sql, new { Id = Id });
+        [HttpGet]
+        [Route("/sifre-unuttum")]
+        public IActionResult SifreUnuttum()
+        {
+            return View();
+        }
 
-        //    return RedirectToAction("Profile", new { nickname });
-        //}
+        [HttpPost]
+        [Route("/SifreUnuttum")]
+        public async Task<IActionResult> SifreUnuttum(string email)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Mail == email);
 
-        //[HttpGet]
-        //[Route("/sifre-unuttum")]
-        //public IActionResult SifreUnuttum()
-        //{
-        //    return View();
-        //}
+            if (user == null)
+            {
+                ViewBag.Message = "Bu e-posta adresiyle kayýtlý bir kullanýcý bulunamadý.";
+                return View("Message");
+            }
 
-        //[HttpPost]
-        //[Route("/SifreUnuttum")]
-        //public IActionResult SifreUnuttum(string email)
-        //{
-        //    using var connection = new SqlConnection(connectionString);
+            return RedirectToAction("PwResetLink", new { userId = user.Id });
+        }
 
-        //    var user = connection.QueryFirstOrDefault<Register>(
-        //        "SELECT * FROM users WHERE Mail = @Mail", new { Mail = email });
+        public async Task<IActionResult> PwResetLink(int userId)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == userId);
 
-        //    if (user == null)
-        //    {
-        //        ViewBag.Message = "Bu e-posta adresiyle kayýtlý bir kullanýcý bulunamadý.";
-        //        return View("Message");
-        //    }
+            if (user == null)
+            {
+                ViewBag.Message = "Kullanýcý bulunamadý.";
+                return View("Message");
+            }
 
-        //    return RedirectToAction("PwResetLink", new { userId = user.Id });
-        //}
+            var token = TokenUret(userId);
 
-        //public async Task<IActionResult> PwResetLink(int userId)
-        //{
-        //    using var connection = new SqlConnection(connectionString);
-        //    string userEmail = connection.QueryFirstOrDefault<string>("SELECT Mail FROM users WHERE Id = @UserId", new { UserId = userId });
+            var resetLink = Url.Action("ResetPassword", "Admin", new { token }, Request.Scheme);
 
-        //    var token = TokenUret(userId);
+            using var reader = new StreamReader("wwwroot/mailTemp/pwreset.html");
+            var template = await reader.ReadToEndAsync();
+            var mailBody = template.Replace("{{Resetlink}}", resetLink);
 
-        //    var resetLink = Url.Action("ResetPassword", "Admin", new { token }, Request.Scheme);
+            string subject = "Þifre Sýfýrlama Talebi";
 
-        //    using var reader = new StreamReader("wwwroot/mailTemp/pwreset.html");
-        //    var template = await reader.ReadToEndAsync();
-        //    var mailBody = template.Replace("{{Resetlink}}", resetLink);
+            await SendEmailAsync(user.Mail, subject, mailBody);
 
-        //    string subject = "Þifre Sýfýrlama Talebi";
+            ViewBag.Message = "Þifre sýfýrlama mail olarak iletilmiþtir.";
+            return View("Message");
+        }
 
-        //    // Mail gönderimi async helper üzerinden
-        //    await SendEmailAsync(userEmail, subject, mailBody);
+        [HttpGet]
+        public IActionResult Search()
+        {
+            return View(new SearchRequest());
+        }
 
-        //    ViewBag.Message = "Þifre sýfýrlama mail olarak iletilmiþtir.";
-        //    return View("Message");
-        //}
+        [HttpPost]
+        public async Task<IActionResult> Search(SearchRequest model)
+        {
+            if (string.IsNullOrWhiteSpace(model.SearchTerm))
+            {
+                ModelState.AddModelError("", "Lütfen bir arama terimi girin.");
+                return View(model);
+            }
 
-        //[HttpGet]
-        //public IActionResult Search()
-        //{
-        //    return View(new AramaModel());
-        //}
+            var searchTerm = model.SearchTerm.ToLower();
 
-        //[HttpPost]
-        //public IActionResult Search(AramaModel model)
-        //{
-        //    if (string.IsNullOrWhiteSpace(model.SearchTerm))
-        //    {
-        //        ModelState.AddModelError("", "Lütfen bir arama terimi girin.");
-        //        return View(model);
-        //    }
+            var results = await _context.Users
+                .Where(u => u.Username.ToLower().Contains(searchTerm)
+                         || u.Nickname.ToLower().Contains(searchTerm))
+                .Select(u => new SearchResult
+                {
+                    Id = u.Id,
+                    Username = u.Username,
+                    Nickname = u.Nickname
+                })
+                .ToListAsync();
 
-        //    using var connection = new SqlConnection(connectionString);
-        //    var sql = "SELECT Id, Username, Nickname FROM users WHERE Username LIKE @SearchTerm OR Nickname LIKE @SearchTerm";
+            var response = new SearchResponse
+            {
+                Sonuc = results
+            };
 
-        //    var searchTerm = "%" + model.SearchTerm + "%";
-        //    model.Sonuc = connection.Query<Arama>(sql, new { SearchTerm = searchTerm }).ToList();
-
-        //    return View(model);
-        //}
+            return View(response);
+        }
     }
 }
