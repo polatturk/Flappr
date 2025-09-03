@@ -1,7 +1,7 @@
 ﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-@model Register
+@model Flappr.Dto.RegisterRequest
 
 @{
     ViewData["Title"] = "Register - ";
@@ -161,19 +161,19 @@
 <form action="/KayitOl" method="post" autocomplete="off" class="register-form">
     <h3 class="text-center mb-4">Kayıt Ol</h3>
     <p>
-        <input required type="email" name="Mail" placeholder="E-Mail Adresiniz" value="@Model.Mail" />
+        <input required type="email" asp-for="Mail" placeholder="E-Mail Adresiniz" value="@Model.Mail" />
     </p>
     <p>
-        <input required type="text" name="Nickname" placeholder="Kullanıcı Adı" value="@Model.Nickname" />
+        <input required type="text" asp-for="Nickname" placeholder="Kullanıcı Adı" value="@Model.Nickname" />
     </p>
     <p>
-        <input required type="text" name="Username" placeholder="İsim Soyisim" value="@Model.Username" />
+        <input required type="text" asp-for="Username" placeholder="İsim Soyisim" value="@Model.Username" />
     </p>
     <p>
-        <input required type="password" name="Password" placeholder="Şifre" />
+        <input required type="password" asp-for="Password" placeholder="Şifre" />
     </p>
     <p>
-        <input required type="password" name="Pwconfirmend" placeholder="Tekrar Şifre Giriniz" />
+        <input required type="password" asp-for="Pwconfirmend" placeholder="Tekrar Şifre Giriniz" />
     </p>
 
     <!-- reCAPTCHA tokenu için gizli input -->

@@ -133,7 +133,7 @@ namespace Flappr.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            return View(new Register());
+            return View(new RegisterRequest());
         }
 
 
@@ -423,8 +423,6 @@ namespace Flappr.Controllers
             return View(detailFlap);
         }
 
-        //devam edilecek...
-
         [Route("/profil/{nickname}")]
         public async Task<IActionResult> Profile(string nickname)
         {
@@ -628,7 +626,7 @@ namespace Flappr.Controllers
             var results = await _context.Users
                 .Where(u => u.Username.ToLower().Contains(searchTerm)
                          || u.Nickname.ToLower().Contains(searchTerm))
-                .Select(u => new SearchResult
+                .Select(u => new SearchResponse
                 {
                     Id = u.Id,
                     Username = u.Username,
@@ -636,7 +634,7 @@ namespace Flappr.Controllers
                 })
                 .ToListAsync();
 
-            var response = new SearchResponse
+            var response = new SearchRequest
             {
                 Sonuc = results
             };

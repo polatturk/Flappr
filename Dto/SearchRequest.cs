@@ -7,19 +7,15 @@ namespace Flappr.Dto
     {
         [Required]
         public string SearchTerm { get; set; }
+        public List<SearchResponse> Sonuc { get; set; } = new List<SearchResponse>();
+
     }
 
     // Arama sonucu DTO'su (view veya API için döndürülecek veriler)
-    public class SearchResult
+    public class SearchResponse
     {
         public int Id { get; set; }
         public string Username { get; set; }
         public string Nickname { get; set; }
-    }
-
-    // Opsiyonel: birden fazla sonucu paketlemek için
-    public class SearchResponse
-    {
-        public List<SearchResult> Sonuc { get; set; } = new List<SearchResult>();
     }
 }
