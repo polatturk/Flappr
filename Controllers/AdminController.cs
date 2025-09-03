@@ -26,68 +26,96 @@ namespace Flappr.Controllers
             return true;
         }
 
-        //public int? UserIdGetirr(string nickname)
-        //{
-        //    using var connection = new SqlConnection(connectionString);
-        //    var sql = "SELECT Id FROM users WHERE Nickname = @nickname";
-        //    var userId = connection.QueryFirstOrDefault<int?>(sql, new { Nickname = nickname });
-        //    return userId;
-        //}
+        public int? UserIdGetirr(string nickname)
+        {
+            var user = _context.Users
+                .Where(u => u.Nickname == nickname)
+                .Select(u => (int?)u.Id)
+                .FirstOrDefault();
 
-        //[Route("/duzenle/{nickname}")]
-        //public IActionResult Duzenle(string nickname)
-        //{
-        //    ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
+            return user;
+        }
 
-        //    var checkLogin = CheckLoginn();
-        //    if (!checkLogin)
-        //    {
-        //        ViewBag.Message = "Login Ol.";
-        //        return View("Msg");
-        //    }
+        [Route("/duzenle/{nickname}")]
+        public IActionResult Duzenle(string nickname)
+        {
+            ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
 
-        //    int? userId = UserIdGetirr(nickname);
-        //    if (userId != HttpContext.Session.GetInt32("userId"))
-        //    {
-        //        ViewBag.Message = "Ne yapıyorsun?";
-        //        return View("Msg");
-        //    }
+            var checkLogin = CheckLoginn();
+            if (!checkLogin)
+            {
+                ViewBag.Message = "Bu işlemi gerçekleştirmek için giriş yapmanız gerekiyor.";
+                return View("Msg");
+            }
 
-        //    using var connection = new SqlConnection(connectionString);
-        //    var sql = "SELECT * FROM users WHERE Id = @userId";
-        //    var users = connection.QueryFirstOrDefault<Register>(sql, new { UserId = userId });
+            int? userId = UserIdGetirr(nickname);
+            if (userId != HttpContext.Session.GetInt32("userId"))
+            {
+                ViewBag.Message = "Bu profili düzenleme yetkiniz yok.";
+                return View("Msg");
+            }
 
-        //    return View(users);
-        //}
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
 
-        //[HttpPost]
-        //[Route("/duzenle/{id}")]
-        //public IActionResult Duzenle(Register model)
-        //{
-        //    using var connection = new SqlConnection(connectionString);
-        //    var sql =
-        //        "UPDATE users SET Username = @username, Password = @Password, ImgUrl = @ImgUrl WHERE Id = @Id";
-        //    var Password = Guid.NewGuid().ToString() + Path.GetExtension(model.Password);
+            if (user == null)
+            {
+                ViewBag.Message = "Kullanıcı bulunamadı.";
+                return View("Msg");
+            }
 
-        //    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            return View(user);
+        }
 
-        //    using var stream = new FileStream(path, FileMode.Create);
-        //    model.Image.CopyTo(stream);
-        //    model.ImgUrl = $"/uploads/{Password}";
 
-        //    var data = new
-        //    {
-        //        model.Username,
-        //        model.Password,
-        //        model.ImgUrl,
-        //        model.Id
-        //    };
+        [HttpPost]
+        [Route("/duzenle/{id}")]
+        public async Task<IActionResult> Duzenle(Register model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Message = "Geçersiz veri gönderildi.";
+                return View("Msg");
+            }
 
-        //    var rowAffected = connection.Execute(sql, data);
+            var user = await _context.Users.FindAsync(model.Id);
+            if (user == null)
+            {
+                ViewBag.Message = "Kullanıcı bulunamadı.";
+                return View("Msg");
+            }
 
-        //    ViewBag.Message = "Profil Güncellendi.";
-        //    return View("Msg");
+            user.Username = model.Username;
 
-        //}
+            if (!string.IsNullOrWhiteSpace(model.Password))
+            {
+                user.Password = Helper.Hash(model.Password);
+            }
+
+            if (model.Image != null && model.Image.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Image.FileName);
+                var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+                if (!Directory.Exists(uploadPath))
+                {
+                    Directory.CreateDirectory(uploadPath);
+                }
+
+                var filePath = Path.Combine(uploadPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.Image.CopyToAsync(stream);
+                }
+
+                user.ImgUrl = $"/uploads/{fileName}";
+            }
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            ViewBag.Message = "Profil başarıyla güncellendi.";
+            return View("Msg");
+        }
     }
 }
