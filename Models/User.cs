@@ -4,29 +4,26 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Flappr.Models
 {
-    public class Register
+    public class User
     {
         public int Id { get; set; }
+
         [Required]
         public string Nickname { get; set; }
+
         [Required]
         public string Username { get; set; }
+
         [Required]
         public string Password { get; set; }
-        [Required]
-        [NotMapped]
-        public string Pwconfirmend { get; set; }
+
         [Required]
         public string Mail { get; set; }
-        public int RoleId { get; set; }
-        public string? RoleName { get; set; }
+
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
+
         public string? ImgUrl { get; set; }
-        [NotMapped]
-        public IFormFile? Image { get; set; }
-        [FromForm(Name = "g-recaptcha-response")]
-        [NotMapped]
-        public string RecaptchaToken { get; set; }
     }
+
 }

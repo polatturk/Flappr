@@ -6,7 +6,7 @@ namespace Flappr.Dto
     public class LoginRequest
     {
         [Required]
-        public string Nickname { get; set; }
+        public string Mail { get; set; }
 
         [Required]
         public string Password { get; set; }

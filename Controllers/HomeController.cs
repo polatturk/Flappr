@@ -84,7 +84,7 @@ namespace Flappr.Controllers
             return token;
         }
 
-        public Register GetMail(string email)
+        public User GetMail(string email)
         {
             return _context.Users
                .FirstOrDefault(u => u.Mail == email);
@@ -136,7 +136,6 @@ namespace Flappr.Controllers
             return View(new RegisterRequest());
         }
 
-
         [HttpPost]
         [Route("/Login")]
         public async Task<IActionResult> Login(LoginRequest model)
@@ -159,7 +158,7 @@ namespace Flappr.Controllers
             var hashedPassword = Helper.Hash(model.Password);
 
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Nickname == model.Nickname && u.Password == hashedPassword);
+                .FirstOrDefaultAsync(u => u.Mail == model.Mail && u.Password == hashedPassword);
 
             if (user != null)
             {
@@ -227,7 +226,6 @@ namespace Flappr.Controllers
                 return View("Register", model);
             }
 
-            // Kullanýcý var mý kontrolü EF Core ile
             var existingUser = await _context.Users
                 .FirstOrDefaultAsync(u => u.Nickname == model.Nickname);
 
@@ -237,13 +235,11 @@ namespace Flappr.Controllers
                 return View("Register", model);
             }
 
-            // Yeni kullanýcý oluþturma
-            var user = new Register
+            var user = new User
             {
                 Username = model.Username,
                 Nickname = model.Nickname,
                 Mail = model.Mail,
-                RoleId = 1,
                 Created = DateTime.Now,
                 Updated = DateTime.Now,
                 ImgUrl = "/uploads/images.jpg",
@@ -253,7 +249,6 @@ namespace Flappr.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            // Mail gönderimi
             string subject = "Flappr Hoþgeldin mesajý";
             string body = $"Merhaba {model.Username}. Flappr Kaydýnýz baþarýlý bir þekilde oluþturulmuþtur.";
 
@@ -443,9 +438,7 @@ namespace Flappr.Controllers
                 Nickname = user.Nickname,
                 Username = user.Username,
                 Mail = user.Mail,
-                ImgUrl = user.ImgUrl,
-                RoleId = user.RoleId,
-                RoleName = user.RoleName
+                ImgUrl = user.ImgUrl
             };
 
             bool isOwner = user.Id == HttpContext.Session.GetInt32("userId");

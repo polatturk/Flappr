@@ -5,6 +5,8 @@ namespace Flappr.Dto
 {
     public class RegisterRequest
     {
+        public int Id { get; set; }
+
         [Required]
         public string Nickname { get; set; }
 
@@ -15,6 +17,7 @@ namespace Flappr.Dto
         public string Password { get; set; }
 
         [Required]
+        [Compare("Password", ErrorMessage = "Şifreler uyuşmuyor.")]
         public string Pwconfirmend { get; set; }
 
         [Required]

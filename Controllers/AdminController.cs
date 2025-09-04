@@ -3,17 +3,20 @@ using Microsoft.Data.SqlClient;
 using Flappr.Models;
 using Microsoft.AspNetCore.Authentication;
 using Flappr.Data;
+using Flappr.Dto;
 
 namespace Flappr.Controllers
 {
     public class AdminController : Controller
     {
         private readonly FlapprContext _context;
+        private readonly IConfiguration _configuration;
 
-        //Dependency Injection (DI) DbContext alıyorum
-        public AdminController(FlapprContext context)
+        //Dependency Injection (DI) ile hem IConfiguration hem DbContext alıyorum
+        public AdminController(FlapprContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         public bool CheckLoginn()
@@ -69,7 +72,7 @@ namespace Flappr.Controllers
 
         [HttpPost]
         [Route("/duzenle/{id}")]
-        public async Task<IActionResult> Duzenle(Register model)
+        public async Task<IActionResult> Duzenle(RegisterRequest model)
         {
             if (!ModelState.IsValid)
             {
