@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Şifre Sıfırlama</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            padding: 20px;
+        }
+        h1 {
+            color: #5a67d8;
+            font-size: 24px;
+            text-align: center;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #5a67d8;
+            color: #ffffff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #434190;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999999;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Şifre Sıfırlama Talebi</h1>
+    <p>Merhaba,</p>
+    <p>Şifrenizi sıfırlamak için bir talep aldık. Eğer bu talebi siz yapmadıysanız, bu e-postayı görmezden gelebilirsiniz.</p>
+    <p>Aksi takdirde, şifrenizi sıfırlamak için aşağıdaki bağlantıyı kullanabilirsiniz:</p>
+    <a href="{{ResetLink}}" class="btn">Şifreyi Sıfırla</a>
+    <p>Bu bağlantı, güvenliğiniz için 24 saat içinde geçerliliğini yitirecektir.</p>
+    <p>Bağlantı çalışmıyorsa, bu bağlantıyı kopyalayıp tarayıcınıza yapıştırın:</p>
+    <p>{{Resetlink}}</p>
+    <p>Herhangi bir sorunuz varsa, lütfen destek ekibimizle iletişime geçin.</p>
+    <p>Saygılarımızla.</p>
+    <div class="footer">
+        <p>&copy; 2024 Twitter. Tüm hakları saklıdır.</p>
+    </div>
+</div>
+</body>
+</html>
