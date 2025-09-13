@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Flappr.Controllers
 {
-    //butun proje Dapperdan EF Core'a gecicek /  geciyor..
     public class HomeController : Controller
     {
             private readonly FlapprContext _context;
@@ -174,7 +173,6 @@ namespace Flappr.Controllers
             return View("Login");
         }
 
-
         private async Task<bool> VerifyRecaptchaLogin(string token)
         {
             string secretKey = _configuration["Recaptcha:SecretKey"];
@@ -250,7 +248,14 @@ namespace Flappr.Controllers
             await _context.SaveChangesAsync();
 
             string subject = "Flappr Hoþgeldin mesajý";
-            string body = $"Merhaba {model.Username}. Flappr Kaydýnýz baþarýlý bir þekilde oluþturulmuþtur.";
+            string body = $"Merhaba {model.Username} {(model.Nickname)}. Flappr Kaydýnýz baþarýlý bir þekilde oluþturulmuþtur.";
+
+            if (string.IsNullOrEmpty(model.Mail))
+            {
+                throw new Exception("Kullanýcýnýn mail adresi boþ geliyor!");
+            }
+
+            Console.WriteLine($"Gönderilen mail: '{model.Mail}'");
 
             await SendEmailAsync(model.Mail, subject, body);
 

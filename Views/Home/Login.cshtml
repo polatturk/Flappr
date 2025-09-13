@@ -214,13 +214,25 @@
 
         <form action="/Login" method="post" autocomplete="off">
             <div class="mb-3">
-                <label for="nickname" class="form-label">Kullanıcı Adı</label>
-                <input required type="text" class="form-control" id="nickname" name="nickname" placeholder="Kullanıcı adınızı girin" />
+                <label for="email" class="form-label">E-Posta Adresiniz</label>
+                <input type="email"
+                       class="form-control"
+                       id="email"
+                       name="Mail"
+                       placeholder="örnek@gmail.com"
+                       required
+                       autocomplete="email" />
             </div>
 
             <div class="mb-3 position-relative">
                 <label for="password" class="form-label">Şifre</label>
-                <input required type="password" class="form-control pe-5" id="password" name="password" placeholder="Şifrenizi girin" />
+                <input type="password"
+                       class="form-control pe-5"
+                       id="password"
+                       name="password"
+                       placeholder="Şifrenizi girin"
+                       required
+                       autocomplete="current-password" />
                 <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"></i>
             </div>
 
@@ -228,6 +240,7 @@
 
             <button type="submit" class="btn btn-login w-100 text-white mt-3">Giriş Yap</button>
         </form>
+
         @* twitter ile giris yap da eklenecek *@
 
         <div class="social-login mt-4">
