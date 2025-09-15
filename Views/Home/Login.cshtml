@@ -243,6 +243,8 @@
                 <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"></i>
             </div>
 
+            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
+
             <button type="submit" class="btn btn-login w-100 text-white mt-3">Giriş Yap</button>
         </form>
 
@@ -305,8 +307,6 @@
         }
     });
 </script>
-
-<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
 
 <script src="https://www.google.com/recaptcha/api.js?render=@Configuration["Recaptcha:SiteKey"]"></script>
 <script>
