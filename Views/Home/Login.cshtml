@@ -291,7 +291,7 @@
 <script src="https://www.google.com/recaptcha/api.js?render=@Configuration["Recaptcha:SiteKey"]"></script>
 <script>
     grecaptcha.ready(function () {
-        grecaptcha.execute('@Configuration["Recaptcha:SecretKey"]', { action: 'register' })
+        grecaptcha.execute('@Configuration["Recaptcha:SiteKey"]', { action: 'login' })
             .then(function (token) {
                 document.getElementById('g-recaptcha-response').value = token;
             });

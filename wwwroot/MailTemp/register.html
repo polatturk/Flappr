@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -12,6 +12,7 @@
             margin: 0;
             padding: 0;
         }
+
         .container {
             max-width: 600px;
             margin: 50px auto;
@@ -20,15 +21,18 @@
             border-radius: 5px;
             padding: 20px;
         }
+
         h1 {
             color: #5a67d8;
             font-size: 24px;
             text-align: center;
         }
+
         p {
             font-size: 16px;
             line-height: 1.5;
         }
+
         .btn {
             display: block;
             width: 200px;
@@ -41,9 +45,11 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        .btn:hover {
-            background-color: #434190;
-        }
+
+            .btn:hover {
+                background-color: #434190;
+            }
+
         .footer {
             text-align: center;
             margin-top: 20px;
@@ -53,20 +59,23 @@
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Şifre Sıfırlama Talebi</h1>
-    <p>Merhaba,</p>
-    <p>Şifrenizi sıfırlamak için bir talep aldık. Eğer bu talebi siz yapmadıysanız, bu e-postayı görmezden gelebilirsiniz.</p>
-    <p>Aksi takdirde, şifrenizi sıfırlamak için aşağıdaki bağlantıyı kullanabilirsiniz:</p>
-    <a href="{{ResetLink}}" class="btn">Şifreyi Sıfırla</a>
-    <p>Bu bağlantı, güvenliğiniz için 24 saat içinde geçerliliğini yitirecektir.</p>
-    <p>Bağlantı çalışmıyorsa, bu bağlantıyı kopyalayıp tarayıcınıza yapıştırın:</p>
-    <p>{{Resetlink}}</p>
-    <p>Herhangi bir sorunuz varsa, lütfen destek ekibimizle iletişime geçin.</p>
-    <p>Saygılarımızla.</p>
-    <div class="footer">
-        <p>&copy; 2025 Flappr. Tüm hakları saklıdır.</p>
+    <div class="container">
+        <h1>Flappr’a Hoş Geldiniz!</h1>
+        <p>Merhaba {{Username}},</p>
+        <p>Flappr’a kayıt olduğunuz için teşekkür ederiz. Artık platformumuzun tüm özelliklerinden faydalanabilirsiniz.</p>
+        <p>Kullanıcı adınız ve takma adınız:</p>
+        <ul>
+            <li>Kullanıcı Adı: {{Username}}</li>
+            <li>Takma Adı: {{Nickname}}</li>
+        </ul>
+        <p>Hesabınızı yönetmek veya profilinizi güncellemek için giriş yapabilirsiniz:</p>
+        <a href="{{LoginLink}}" class="btn">Giriş Yap</a>
+        <p>Herhangi bir sorunuz olursa, destek ekibimizle iletişime geçmekten çekinmeyin.</p>
+        <p>Saygılarımızla,<br>Flappr Ekibi</p>
+        <div class="footer">
+            <p>&copy; 2025 Flappr. Tüm hakları saklıdır.</p>
+        </div>
     </div>
-</div>
+
 </body>
 </html>

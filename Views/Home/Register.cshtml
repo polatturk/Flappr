@@ -3,9 +3,9 @@
 
 @model Flappr.Dto.RegisterRequest
 
-@* @{
+@{
     ViewData["Title"] = "Register - ";
-} *@
+}
 
 <style>
     body {
@@ -199,7 +199,7 @@
 <script src="https://www.google.com/recaptcha/api.js?render=@Configuration["Recaptcha:SiteKey"]"></script>
 <script>
     grecaptcha.ready(function () {
-        grecaptcha.execute('@Configuration["Recaptcha:SecretKey"]', { action: 'register' })
+        grecaptcha.execute('@Configuration["Recaptcha:SiteKey"]', { action: 'register' })
             .then(function (token) {
                 document.getElementById('g-recaptcha-response').value = token;
             });

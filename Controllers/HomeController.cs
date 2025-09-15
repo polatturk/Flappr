@@ -193,7 +193,6 @@ namespace Flappr.Controllers
             return result.success == true && result.score >= 0.6 && result.action == "login";
         }
 
-
         [HttpPost]
         [Route("/KayitOl")]
         public async Task<IActionResult> KayitOl(RegisterRequest model)
@@ -247,22 +246,22 @@ namespace Flappr.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            string subject = "Flappr Hoþgeldin mesajý";
-            string body = $"Merhaba {model.Username} {(model.Nickname)}. Flappr Kaydýnýz baþarýlý bir þekilde oluþturulmuþtur.";
+            using var reader = new StreamReader("wwwroot/mailTemp/register.html");
+            var template = await reader.ReadToEndAsync();
 
-            if (string.IsNullOrEmpty(model.Mail))
-            {
-                throw new Exception("Kullanýcýnýn mail adresi boþ geliyor!");
-            }
+            var mailBody = template
+                .Replace("{{Username}}", model.Username)
+                .Replace("{{Nickname}}", model.Nickname)
+                .Replace("{{LoginLink}}", "https://flappr.polatturkk.com.tr/login");
 
-            Console.WriteLine($"Gönderilen mail: '{model.Mail}'");
+            string subject = "Flappr’a Hoþ Geldiniz!";
 
-            await SendEmailAsync(model.Mail, subject, body);
+            await SendEmailAsync(model.Mail, subject, mailBody);
 
-            ViewBag.Message = "Kayýt Baþarýlý";
+            ViewBag.Message = "Kayýt iþleminiz baþarýlý, hoþ geldiniz! E-posta adresinize hoþ geldiniz maili gönderildi.";
             return View("Message");
         }
-
+         
 
         private async Task<bool> VerifyRecaptchaRegister(string token)
         {
