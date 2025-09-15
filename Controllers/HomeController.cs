@@ -18,15 +18,15 @@ namespace Flappr.Controllers
 {
     public class HomeController : Controller
     {
-            private readonly FlapprContext _context;
-            private readonly IConfiguration _configuration;
+        private readonly FlapprContext _context;
+        private readonly IConfiguration _configuration;
 
-            //Dependency Injection (DI) ile hem IConfiguration hem DbContext alýyorum
-            public HomeController(FlapprContext context, IConfiguration configuration)
-            {
-                _context = context;
-                _configuration = configuration;
-            }
+        //Dependency Injection (DI) ile hem IConfiguration hem DbContext alýyorum
+        public HomeController(FlapprContext context, IConfiguration configuration)
+        {
+            _context = context;
+            _configuration = configuration;
+        }
 
         // SMTP ayarlarý sadece burada var diðer metodlarda tekrar yazmamak icin boyle bir helper metodu yaptim
         private async Task SendEmailAsync(string toEmail, string subject, string body, string displayName = "Flappr Ekibi")
@@ -153,7 +153,6 @@ namespace Flappr.Controllers
                 return RedirectToAction("Login");
             }
 
-            // Þifre hash'lemesi
             var hashedPassword = Helper.Hash(model.Password);
 
             var user = await _context.Users
@@ -165,8 +164,7 @@ namespace Flappr.Controllers
                 HttpContext.Session.SetString("Nickname", user.Nickname);
                 ViewData["Nickname"] = HttpContext.Session.GetString("Nickname");
 
-                ViewBag.Message = "Login Baþarýlý";
-                return View("Message");
+                return View("Index");
             }
 
             TempData["AuthError"] = "Kullanýcý adý veya þifre hatalý";
@@ -218,17 +216,29 @@ namespace Flappr.Controllers
             }
 
             if (model.Password != model.Pwconfirmend)
-            {
+                {
                 TempData["AuthError"] = "Þifreler Uyuþmuyor.";
                 return View("Register", model);
             }
 
-            var existingUser = await _context.Users
-                .FirstOrDefaultAsync(u => u.Nickname == model.Nickname);
+            var userExists = await _context.Users
+              .Where(u => u.Nickname == model.Nickname || u.Mail == model.Mail)
+              .Select(u => new { u.Nickname, u.Mail })
+              .ToListAsync();
 
-            if (existingUser != null)
+            if (userExists.Any())
             {
-                TempData["AuthError"] = "Bu kullanýcý adý mevcut!";
+                bool nicknameTaken = userExists.Any(u => u.Nickname == model.Nickname);
+                bool mailTaken = userExists.Any(u => u.Mail == model.Mail);
+
+                TempData["AuthError"] = (nicknameTaken, mailTaken) switch
+                {
+                    (true, true) => "Kullanýcý adý ve e-posta zaten kullanýlýyor!",
+                    (true, false) => "Bu kullanýcý adý mevcut!",
+                    (false, true) => "Bu e-posta adresi zaten kullanýlýyor!",
+                    _ => null
+                };
+
                 return View("Register", model);
             }
 
@@ -252,14 +262,13 @@ namespace Flappr.Controllers
             var mailBody = template
                 .Replace("{{Username}}", model.Username)
                 .Replace("{{Nickname}}", model.Nickname)
-                .Replace("{{LoginLink}}", "https://flappr.polatturkk.com.tr/login");
+                .Replace("{{LoginLink}}", "https://flappr.polatturkk.com.tr/home/login");
 
             string subject = "Flappr’a Hoþ Geldiniz!";
 
             await SendEmailAsync(model.Mail, subject, mailBody);
 
-            ViewBag.Message = "Kayýt iþleminiz baþarýlý, hoþ geldiniz! E-posta adresinize hoþ geldiniz maili gönderildi.";
-            return View("Message");
+            return View("Login");
         }
          
 

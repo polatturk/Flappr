@@ -160,6 +160,21 @@
 
 <form action="/KayitOl" method="post" autocomplete="off" class="register-form">
     <h3 class="text-center mb-4">Kayıt Ol</h3>
+
+    @if (TempData["AuthError"] != null)
+    {
+        <div id="formMessage" class="alert alert-danger text-center">
+            @TempData["AuthError"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="formMessage" class="alert alert-success text-center">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
     <p>
         <input required type="email" asp-for="Mail" placeholder="E-Posta Adresiniz" value="@Model.Mail" />
     </p>
@@ -175,7 +190,7 @@
     <p>
         <input required type="password" asp-for="Pwconfirmend" placeholder="Tekrar Şifre Giriniz" />
     </p>
-    <!-- reCAPTCHA tokenu için gizli input -->
+
     <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
 
     <button type="submit">Kayıt Ol</button>
@@ -195,6 +210,21 @@
         </div>
     </div>
 </form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var msg = document.getElementById("formMessage");
+        if (msg) {
+            setTimeout(function () {
+                msg.style.transition = "opacity 0.5s ease";
+                msg.style.opacity = "0";
+                setTimeout(function () {
+                    msg.remove();
+                }, 500);
+            }, 2000);
+        }
+    });
+</script>
 
 <script src="https://www.google.com/recaptcha/api.js?render=@Configuration["Recaptcha:SiteKey"]"></script>
 <script>
