@@ -161,14 +161,13 @@ namespace Flappr.Controllers
             if (user != null)
             {
                 HttpContext.Session.SetInt32("userId", user.Id);
-                HttpContext.Session.SetString("Nickname", user.Nickname);
-                ViewData["Nickname"] = HttpContext.Session.GetString("Nickname");
+                HttpContext.Session.SetString("Mail", user.Mail);
 
-                return View("Index");
+                return RedirectToAction("Index", "Home");
             }
 
-            TempData["AuthError"] = "Kullanýcý adý veya þifre hatalý";
-            return View("Login");
+            TempData["AuthError"] = "E-Posta veya þifre hatalý";
+            return RedirectToAction("Login");
         }
 
         private async Task<bool> VerifyRecaptchaLogin(string token)
@@ -371,7 +370,7 @@ namespace Flappr.Controllers
         public IActionResult Cikis()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Index");
+            return RedirectToAction("Login");
         }
 
         [HttpPost]
