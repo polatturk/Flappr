@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 using Flappr.Dto;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Flappr.Filters;
 
 namespace Flappr.Controllers
 {
@@ -83,24 +85,15 @@ namespace Flappr.Controllers
             return token;
         }
 
-        public User GetMail(string email)
-        {
-            return _context.Users
-               .FirstOrDefault(u => u.Mail == email);
-        }
-        public int? KullaniciGetir(string nickname)
-        {
-            var user = _context.Users
-                .FirstOrDefault(u => u.Nickname == nickname);
-
-            return user?.Id;
-        }
+        public User GetMail(string email){return _context.Users.FirstOrDefault(u => u.Mail == email);}
+        public int? KullaniciGetir(string nickname){var user = _context.Users.FirstOrDefault(u => u.Nickname == nickname);return user?.Id;}
 
         public bool FlapVarMi(int id)
         {
             return _context.Flaps.Any(f => f.Id == id);
         }
 
+        [CustomAuthorize]
         public IActionResult Index()
         {
             ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
@@ -123,17 +116,13 @@ namespace Flappr.Controllers
             return View(flaps);
         }
 
+        [AllowAnonymous]
         [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
+        public IActionResult Login(){return View();}
 
+        [AllowAnonymous]
         [HttpGet]
-        public IActionResult Register()
-        {
-            return View(new RegisterRequest());
-        }
+        public IActionResult Register(){return View(new RegisterRequest());}
 
         [HttpPost]
         [Route("/Login")]
@@ -303,6 +292,7 @@ namespace Flappr.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GoogleLogin()
         {
@@ -311,6 +301,7 @@ namespace Flappr.Controllers
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GoogleResponse()
         {
@@ -330,7 +321,7 @@ namespace Flappr.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GithubLogin()
         {
@@ -339,6 +330,7 @@ namespace Flappr.Controllers
             return Challenge(properties, "GitHub");
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GithubResponse()
         {
@@ -430,13 +422,14 @@ namespace Flappr.Controllers
             return View(detailFlap);
         }
 
-        [Route("/profil/{nickname}")]
-        public async Task<IActionResult> Profile(string nickname)
+        [CustomAuthorize]
+        [Route("/profil/{mail}")]
+        public async Task<IActionResult> Profile(string mail)
         {
-            ViewData["nickname"] = HttpContext.Session.GetString("nickname");
+            ViewData["mail"] = HttpContext.Session.GetString("mail");
 
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Nickname == nickname);
+                .FirstOrDefaultAsync(u => u.Mail == mail);
 
             if (user == null)
             {
@@ -561,6 +554,7 @@ namespace Flappr.Controllers
             return RedirectToAction("Profile", new { nickname });
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("/sifre-unuttum")]
         public IActionResult SifreUnuttum()
@@ -611,11 +605,9 @@ namespace Flappr.Controllers
             return View("Message");
         }
 
+        [CustomAuthorize]
         [HttpGet]
-        public IActionResult Search()
-        {
-            return View(new SearchRequest());
-        }
+        public IActionResult Search(){return View(new SearchRequest());}
 
         [HttpPost]
         public async Task<IActionResult> Search(SearchRequest model)
@@ -646,5 +638,6 @@ namespace Flappr.Controllers
 
             return View(response);
         }
+
     }
 }
