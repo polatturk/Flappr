@@ -1,4 +1,6 @@
-﻿﻿@using System.Globalization
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+﻿@using System.Globalization
 @model List<Flap>
 
 @section Styles {
@@ -34,6 +36,164 @@
     </script>
 } *@
 
+<style>
+
+    /* Sidebar genel stil */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh; /* tam ekran yüksekliği */
+        width: 220px;
+        background-color: rgba(0, 0, 0, 0.85);
+        display: flex;
+        flex-direction: column;
+        padding: 20px 15px;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.3);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+        /* Logo */
+        .sidebar .logo img {
+            width: 150px;
+            height: auto;
+            margin-bottom: 30px;
+            user-select: none;
+        }
+
+        /* Menü */
+        .sidebar .menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1; /* boşluğu kaplar, user-info’yu alta iter */
+        }
+
+            .sidebar .menu li {
+                margin-bottom: 15px;
+            }
+
+            .sidebar .menu a {
+                color: #eee;
+                text-decoration: none;
+                font-size: 1rem;
+                font-weight: 600;
+                padding: 10px 14px;
+                border-radius: 12px;
+                display: block;
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
+            }
+
+                .sidebar .menu a:hover {
+                    background-color: #4da3ff;
+                    color: #fff;
+                    border-color: #4da3ff;
+                }
+
+            /* Profil linki özel */
+            .sidebar .menu .profile-link a {
+                font-weight: 700;
+                color: #1e80e0;
+            }
+
+        /* Kullanıcı info */
+        .sidebar .user-info {
+            margin-top: auto; /* en alta kayar */
+            font-size: 0.9rem;
+            color: #ccc;
+            font-weight: 600;
+        }
+
+            .sidebar .user-info span {
+                color: #4da3ff;
+                display: block;
+                margin-bottom: 8px;
+            }
+
+            .sidebar .user-info a {
+                color: #ff6b6b;
+                font-weight: 700;
+                text-decoration: none;
+                padding: 6px 14px;
+                border-radius: 12px;
+                border: 2px solid transparent;
+                transition: all 0.3s ease;
+                display: inline-block;
+            }
+
+                .sidebar .user-info a:hover {
+                    background-color: #ff4c4c;
+                    border-color: #ff4c4c;
+                    color: #fff;
+                }
+
+    /* Mobil görünüm */
+    @@media (max-width: 576px) {
+        .sidebar {
+            width: 180px;
+            padding: 15px 10px;
+        }
+
+            .sidebar .menu a {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+            }
+    }
+
+</style>
+
+<div class="sidebar">
+    <!-- Logo -->
+    <a class="logo" asp-area="" asp-controller="Home" asp-action="Index">
+        <img src="/Img/Flappr-logo.png" alt="Flappr Logo" />
+    </a>
+
+    <!-- Menü -->
+    <ul class="menu">
+        <li>
+            <a asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="fas fa-home"></i> Anasayfa
+            </a>
+        </li>
+        <li>
+            <a asp-area="" asp-controller="Home" asp-action="/profil/@ViewData["Mail"]">
+                <i class="fas fa-user"></i> Profil
+            </a>
+        </li>
+        <li>
+            <a asp-area="" asp-controller="Home" asp-action="Search">
+                <i class="fas fa-search"></i> Ara
+            </a>
+        </li>
+        <li>
+            <a asp-area="" asp-controller="Home" asp-action="Search">
+                <i class="fas fa-compass"></i> Keşfet
+            </a>
+        </li>
+        <li>
+            <a asp-area="" asp-controller="Home" asp-action="Search">
+                <i class="fas fa-bell"></i> Bildirimler
+            </a>
+        </li>
+        <li>
+            <a asp-area="" asp-controller="Home" asp-action="Search">
+                <i class="fas fa-envelope"></i> Mesajlar
+            </a>
+        </li>
+        <li>
+            <a asp-area="" asp-controller="Home" asp-action="Search">
+                <i class="fas fa-cog"></i> Ayarlar
+            </a>
+        </li>
+    </ul>
+
+    <div class="user-info">
+        <a href="/home/cikis">
+            <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+        </a>
+    </div>
+</div>
 @if (ViewData["nickname"] != null)
 {
     <div class="container mt-5">
