@@ -7,11 +7,16 @@ namespace Flappr.Filters
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var user = context.HttpContext.User;
-            if (user == null || !user.Identity.IsAuthenticated)
+            var httpContext = context.HttpContext;
+
+            var userId = httpContext.Session.GetInt32("userId");
+            var mail = httpContext.Session.GetString("Mail");
+
+            if (userId == null || string.IsNullOrEmpty(mail))
             {
                 context.Result = new RedirectToActionResult("ErrorMessages", "Interaction", null);
             }
         }
     }
+
 }
