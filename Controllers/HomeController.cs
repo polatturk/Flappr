@@ -93,7 +93,7 @@ namespace Flappr.Controllers
             return _context.Flaps.Any(f => f.Id == id);
         }
 
-        [CustomAuthorize]
+        //[CustomAuthorize]
         public IActionResult Index()
         {
             ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
@@ -359,11 +359,19 @@ namespace Flappr.Controllers
             return RedirectToAction("Index");
         }
 
-
-        public IActionResult Cikis()
+        [HttpGet]
+        public async Task<IActionResult> Cikis()
         {
+            //  Session temizle
             HttpContext.Session.Clear();
-            return RedirectToAction("Login");
+
+            //  Authentication cookie temizle (kullanýcý login ise)
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            //  ClaimsPrincipal’ý sýfýrla (opsiyonel, ekstra güvenlik)
+            HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
+
+            return RedirectToAction("Login", "Home");
         }
 
         [HttpPost]
@@ -425,19 +433,11 @@ namespace Flappr.Controllers
         }
 
         [CustomAuthorize]
-        [Route("/profil/{mail}")]
-        public async Task<IActionResult> Profile(string mail)
+        [Route("/Profile/{UserNickname}")]
+        public async Task<IActionResult> Profile(string UserNickname)
         {
-            ViewData["mail"] = HttpContext.Session.GetString("mail");
-
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Mail == mail);
-
-            if (user == null)
-            {
-                ViewBag.Message = "Böyle bir kullanýcý yok!";
-                return View("Message");
-            }
+        .FirstOrDefaultAsync(u => u.Username == UserNickname || u.Nickname == UserNickname);
 
             var userDto = new UserDto
             {
@@ -466,7 +466,7 @@ namespace Flappr.Controllers
                 {
                     Id = f.Id,
                     Detail = f.Detail,
-                    Username = f.User.Username,  
+                    Username = f.User.Username,
                     Nickname = f.User.Nickname,
                     ImgUrl = f.User.ImgUrl,
                     Visibility = f.Visibility,
@@ -483,6 +483,8 @@ namespace Flappr.Controllers
 
             return View(profilDto);
         }
+
+
 
         [HttpPost]
         [Route("/addyorum")]
