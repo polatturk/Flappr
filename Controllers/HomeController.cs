@@ -362,16 +362,11 @@ namespace Flappr.Controllers
         [HttpGet]
         public async Task<IActionResult> Cikis()
         {
-            //  Session temizle
             HttpContext.Session.Clear();
 
-            //  Authentication cookie temizle (kullanýcý login ise)
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            //  ClaimsPrincipal’ý sýfýrla (opsiyonel, ekstra güvenlik)
-            HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
-
-            return RedirectToAction("Login", "Home");
+            return Redirect("/Home/Login");
         }
 
         [HttpPost]
@@ -433,9 +428,18 @@ namespace Flappr.Controllers
         }
 
         [CustomAuthorize]
-        [Route("/Profile/{UserNickname}")]
-        public async Task<IActionResult> Profile(string UserNickname)
+        [Route("/Profile/{UserNickname?}")]
+        public async Task<IActionResult> Profile(string? UserNickname)
         {
+
+            if (string.IsNullOrEmpty(UserNickname))
+            {
+                var userId = HttpContext.Session.GetInt32("userId");
+                if (userId == null) return RedirectToAction("Login");
+
+                UserNickname = (await _context.Users.FindAsync(userId))?.Username;
+            }
+
             var user = await _context.Users
         .FirstOrDefaultAsync(u => u.Username == UserNickname || u.Nickname == UserNickname);
 
