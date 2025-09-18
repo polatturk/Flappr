@@ -1,21 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Flappr.Models
 {
     public class Flap
     {
         public int Id { get; set; }
-        public string? Nickname { get; set; }
-        public string? ImgUrl { get; set; }
         [Required]
-        public string? Detail { get; set; }
-        public int UserId { get; set; }
-        public string? Username { get; set; }
+        public string Detail { get; set; }
         public DateTime CreatedDate { get; set; }
         [Required]
         public bool Visibility { get; set; }
         public int YorumSayisi { get; set; }
+        [ForeignKey("User")]
+        public int UserId { get; set; }
+        public User User { get; set; }
     }
+
 
     public class FlapDetail
     {

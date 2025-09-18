@@ -100,15 +100,16 @@ namespace Flappr.Controllers
 
             var flaps = _context.Flaps
                 .Where(f => f.Visibility)
-                .Select(f => new Flap
+                .Include(f => f.User)
+                .Select(f => new FlapRequest
                 {
                     Id = f.Id,
                     Detail = f.Detail,
-                    Username = f.Username,
                     CreatedDate = f.CreatedDate,
-                    Nickname = f.Nickname,
-                    ImgUrl = f.ImgUrl,
-                    YorumSayisi = _context.Comments.Count(c => c.FlapId == f.Id)
+                    UserNickname = f.User.Nickname,
+                    UserUsername = f.User.Username,
+                    UserImgUrl = f.User.ImgUrl,
+                    CommentsCount = _context.Comments.Count(c => c.FlapId == f.Id)
                 })
                 .OrderByDescending(f => f.CreatedDate)
                 .ToList();
@@ -367,29 +368,31 @@ namespace Flappr.Controllers
 
         [HttpPost]
         [Route("/AddFlap")]
-        public IActionResult AddFlap(Flap model)
+        public IActionResult AddFlap(AddFlapDto dto)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) return View("Index");
+
+            var userId = HttpContext.Session.GetInt32("userId");
+
+            var flap = new Flap
             {
-                ViewBag.Message = "Eksik veya hatalý iþlem yaptýn.";
-                return View("Message");
-            }
+                Detail = dto.Detail,
+                Visibility = dto.Visibility,
+                UserId = userId.Value,
+                CreatedDate = DateTime.Now
+            };
 
-            model.CreatedDate = DateTime.Now;
-            model.UserId = (int)HttpContext.Session.GetInt32("userId");
-
-            _context.Flaps.Add(model);
+            _context.Flaps.Add(flap);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
 
-
         [Route("/Flap/{Id}")]
         public IActionResult Flap(int Id)
         {
             var flapEntity = _context.Flaps
-                .Include(f => f.Username)
+                .Include(f => f.User) 
                 .FirstOrDefault(f => f.Id == Id);
 
             if (flapEntity == null)
@@ -399,14 +402,13 @@ namespace Flappr.Controllers
             }
 
             ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
-
             ViewBag.AddYorum = CheckLogin();
 
             var detailFlap = new FlapRequest
             {
                 Flap = flapEntity,
                 Comments = _context.Comments
-                    .Include(c => c.Username)
+                    .Include(c => c.User) 
                     .Where(c => c.FlapId == Id)
                     .OrderByDescending(c => c.CreatedTime)
                     .ToList()
@@ -458,17 +460,18 @@ namespace Flappr.Controllers
             }
 
             var flapDtos = await flapsQuery
+                .Include(f => f.User)
                 .OrderByDescending(f => f.CreatedDate)
                 .Select(f => new FlapDto
                 {
                     Id = f.Id,
                     Detail = f.Detail,
-                    Username = f.Username,
-                    Nickname = f.Nickname,
-                    ImgUrl = f.ImgUrl,
+                    Username = f.User.Username,  
+                    Nickname = f.User.Nickname,
+                    ImgUrl = f.User.ImgUrl,
                     Visibility = f.Visibility,
                     CreatedDate = f.CreatedDate,
-                    YorumSayisi = f.YorumSayisi
+                    CommentsCount = f.YorumSayisi
                 })
                 .ToListAsync();
 

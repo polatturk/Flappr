@@ -15,5 +15,15 @@ namespace Flappr.Data
         {
 
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Flap>()
+                .HasOne(f => f.User) // Flap’ın 1 kullanıcısı var
+                .WithMany(u => u.Flaps) // Kullanıcının birçok flap’ı var
+                .HasForeignKey(f => f.UserId) // FK alanı
+                .OnDelete(DeleteBehavior.Cascade); // User silinirse flaplar da silinsin
+        }
     }
 }

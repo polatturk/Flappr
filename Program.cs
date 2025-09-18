@@ -88,9 +88,10 @@ namespace Flappr
 
             app.UseRouting();
 
+            app.UseSession();
+
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseSession();
 
             app.MapControllerRoute(
                 name: "default",

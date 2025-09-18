@@ -16,7 +16,7 @@ namespace Flappr.Dto
         public string? ImgUrl { get; set; }
         public bool Visibility { get; set; }
         public DateTime CreatedDate { get; set; }
-        public int YorumSayisi { get; set; }
+        public int CommentsCount { get; set; }
     }
 
     public class UserDto

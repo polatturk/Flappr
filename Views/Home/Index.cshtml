@@ -1,13 +1,12 @@
 ﻿@using System.Globalization
-@model List<Flap>
-
+@using Flappr.Dto
+@model List<FlapRequest>
 @section Styles {
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 }
 
 <style>
-    /* Sidebar */
     .sidebar {
         position: fixed;
         top: 0;
@@ -94,22 +93,82 @@
         color: #fff;
     }
 
-    /* Ana içerik */
     .main-content {
-        margin-left: 220px; /* Sidebar genişliği + boşluk */
+        margin-left: 220px; 
         padding: 40px 20px;
         background: linear-gradient(to bottom right, #f4faff, #e1efff);
         min-height: 100vh;
     }
 
     .flap-form {
-        background-color: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        background: #fff;
+        padding: 20px 25px;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         margin-bottom: 30px;
         max-width: 700px;
+        transition: box-shadow 0.3s ease;
     }
+
+        .flap-form:hover {
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+
+    .flap-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        margin-right: 12px;
+        object-fit: cover;
+    }
+
+    .flap-textarea {
+        border: none;
+        resize: none;
+        font-size: 15px;
+        padding: 12px;
+        border-radius: 12px;
+        background: #f9f9f9;
+        transition: background 0.2s ease;
+    }
+
+        .flap-textarea:focus {
+            background: #fff;
+            outline: none;
+            box-shadow: 0 0 0 2px #4a90e2;
+        }
+
+    .flap-select {
+        border-radius: 10px;
+        font-size: 14px;
+        padding: 6px 30px 6px 10px; /* sağa boşluk bırak */
+        background: #f9f9f9 url("data:image/svg+xml;utf8,<svg fill='gray' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 10px center;
+        background-size: 16px;
+        border: 1px solid #ddd;
+        appearance: none; /* tarayıcı default oku gizle */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+    .flap-label {
+        font-size: 14px;
+        color: #555;
+    }
+
+    .flap-btn {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        border: none;
+        padding: 8px 18px;
+        border-radius: 25px;
+        color: #fff;
+        font-weight: 600;
+        transition: transform 0.2s ease, background 0.3s ease;
+    }
+
+        .flap-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #20c997, #28a745);
+        }
 
     .flap-item {
         background-color: white;
@@ -159,51 +218,52 @@
     </div>
 </div>
 
-<!-- Ana içerik -->
 <div class="main-content">
-    <!-- Flap Gönderme Formu -->
     <div class="flap-form">
         <form action="/AddFlap" method="post" autocomplete="off">
-            <div class="d-flex align-items-center mb-3">
-                <select class="form-select w-auto" id="visibilitySelect" name="visibility">
-                    <option value="true">Public</option>
-                    <option value="false">Private</option>
-                </select>
+            <div class="d-flex align-items-start mb-3">
+                <img src="/images/avatar.png" alt="User Avatar" class="flap-avatar" />
+                <textarea name="detail" class="form-control flap-textarea" id="FlapContent" rows="3" placeholder="Neler oluyor?"></textarea>
             </div>
-            <div class="form-group">
-                <textarea name="detail" class="form-control" id="FlapContent" rows="3" placeholder="Neler oluyor?"></textarea>
-            </div>
-            <br />
-            <div class="d-flex justify-content-between mb-3">
-                <button type="submit" class="btn btn-success">Flapla</button>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-2 align-items-center">
+                    <select class="form-select flap-select" id="visibilitySelect" name="visibility">
+                        <option value="true">🌍 Herkese Açık</option>
+                        <option value="false">🔒 Gizli</option>
+                    </select>
+                    <label for="visibilitySelect" class="flap-label">Görünürlük</label>
+                </div>
+
+                <button type="submit" class="btn flap-btn">Flapla 🚀</button>
             </div>
         </form>
     </div>
 
     <!-- Flaplar -->
-    @foreach (var item in Model)
+    @foreach (var flap in Model)
     {
         <div class="flap-item">
             <div class="flex items-start">
-                <a href="/profil/@item.Nickname">
+                <a href="/profil/@flap.UserNickname">
                     <img class="w-12 h-12 rounded-full" src="/uploads/images.jpg" alt="Profile Photo">
                 </a>
                 <div class="ml-4">
                     <div class="flex items-center">
                         <h2 class="font-bold text-lg">
-                            <a href="/profil/@item.Nickname">@item.Username</a>
+                            <a href="/profil/@flap.UserNickname">@flap.UserUsername</a>
                         </h2>
-                        <span class="ml-2 text-gray-500">@@@item.Nickname</span>
+                        <span class="ml-2 text-gray-500">@@@flap.UserNickname</span>
                     </div>
                     <div class="text-gray-500 text-sm">Takipçi: 1234 | Takip Edilen: 567</div>
-                    <p class="mt-2 text-gray-800">@item.Detail</p>
-                    <div class="text-gray-500 text-sm mt-2">@item.CreatedDate.ToString("g", CultureInfo.GetCultureInfo("tr"))</div>
+                    <p class="mt-2 text-gray-800">@flap.Detail</p>
+                    <div class="text-gray-500 text-sm mt-2">@flap.CreatedDate.ToString("g", CultureInfo.GetCultureInfo("tr"))</div>
                     <div class="d-flex align-items-center mt-4">
                         <div class="text-blue-500 hover:text-blue-600 ml-4">
-                            <a href="/Flap/@item.Id">Gönderiye Git</a>
+                            <a href="/Flap/@flap.Id">Gönderiye Git</a>
                         </div>
                         <div class="ml-4">
-                            Yorum Sayısı: @item.YorumSayisi
+                            Yorum Sayısı: @flap.CommentsCount
                         </div>
                     </div>
                 </div>

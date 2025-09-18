@@ -24,6 +24,8 @@ namespace Flappr.Models
         public DateTime Updated { get; set; }
 
         public string? ImgUrl { get; set; }
+        public ICollection<Flap> Flaps { get; set; }
+
     }
 
 }
