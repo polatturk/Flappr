@@ -93,7 +93,7 @@ namespace Flappr.Controllers
             return _context.Flaps.Any(f => f.Id == id);
         }
 
-        //[CustomAuthorize]
+        [CustomAuthorize]
         public IActionResult Index()
         {
             ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
@@ -132,10 +132,9 @@ namespace Flappr.Controllers
             if (!ModelState.IsValid)
             {
                 TempData["AuthError"] = "Form eksik.";
-                return RedirectToAction("Login");
+                return View("Login");
             }
 
-            // reCAPTCHA doðrulamasý
             var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
             if (!recaptchaValid)
             {
@@ -335,7 +334,7 @@ namespace Flappr.Controllers
         [HttpGet]
         public async Task<IActionResult> GithubResponse()
         {
-            var result = await HttpContext.AuthenticateAsync();
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             if (!result.Succeeded)
             {
                 return RedirectToAction("Login");
@@ -563,13 +562,9 @@ namespace Flappr.Controllers
             return RedirectToAction("Profile", new { nickname });
         }
 
-        [AllowAnonymous]
-        [HttpGet]
+        [AllowAnonymous][HttpGet]
         [Route("/sifre-unuttum")]
-        public IActionResult SifreUnuttum()
-        {
-            return View();
-        }
+        public IActionResult SifreUnuttum(){return View();}
 
         [HttpPost]
         [Route("/SifreUnuttum")]
@@ -614,8 +609,7 @@ namespace Flappr.Controllers
             return View("Message");
         }
 
-        [CustomAuthorize]
-        [HttpGet]
+        [CustomAuthorize][HttpGet]
         public IActionResult Search(){return View(new SearchRequest());}
 
         [HttpPost]

@@ -17,6 +17,8 @@
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
+    
+
     .register-form {
         background: rgba(0, 0, 0, 0.5);
         border-radius: 20px;
@@ -176,18 +178,23 @@
     }
 
     <p>
-        <input required type="email" asp-for="Mail" placeholder="E-Posta Adresiniz" value="@Model.Mail" />
+        <label for="email" class="form-label">E-Posta Adresiniz</label>
+        <input required type="email" asp-for="Mail" placeholder="örnek@gmail.com" value="@Model.Mail" />
     </p>
     <p>
+        <label for="text" class="form-label">Kullanıcı Adı Giriniz</label>
         <input required type="text" asp-for="Nickname" placeholder="Kullanıcı Adı" value="@Model.Nickname" />
     </p>
     <p>
-        <input required type="text" asp-for="Username" placeholder="İsim Soyisim" value="@Model.Username" />
+        <label for="text" class="form-label">Ad Soyad Giriniz </label>
+        <input required type="text" asp-for="Username" placeholder="Ad Soyad" value="@Model.Username" />
     </p>
     <p>
+        <label for="password" class="form-label">Şifrenizi Belirleyiniz</label>
         <input required type="password" asp-for="Password" placeholder="Şifre" />
     </p>
     <p>
+        <label for="password" class="form-label">Şifreyi Tekrar Giriniz</label>
         <input required type="password" asp-for="Pwconfirmend" placeholder="Tekrar Şifre Giriniz" />
     </p>
 
@@ -208,6 +215,12 @@
             <i class="fab fa-twitter me-2"></i> X (Twitter)
             </a> *@
         </div>
+    </div>
+    <hr />
+    <div class="auth-links-button-group mt-4 d-flex justify-content-center gap-3 flex-wrap">
+        <a href="/home/login" class="btn auth-btn">
+            <i class="fa-solid fa-user-plus me-2"></i> Giriş Yap
+        </a>
     </div>
 </form>
 
