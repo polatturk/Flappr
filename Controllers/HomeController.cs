@@ -311,12 +311,21 @@ namespace Flappr.Controllers
                 return RedirectToAction("Login");
             }
 
-            var claims = result.Principal.Identities.FirstOrDefault()?.Claims;
-            var email = claims?.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email)?.Value;
-            var name = claims?.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value;
+            var mail = result.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.Email);
 
+            if (mail == null)
+            {
+                return RedirectToAction("Login");
+            }
 
-            HttpContext.Session.SetString("nickname", name ?? email);
+            var userExists = _context.Users.Any(u => u.Mail == mail);
+            if (userExists)
+            {
+                TempData["AuthError"] = "E-Posta veya þifre hatalý";
+                return View();
+            }
+
+            HttpContext.Session.SetString("nickname", mail);
 
             return RedirectToAction("Index", "Home");
         }
