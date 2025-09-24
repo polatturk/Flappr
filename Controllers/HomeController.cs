@@ -93,9 +93,9 @@ namespace Flappr.Controllers
             return _context.Flaps.Any(f => f.Id == id);
         }
 
-        [CustomAuthorize]
-        public IActionResult Index()
-        {
+            [CustomAuthorize]
+            public IActionResult Index()
+            {
             ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
 
             var flaps = _context.Flaps
@@ -303,29 +303,19 @@ namespace Flappr.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GoogleResponse()
+        public async Task<IActionResult> GoogleResponse(LoginRequest model)
         {
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            if (!result.Succeeded)
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Mail.Trim().ToLower() == model.Mail.Trim().ToLower());
+
+            if (user == null)
             {
-                return RedirectToAction("Login");
+                TempData["AuthError"] = "Böyle bir hesap bulunamadý! Lütfen kayýt olun veya farklý bir hesapla giriþ yapýn.";
+                return View("Login");
             }
 
-            var mail = result.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.Email);
-
-            if (mail == null)
-            {
-                return RedirectToAction("Login");
-            }
-
-            var userExists = _context.Users.Any(u => u.Mail == mail);
-            if (userExists)
-            {
-                TempData["AuthError"] = "E-Posta veya þifre hatalý";
-                return View();
-            }
-
-            HttpContext.Session.SetString("nickname", mail);
+            HttpContext.Session.SetInt32("userId", user.Id);
+            HttpContext.Session.SetString("Mail", user.Mail);
 
             return RedirectToAction("Index", "Home");
         }
