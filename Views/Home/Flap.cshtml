@@ -1,6 +1,7 @@
 ﻿@using System.Globalization
-@* @model DetailFlap
- *@
+
+@model Flappr.Dto.FlapRequest
+
 @section Styles {
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 }
@@ -9,15 +10,15 @@
     <div class="max-w-lg mx-auto mt-10">
         <div class="bg-blue-50 p-4 rounded-lg shadow-md border border-blue-300">
             <div class="flex items-start">
-                <a href="/profil/@Model.Flap.Nickname">
+                <a href="/profil/@Model.UserNickname">
                     <img class="w-12 h-12 rounded-full" src="/uploads/images.jpg" alt="Profil">
                 </a>
                 <div class="ml-4 w-full">
                     <div class="flex items-center">
-                        <a href="/profil/@Model.Flap.Nickname">
-                            <h3 class="font-bold text-blue-700">@Model.Flap.Username</h3>
+                        <a href="/profil/@Model.UserNickname">
+                            <h3 class="font-bold text-blue-700">@Model.UserUsername</h3>
                         </a>
-                        <span class="text-blue-500 text-sm ml-2">@@@Model.Flap.Nickname</span>
+                        <span class="text-blue-500 text-sm ml-2">@Model.UserNickname</span>
                         <span class="text-blue-500 text-sm ml-2">•</span>
                         <span class="text-blue-500 text-sm ml-2">@Model.Flap.CreatedDate.ToString("g", CultureInfo.GetCultureInfo("tr"))</span>
                     </div>
@@ -41,7 +42,6 @@
                 </form>
             </div>
         }
-
 
         @foreach (var item in Model.Comments)
         {

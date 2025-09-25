@@ -93,7 +93,7 @@ namespace Flappr.Controllers
             return _context.Flaps.Any(f => f.Id == id);
         }
 
-            [CustomAuthorize]
+            //[CustomAuthorize]
             public IActionResult Index()
             {
             ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
@@ -360,7 +360,7 @@ namespace Flappr.Controllers
         public IActionResult Flap(int Id)
         {
             var flapEntity = _context.Flaps
-                .Include(f => f.User) 
+                .Include(f => f.User)
                 .FirstOrDefault(f => f.Id == Id);
 
             if (flapEntity == null)
@@ -374,12 +374,25 @@ namespace Flappr.Controllers
 
             var detailFlap = new FlapRequest
             {
+                Id = flapEntity.Id,
+                Detail = flapEntity.Detail,
+                CreatedDate = flapEntity.CreatedDate,
+                UserUsername = flapEntity.User.Username,
+                UserNickname = flapEntity.User.Nickname,
+                //UserImgUrl = flapEntity.User.ProfileImageUrl,
                 Flap = flapEntity,
-                Comments = _context.Comments
-                    .Include(c => c.User) 
-                    .Where(c => c.FlapId == Id)
-                    .OrderByDescending(c => c.CreatedTime)
-                    .ToList()
+                //Comments = flapEntity.
+                //    .OrderByDescending(c => c.CreatedTime)
+                //    .Select(c => new Comment
+                //    {
+                //        Id = c.Id,
+                //        Summary = c.Summary,
+                //        CreatedTime = c.CreatedTime,
+                //        UserId = c.UserId,
+                //        Username = c.User.Username,
+                //        Nickname = c.User.Nickname,
+                //        ImgUrl = c.User.ProfileImageUrl
+                //    }).ToList()
             };
 
             if (flapEntity.UserId == HttpContext.Session.GetInt32("userId"))
