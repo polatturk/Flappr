@@ -303,10 +303,14 @@ namespace Flappr.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GoogleResponse(LoginRequest model)
+        public async Task<IActionResult> GoogleResponse()
         {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var emailClaim = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
+
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Mail.Trim().ToLower() == model.Mail.Trim().ToLower());
+           .FirstOrDefaultAsync(u => u.Mail.ToLower() == emailClaim.ToLower());
 
             if (user == null)
             {
@@ -318,43 +322,6 @@ namespace Flappr.Controllers
             HttpContext.Session.SetString("Mail", user.Mail);
 
             return RedirectToAction("Index", "Home");
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        public IActionResult GithubLogin()
-        {
-            var redirectUrl = Url.Action("GithubResponse", "Home");
-            var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
-            return Challenge(properties, "GitHub");
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        public async Task<IActionResult> GithubResponse()
-        {
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            if (!result.Succeeded)
-            {
-                return RedirectToAction("Login");
-            }
-
-            var claims = result.Principal.Identities
-                    .FirstOrDefault()?.Claims
-                    .ToDictionary(c => c.Type, c => c.Value);
-
-            if (claims.ContainsKey(ClaimTypes.Name))
-            {
-                HttpContext.Session.SetString("nickname", claims[ClaimTypes.Name]);
-                ViewData["Nickname"] = claims[ClaimTypes.Name];
-            }
-            else if (claims.ContainsKey("urn:github:login")) // fallback
-            {
-                HttpContext.Session.SetString("nickname", claims["urn:github:login"]);
-                ViewData["Nickname"] = claims["urn:github:login"];
-            }
-
-            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -485,8 +452,6 @@ namespace Flappr.Controllers
 
             return View(profilDto);
         }
-
-
 
         [HttpPost]
         [Route("/addyorum")]
@@ -640,6 +605,13 @@ namespace Flappr.Controllers
 
             return View(response);
         }
+
+        [AllowAnonymous]
+        public IActionResult Info(){return View();}
+        [AllowAnonymous]
+        public IActionResult Privacy() { return View(); }
+        [AllowAnonymous]
+        public IActionResult TermsofService() { return View(); }
 
     }
 }

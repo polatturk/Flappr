@@ -1,0 +1,179 @@
+﻿<div class="error-wrap">
+    <div class="card">
+        <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 8v4l3 3"></path>
+            </svg>
+        </div>
+
+        <h1>Uygulamamız Hakkında</h1>
+        <p class="muted">
+            Bu uygulama, kullanıcıların günlük işlerini kolaylaştırmak ve verimliliği artırmak için tasarlanmıştır.
+            Basit, hızlı ve güvenli bir deneyim sunar.
+        </p>
+
+        <div class="content">
+            <h2 style="text-align:left; margin-bottom:8px;">Özellikler:</h2>
+            <ul class="muted" style="text-align:left; padding-left:20px;">
+                <li>Kolay kullanım ve modern arayüz</li>
+                <li>Hızlı veri senkronizasyonu</li>
+                <li>Güvenli ve şifreli veri yönetimi</li>
+                <li>Platformlar arası uyumluluk</li>
+                <li>7/24 destek ve yardım merkezi</li>
+            </ul>
+        </div>
+
+        <div class="actions">
+            <a href="/home/index" class="btn primary">Ana Sayfaya Dön</a>
+        </div>
+
+        <p class="small-note">
+            Uygulamamız sürekli güncellenmektedir.
+        </p>
+    </div>
+</div>
+
+<style>
+    :root {
+        --bg1: linear-gradient(135deg, #0f172a 0%, #0b1220 40%, #071329 100%);
+        --card-bg: rgba(255,255,255,0.03);
+        --accent: #6EE7B7;
+        --danger: #FF6B6B;
+        --glass: rgba(255,255,255,0.06);
+        --text: #E6EEF8;
+        --muted: #B8C6D6;
+        --radius: 14px;
+        --shadow: 0 10px 30px rgba(2,6,23,0.6);
+        font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    /* page */
+    .error-wrap {
+        min-height: 75vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        color: var(--text);
+    }
+
+    /* card */
+    .card {
+        width: 100%;
+        max-width: 720px;
+        background: rgba(10, 10, 15, 0.95); /* 🔥 koyu siyah, hafif transparan */
+        border-radius: var(--radius);
+        padding: 36px;
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(255,255,255,0.04);
+        text-align: center;
+        backdrop-filter: blur(6px) saturate(120%);
+        -webkit-backdrop-filter: blur(6px) saturate(120%);
+        animation: floatIn 420ms cubic-bezier(.2,.9,.2,1);
+    }
+
+    @@keyframes floatIn {
+        from {
+            transform: translateY(10px) scale(.995);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+    }
+
+    .icon {
+        width: 84px;
+        height: 84px;
+        margin: 0 auto 18px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+        border-radius: 999px;
+        box-shadow: 0 6px 18px rgba(2,6,23,0.45);
+        border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    h1 {
+        font-size: 1.8rem;
+        margin: 6px 0 8px;
+        letter-spacing: -0.2px;
+    }
+
+    .muted {
+        color: var(--muted);
+        margin-bottom: 22px;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin: 18px 0 6px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+        border: 1px solid transparent;
+        min-width: 150px;
+    }
+
+        .btn.primary {
+            background: linear-gradient(90deg, #3B82F6 0%, #6EE7B7 100%);
+            color: #032047;
+            box-shadow: 0 8px 24px rgba(59,130,246,0.16);
+        }
+
+            .btn.primary:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 36px rgba(59,130,246,0.18);
+                opacity: 0.98;
+            }
+
+    .small-note {
+        color: rgba(184,198,214,0.72);
+        margin-top: 14px;
+        font-size: 0.88rem;
+    }
+
+        .small-note a {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+    /* responsive */
+    @@media (max-width: 520px) {
+        .card {
+            padding: 22px;
+            border-radius: 12px;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+        }
+
+        .btn {
+            min-width: 120px;
+            padding: 9px 14px;
+        }
+
+        .icon {
+            width: 68px;
+            height: 68px;
+            margin-bottom: 12px;
+        }
+    }
+</style>

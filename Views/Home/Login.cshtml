@@ -212,13 +212,6 @@
             </div>
         }
 
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div id="formMessage" class="alert alert-success text-center">
-                @TempData["SuccessMessage"]
-            </div>
-        }
-
         <form action="/Login" method="post" autocomplete="off">
             <div class="mb-3">
                 <label for="email" class="form-label">E-Posta Adresiniz</label>
@@ -228,7 +221,7 @@
                        name="Mail"
                        placeholder="örnek@gmail.com"
                        required
-                       autocomplete="email" />
+                       autocomplete="off" />
             </div>
 
             <div class="mb-3 position-relative">
@@ -248,20 +241,12 @@
             <button type="submit" class="btn btn-login w-100 text-white mt-3">Giriş Yap</button>
         </form>
 
-        @* twitter ile giris yap da eklenecek *@
-
         <div class="social-login mt-4">
-            <div class="social-login-title text-center mb-3">veya sosyal medya ile giriş yap</div>
+            <div class="social-login-title text-center mb-3">veya Google ile giriş yap</div>
             <div class="d-flex justify-content-center gap-3 flex-wrap">
                 <a href="/Home/GoogleLogin" title="Google ile Giriş" class="social-btn google">
                     <i class="fab fa-google me-2"></i> Google
                 </a>
-                <a href="/Home/GithubLogin" title="Github ile Giriş" class="social-btn github">
-                    <i class="fab fa-github me-2"></i> GitHub
-                </a>
-                @*  <a href="#" title="X ile Giriş" class="social-btn twitter">
-                <i class="fab fa-twitter me-2"></i> X (Twitter)
-                </a> *@
             </div>
         </div>
 

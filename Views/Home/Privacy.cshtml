@@ -1,0 +1,194 @@
+﻿<div class="error-wrap">
+    <div class="card">
+        <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0110 0v4"></path>
+            </svg>
+        </div>
+
+        <h1>Gizlilik Politikası</h1>
+        <p class="muted">
+            Gizliliğiniz bizim için önemlidir. Bu Gizlilik Politikası, bilgilerinizi nasıl topladığımızı, kullandığımızı ve koruduğumuzu açıklar.
+        </p>
+
+        <div class="content">
+            <h2 style="text-align:left; margin-bottom:8px;">1. Topladığımız Bilgiler</h2>
+            <p class="muted" style="text-align:left;">
+                Hizmetlerimizle etkileşiminiz sırasında adınız, e-posta adresiniz ve kullanım verileri gibi kişisel bilgileri toplayabiliriz.
+            </p>
+
+            <h2 style="text-align:left; margin-bottom:8px;">2. Bilgilerinizi Nasıl Kullanıyoruz</h2>
+            <p class="muted" style="text-align:left;">
+                Bilgileriniz hizmetlerimizi geliştirmek, sizinle iletişim kurmak ve yasal yükümlülüklere uymak için kullanılır.
+            </p>
+
+            <h2 style="text-align:left; margin-bottom:8px;">3. Bilgilerinizi Paylaşma</h2>
+            <p class="muted" style="text-align:left;">
+                Kişisel bilgilerinizi satmayız. Ancak güvenilir iş ortaklarımızla veya yasal zorunluluklar için paylaşabiliriz.
+            </p>
+
+            <h2 style="text-align:left; margin-bottom:8px;">4. Çerezler</h2>
+            <p class="muted" style="text-align:left;">
+                Web sitemizde deneyiminizi iyileştirmek ve trafik analizleri yapmak için çerezler kullanıyoruz.
+            </p>
+
+            <h2 style="text-align:left; margin-bottom:8px;">5. Bize Ulaşın</h2>
+            <p class="muted" style="text-align:left;">
+                Bu Gizlilik Politikası ile ilgili sorularınız için lütfen <a href="" style="color: var(--accent);">İletişim</a> adresinden bizimle iletişime geçin.
+            </p>
+        </div>
+
+        <div class="actions">
+            <a href="/home/index" class="btn primary">Ana Sayfaya Dön</a>
+        </div>
+
+        <p class="small-note">
+            Son güncelleme: Eylül 2025
+        </p>
+    </div>
+</div>
+
+<style>
+    :root {
+        --bg1: linear-gradient(135deg, #0f172a 0%, #0b1220 40%, #071329 100%);
+        --card-bg: rgba(255,255,255,0.03);
+        --accent: #6EE7B7;
+        --danger: #FF6B6B;
+        --glass: rgba(255,255,255,0.06);
+        --text: #E6EEF8;
+        --muted: #B8C6D6;
+        --radius: 14px;
+        --shadow: 0 10px 30px rgba(2,6,23,0.6);
+        font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    /* page */
+    .error-wrap {
+        min-height: 75vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        color: var(--text);
+    }
+
+    /* card */
+    .card {
+        width: 100%;
+        max-width: 720px;
+        background: rgba(10, 10, 15, 0.95); /* 🔥 koyu siyah, hafif transparan */
+        border-radius: var(--radius);
+        padding: 36px;
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(255,255,255,0.04);
+        text-align: center;
+        backdrop-filter: blur(6px) saturate(120%);
+        -webkit-backdrop-filter: blur(6px) saturate(120%);
+        animation: floatIn 420ms cubic-bezier(.2,.9,.2,1);
+    }
+
+    @@keyframes floatIn {
+        from {
+            transform: translateY(10px) scale(.995);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+    }
+
+    .icon {
+        width: 84px;
+        height: 84px;
+        margin: 0 auto 18px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+        border-radius: 999px;
+        box-shadow: 0 6px 18px rgba(2,6,23,0.45);
+        border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    h1 {
+        font-size: 1.8rem;
+        margin: 6px 0 8px;
+        letter-spacing: -0.2px;
+    }
+
+    .muted {
+        color: var(--muted);
+        margin-bottom: 22px;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin: 18px 0 6px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+        border: 1px solid transparent;
+        min-width: 150px;
+    }
+
+        .btn.primary {
+            background: linear-gradient(90deg, #3B82F6 0%, #6EE7B7 100%);
+            color: #032047;
+            box-shadow: 0 8px 24px rgba(59,130,246,0.16);
+        }
+
+            .btn.primary:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 36px rgba(59,130,246,0.18);
+                opacity: 0.98;
+            }
+
+    .small-note {
+        color: rgba(184,198,214,0.72);
+        margin-top: 14px;
+        font-size: 0.88rem;
+    }
+
+        .small-note a {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+    /* responsive */
+    @@media (max-width: 520px) {
+        .card {
+            padding: 22px;
+            border-radius: 12px;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+        }
+
+        .btn {
+            min-width: 120px;
+            padding: 9px 14px;
+        }
+
+        .icon {
+            width: 68px;
+            height: 68px;
+            margin-bottom: 12px;
+        }
+    }
+</style>

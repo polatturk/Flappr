@@ -170,13 +170,6 @@
         </div>
     }
 
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div id="formMessage" class="alert alert-success text-center">
-            @TempData["SuccessMessage"]
-        </div>
-    }
-
     <p>
         <input required type="email" asp-for="Mail" placeholder="örnek@gmail.com" value="@Model.Mail" />
     </p>
@@ -196,22 +189,12 @@
     <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
 
     <button type="submit">Kayıt Ol</button>
-    @* linkler register icin duzenlenecek ve twitter ile kayit ol da eklenecek *@
-    <div class="social-login mt-4">
-        <div class="social-login-title text-center mb-3">veya sosyal medya ile kayıt Ol</div>
-        <div class="d-flex justify-content-center gap-3 flex-wrap">
-            <a href="/Home/GoogleLogin" title="Google ile Kayıt" class="social-btn google">
-                <i class="fab fa-google me-2"></i> Google
-            </a>
-            <a href="/Home/GithubLogin" title="Github ile Kayıt" class="social-btn github">
-                <i class="fab fa-github me-2"></i> GitHub
-            </a>
-            @*  <a href="#" title="X ile Kayıt" class="social-btn twitter">
-            <i class="fab fa-twitter me-2"></i> X (Twitter)
-            </a> *@
-        </div>
-    </div>
-    <hr />
+    
+    <p class="text-center mt-3 small">
+        Kayıt olarak <a href="/home/privacy" target="_blank">Gizlilik Politikası</a> ve
+        <a href="/home/termsofservice" target="_blank">Kullanım Şartları</a>'nı kabul etmiş oluyorsunuz.
+    </p>
+
     <div class="auth-links-button-group mt-4 d-flex justify-content-center gap-3 flex-wrap">
         <a href="/home/login" class="btn auth-btn">
             <i class="fa-solid fa-user-plus me-2"></i> Giriş Yap
