@@ -21,12 +21,12 @@
         </div>
         <div class="bg-blue-50 p-4 rounded-lg shadow-md border border-blue-300">
             <div class="flex items-start">
-                <a href="/profil/@Model.UserNickname">
+                <a href="/profile/@Model.UserNickname">
                     <img class="w-12 h-12 rounded-full" src="/uploads/images.jpg" alt="Profil">
                 </a>
                 <div class="ml-4 w-full">
                     <div class="flex items-center space-x-2">
-                        <a href="/profil/@Model.UserNickname" class="font-bold text-sm">
+                        <a href="/profile/@Model.UserNickname" class="font-bold text-sm">
                             @Model.UserUsername
                         </a>
                         <span class="text-gray-500 text-sm">@("@" + Model.UserNickname)</span>
@@ -42,50 +42,86 @@
             </div>
         </div>
 
-        @if (ViewBag.AddYorum)
-        {
-            <div class="bg-white p-4 rounded-lg shadow-md mt-4">
-                <h3 class="font-bold text-lg">Yorum Yap</h3>
-                <form class="mt-2" action="/AddYorum" method="post" autocomplete="off">
-                    <div class="flex items-start">
-                        <div class="ml-4 w-full">
-                            <textarea name="Summary" class="w-full p-2 border border-gray-300 rounded-lg" rows="4" placeholder="Yorumunuzu buraya yazın..."></textarea>
-                            <input type="hidden" name="FlapId" value="@Model.Flap.Id" />
-                            <button type="submit" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Gönder</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        }
+        <div class="bg-white p-4 rounded-xl shadow-md mt-4">
+            <h3 class="font-semibold text-lg text-gray-800 mb-2">Yorum Yap</h3>
+            <form class="flex flex-col gap-2" action="/AddYorum" method="post" autocomplete="off" onsubmit="return checkWordLimit()">
+                <textarea id="commentTextarea"
+                          name="Summary"
+                          rows="4"
+                          maxlength="280"
+                          class="w-full p-3 border border-gray-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                          placeholder="Yorumunuzu buraya yazın... (max 280 karakter)"></textarea>
 
-        @foreach (var item in Model.Comments)
-        {
-            <div class="bg-white p-4 rounded-lg shadow-md mt-4">
-                <div class="flex items-start">
-                    <a href="/profil/@item.Nickname">
-                        <img class="w-12 h-12 rounded-full" src="/uploads/images.jpg" alt="Yorum Yapan Profil">
-                    </a>
-                    <div class="ml-4 w-full">
-                        <div class="flex items-center">
-                            <h3 class="font-bold">@item.Username</h3>
-                            <span class="text-gray-500 text-sm ml-2">@@@item.Nickname</span>
-                            <span class="text-gray-500 text-sm ml-2">•</span>
-                            <span class="text-gray-500 text-sm ml-2">@item.CreatedTime.ToString("g", CultureInfo.GetCultureInfo("tr"))</span>
-                        </div>
-                        <p class="mt-2 text-gray-700">@item.Summary</p>
-                    </div>
-                    @if (ViewBag.yetki == "full")
-                    {
-                        <a href="/YorumSil/@item.Id?FlapId=@Model.Flap.Id" onclick="return confirm('Emin misin?')" class="btn btn-danger">Sil</a>
-                    }
-                    else if (ViewBag.id == item.UserId)
-                    {
-                        <a href="/YorumSil/@item.Id?FlapId=@Model.Flap.Id" onclick="return confirm('Emin misin?')" class="btn btn-danger">Sil</a>
-                    }
+                <div class="flex justify-between items-center text-sm text-gray-500">
+                    <span id="charCount">0 / 280</span>
                 </div>
-            </div>
+
+                <input type="hidden" name="FlapId" value="@Model.Flap.Id" />
+
+                <button type="submit"
+                        class="self-end px-5 py-2 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-600 transition-colors duration-200">
+                    Gönder
+                </button>
+            </form>
+        </div>
+
+        <style>
+            .comment-text {
+                word-wrap: break-word; /* uzun kelimeleri böler */
+                word-break: break-word; /* tarayıcıya göre fallback */
+                white-space: pre-wrap; /* satır kaydırmayı korur */
+            }
+        </style>
+
+        <script>
+            const textarea = document.getElementById('commentTextarea');
+            const charCount = document.getElementById('charCount');
+
+            textarea.addEventListener('input', () => {
+                const length = textarea.value.length;
+                charCount.textContent = `${length} / 280`;
+            });
+
+            function checkWordLimit() {
+                if (textarea.value.length > 280) {
+                    alert("Yorum 280 karakterden uzun olamaz!");
+                    return false;
+                }
+                if (textarea.value.trim().length === 0) {
+                    alert("Yorum boş olamaz!");
+                    return false;
+                }
+                return true;
+            }
+        </script>
+
+        @if (Model.Comments != null && Model.Comments.Any())
+        {
+            @foreach (var item in Model.Comments)
+            {
+                <div class="bg-white p-4 rounded-lg shadow-md mt-4">
+                    <div class="flex items-start">
+                        <a href="/profile/@item.Nickname">
+                            <img class="w-12 h-12 rounded-full" src="@item.ImgUrl ?? " /uploads/images.jpg"" alt="Yorum Yapan Profil">
+                        </a>
+                        <div class="ml-4 w-full">
+                            <div class="flex items-center">
+                                <a href="/profile/@item.Nickname" class="font-bold text-sm">
+                                    @item.Username
+                                </a>
+                                <span class="text-gray-500 text-sm ml-2">@("@" + item.Nickname)</span>
+                                <span class="text-gray-500 text-sm ml-2">•</span>
+                                <span class="text-gray-500 text-sm ml-2">@TimeHelper.FormatTime(item.CreatedTime)</span>
+                            </div>
+                            <p class="mt-2 text-gray-700 comment-text">@item.Summary</p>
+                        </div>
+                        @if (ViewBag.yetki == "full" || ViewBag.id == item.UserId)
+                        {
+                            <a href="/YorumSil/@item.Id?FlapId=@Model.Flap.Id" onclick="return confirm('Emin misin?')" class="btn btn-danger">Sil</a>
+                        }
+                    </div>
+                </div>
+            }
         }
-
-
     </div>
 </body>

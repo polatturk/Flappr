@@ -60,12 +60,8 @@ namespace Flappr.Controllers
 
         public bool CheckLogin()
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("nickname")))
-            {
-                return false;
-            }
-
-            return true;
+            var userMail = HttpContext.Session.GetString("Mail");
+            return !string.IsNullOrEmpty(userMail);
         }
         public string TokenUret(int userId)
         {
@@ -93,9 +89,9 @@ namespace Flappr.Controllers
             return _context.Flaps.Any(f => f.Id == id);
         }
 
-            //[CustomAuthorize]
-            public IActionResult Index()
-            {
+        [CustomAuthorize]
+        public IActionResult Index()
+        {
             ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
 
             var flaps = _context.Flaps
@@ -151,6 +147,8 @@ namespace Flappr.Controllers
             {
                 HttpContext.Session.SetInt32("userId", user.Id);
                 HttpContext.Session.SetString("Mail", user.Mail);
+                HttpContext.Session.SetString("Nickname", user.Nickname);
+                HttpContext.Session.SetString("Username", user.Username);
 
                 return RedirectToAction("Index", "Home");
             }
@@ -195,7 +193,6 @@ namespace Flappr.Controllers
                 return View("Register", model);
             }
 
-            // reCAPTCHA doðrulamasý
             var recaptchaValid = await VerifyRecaptchaRegister(model.RecaptchaToken);
             if (!recaptchaValid)
             {
@@ -356,6 +353,7 @@ namespace Flappr.Controllers
             return RedirectToAction("Index");
         }
 
+        [CustomAuthorize]
         [Route("/Flap/{Id}")]
         public IActionResult Flap(int Id)
         {
@@ -369,7 +367,7 @@ namespace Flappr.Controllers
                 return View("Message");
             }
 
-            ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
+            ViewData["Nickname"] = HttpContext.Session.GetString("Nickname");
             ViewBag.AddYorum = CheckLogin();
 
             var detailFlap = new FlapRequest
@@ -379,20 +377,21 @@ namespace Flappr.Controllers
                 CreatedDate = flapEntity.CreatedDate,
                 UserUsername = flapEntity.User.Username,
                 UserNickname = flapEntity.User.Nickname,
-                //UserImgUrl = flapEntity.User.ProfileImageUrl,
                 Flap = flapEntity,
-                //Comments = flapEntity.
-                //    .OrderByDescending(c => c.CreatedTime)
-                //    .Select(c => new Comment
-                //    {
-                //        Id = c.Id,
-                //        Summary = c.Summary,
-                //        CreatedTime = c.CreatedTime,
-                //        UserId = c.UserId,
-                //        Username = c.User.Username,
-                //        Nickname = c.User.Nickname,
-                //        ImgUrl = c.User.ProfileImageUrl
-                //    }).ToList()
+                Comments = _context.Comments
+                    .Where(c => c.FlapId == flapEntity.Id)
+                    .OrderByDescending(c => c.CreatedTime)
+                    .Select(c => new Comment
+                    {
+                        Id = c.Id,
+                        Summary = c.Summary,
+                        CreatedTime = c.CreatedTime,
+                        UserId = c.UserId,
+                        Username = c.User.Username,
+                        Nickname = c.User.Nickname,
+                        ImgUrl = c.User.ImgUrl
+                    })
+                    .ToList()
             };
 
             if (flapEntity.UserId == HttpContext.Session.GetInt32("userId"))
@@ -468,49 +467,48 @@ namespace Flappr.Controllers
 
         [HttpPost]
         [Route("/addyorum")]
-        public async Task<IActionResult> AddYorum(Comment model)
+        public async Task<IActionResult> AddYorum(int FlapId, string Summary)
         {
-            if (!ModelState.IsValid)
+            var userId = HttpContext.Session.GetInt32("userId");
+            if (userId == null) return RedirectToAction("Login"); 
+
+            var user = await _context.Users.FindAsync(userId.Value);
+
+            if (user == null || string.IsNullOrWhiteSpace(Summary))
+                return RedirectToAction("Flap", new { Id = FlapId });
+
+            var comment = new Comment
             {
-                return RedirectToAction("Index");
-            }
+                FlapId = FlapId,
+                Summary = Summary,
+                UserId = user.Id,
+                Username = user.Username,
+                Nickname = user.Nickname,
+                CreatedTime = DateTime.Now
+            };
 
-            model.CreatedTime = DateTime.Now;
-            model.UserId = (int)HttpContext.Session.GetInt32("userId");
+            _context.Comments.Add(comment);
+            await _context.SaveChangesAsync();
 
-            try
+            var flap = await _context.Flaps.Include(f => f.User)
+                        .FirstOrDefaultAsync(f => f.Id == FlapId);
+
+            if (flap != null)
             {
-                _context.Comments.Add(model);
-                await _context.SaveChangesAsync();
-
-                var FlapInfo = await (from f in _context.Flaps
-                                      join u in _context.Users on f.UserId equals u.Id
-                                      where f.Id == model.FlapId
-                                      select new FlapInfoDto
-                                      {
-                                          Username = u.Username,
-                                          Detail = f.Detail,
-                                          Mail = u.Mail
-                                      }).FirstOrDefaultAsync();
-
-                if (FlapInfo != null)
+                if (comment.UserId != flap.UserId)
                 {
                     using var reader = new StreamReader("wwwroot/mailTemp/mailtemp.html");
                     var template = await reader.ReadToEndAsync();
                     var mailbody = template
-                        .Replace("{{Username}}", FlapInfo.Username)
-                        .Replace("{{FlapDetail}}", FlapInfo.Detail);
+                        .Replace("{{Username}}", flap.User.Username)
+                        .Replace("{{FlapDetail}}", flap.Detail);
 
-                    string subject = "Flappýnýza bildirim var";
-                    await SendEmailAsync(FlapInfo.Mail, subject, mailbody);
+                    string subject = "Flap’ýnýza yeni bir yorum yapýldý!";
+                    await SendEmailAsync(flap.User.Mail, subject, mailbody);
                 }
+            }
 
-                return RedirectToAction("Flap", new { Id = model.FlapId });
-            }
-            catch (Exception)
-            {
-                return RedirectToAction("Index");
-            }
+            return RedirectToAction("Flap", new { Id = FlapId });
         }
 
         [Route("/YorumSil/{Id}")]
