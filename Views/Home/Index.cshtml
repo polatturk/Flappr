@@ -1,5 +1,6 @@
 ﻿@using System.Globalization
 @using Flappr.Dto
+@using Flappr.Helpers
 @model List<FlapRequest>
 @section Styles {
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -249,24 +250,24 @@
                     <img class="w-12 h-12 rounded-full" src="/uploads/images.jpg" alt="Profile Photo">
                 </a>
                 <div class="ml-4">
-                    <div class="flex items-center">
-                        <h2 class="font-bold text-lg">
+                    <div class="flex items-center space-x-2">
+                        <h2 class="font-bold text-sm">
                             <a href="/profile/@flap.UserNickname">@flap.UserUsername</a>
                         </h2>
-                        <span class="ml-2 text-gray-500">@@@flap.UserNickname</span>
+                        <span class="text-gray-500 text-sm">@("@" + flap.UserNickname)</span>
+                        <span class="text-gray-500">·</span>
+                        <span class="text-gray-500 text-sm">@TimeHelper.FormatTime(flap.CreatedDate)</span>
                     </div>
-                    <div class="text-gray-500 text-sm">Takipçi: 1234 | Takip Edilen: 567</div>
+
                     <p class="mt-2 text-gray-800">@flap.Detail</p>
-                    <div class="text-gray-500 text-sm mt-2">@flap.CreatedDate.ToString("g", CultureInfo.GetCultureInfo("tr"))</div>
-                    <div class="d-flex align-items-center mt-4">
-                        <div class="text-blue-500 hover:text-blue-600 ml-4">
+
+                    <div class="flex items-center mt-4 space-x-4">
+                        <div class="text-blue-500 hover:text-blue-600">
                             <a href="/Flap/@flap.Id">Gönderiye Git</a>
-                        </div>
-                        <div class="ml-4">
-                            Yorum Sayısı: @flap.CommentsCount
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     }

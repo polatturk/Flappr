@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using Flappr.Helpers
 
 @model Flappr.Dto.FlapRequest
 
@@ -7,23 +8,37 @@
 }
 
 <body class="bg-gray-100">
+
     <div class="max-w-lg mx-auto mt-10">
+
+        <div class="p-4">
+            <a href="javascript:history.back()" class="inline-flex items-center text-blue-500 hover:text-blue-600 font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Geri
+            </a>
+        </div>
         <div class="bg-blue-50 p-4 rounded-lg shadow-md border border-blue-300">
             <div class="flex items-start">
                 <a href="/profil/@Model.UserNickname">
                     <img class="w-12 h-12 rounded-full" src="/uploads/images.jpg" alt="Profil">
                 </a>
                 <div class="ml-4 w-full">
-                    <div class="flex items-center">
-                        <a href="/profil/@Model.UserNickname">
-                            <h3 class="font-bold text-blue-700">@Model.UserUsername</h3>
+                    <div class="flex items-center space-x-2">
+                        <a href="/profil/@Model.UserNickname" class="font-bold text-sm">
+                            @Model.UserUsername
                         </a>
-                        <span class="text-blue-500 text-sm ml-2">@Model.UserNickname</span>
-                        <span class="text-blue-500 text-sm ml-2">•</span>
-                        <span class="text-blue-500 text-sm ml-2">@Model.Flap.CreatedDate.ToString("g", CultureInfo.GetCultureInfo("tr"))</span>
+                        <span class="text-gray-500 text-sm">@("@" + Model.UserNickname)</span>
+                        <span class="text-gray-500 text-sm">·</span>
+                        <span class="text-gray-500 text-sm">@TimeHelper.FormatTime(Model.Flap.CreatedDate)</span>
                     </div>
-                    <p class="mt-2 text-blue-700">@Model.Flap.Detail</p>
+
+                    <p class="mt-1 text-sm">
+                        @Model.Flap.Detail
+                    </p>
                 </div>
+
             </div>
         </div>
 
