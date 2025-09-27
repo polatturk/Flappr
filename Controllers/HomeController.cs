@@ -105,7 +105,8 @@ namespace Flappr.Controllers
                     UserNickname = f.User.Nickname,
                     UserUsername = f.User.Username,
                     UserImgUrl = f.User.ImgUrl,
-                    CommentsCount = _context.Comments.Count(c => c.FlapId == f.Id)
+                    CommentsCount = _context.Comments.Count(c => c.FlapId == f.Id),
+                    LikeCount = f.LikeCount
                 })
                 .OrderByDescending(f => f.CreatedDate)
                 .ToList();

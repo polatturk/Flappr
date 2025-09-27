@@ -19,25 +19,13 @@ namespace Flappr.Controllers
         }
 
         [CustomAuthorize]
-        public IActionResult Explore()
-        {
-            return View();
-        }
+        public IActionResult Explore(){return View();}
         [CustomAuthorize]
-        public IActionResult Notifications()
-        {
-            return View();
-        }
+        public IActionResult Notifications(){return View();}
         [CustomAuthorize]
-        public IActionResult Messages()
-        {
-            return View();
-        }
+        public IActionResult Messages(){return View();}
         [AllowAnonymous]
-        public IActionResult ErrorMessages()
-        {
-            return View();
-        }
+        public IActionResult ErrorMessages(){return View();}
 
         [HttpPost]
         public IActionResult Follows(int followerId, int followingId)
@@ -56,13 +44,19 @@ namespace Flappr.Controllers
 
             _context.SaveChanges();
 
-            return RedirectToAction(
-                actionName: "Profile",
-                controllerName: "Home",
-                routeValues: new { UserNickname = _context.Users.Find(followingId)?.Nickname }
-            );
+            return RedirectToAction(actionName: "Profile",controllerName: "Home",routeValues: new { UserNickname = _context.Users.Find(followingId)?.Nickname });
         }
 
-
+        [HttpPost]
+        public IActionResult Likes(int flapId)
+        {
+            var flap = _context.Flaps.FirstOrDefault(f => f.Id == flapId);
+            if (flap != null)
+            {
+                flap.LikeCount += 1;
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
