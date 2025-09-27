@@ -1,4 +1,5 @@
-﻿@using System.Globalization
+﻿<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+@using System.Globalization
 @* @model Profile
  *@@{
     ViewData["Title"] = "Profile - ";
@@ -11,39 +12,60 @@
 
 }
 
-@section Scripts {
-
-    <script defer>
-        function toggleCommentInput() {
-            const commentInput = document.querySelector('#comment-input');
-            commentInput.classList.toggle('hidden');
-        }
-
-
-        function handleFollowButtonClick(button) {
-            button.innerHTML = ' Takip Edildi';
-            button.disabled = true;
-        }
-    </script>
-}
-
 @* profil kismi bastan assagi guncellenicek *@
 <body class="bg-gray-200">
     <div class="max-w-2xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
         <div class="flex items-center">
+            <!-- Profil foto -->
             <img class="w-24 h-24 rounded-full" src="/uploads/images.jpg" alt="Profile Photo">
-            <div class="ml-6">
-                <h2 class="text-2xl font-bold">@Model.User.Username</h2>
+
+            <!-- Kullanıcı bilgileri -->
+            <div class="ml-6 flex-1">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold">@Model.User.Username</h2>
+
+                    @if (ViewBag.profile)
+                    {
+                        <a class="flex items-center gap-2 border border-gray-400 text-gray-700 px-4 py-1.5 rounded-full hover:bg-gray-100 transition text-sm font-medium"
+                           href="/duzenle/@Model.User.Nickname">
+                            ✏️ Düzenle
+                        </a>
+                    }
+                    else
+                    {
+                        @if (ViewBag.currentUserIsOwner != true)
+                        {
+                            <form method="post" action="/Interaction/Follows">
+                                <input type="hidden" name="followerId" value="@Context.Session.GetInt32("userId")" />
+                                <input type="hidden" name="followingId" value="@Model.User.Id" />
+                                <button type="submit"
+                                        class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium
+                                               @(ViewBag.IsFollowing ? "bg-red-500 text-white hover:bg-red-600" : "bg-green-500 text-white hover:bg-green-600")">
+                                    <i class="bi @(ViewBag.IsFollowing ? "bi-person-x-fill" : "bi-person-fill-add") text-white"></i>
+                                    <span>@(ViewBag.IsFollowing ? "Takipten Çık" : "Takip Et")</span>
+                                </button>
+                            </form>
+                        }
+
+                    }
+                </div>
+
                 <p class="text-gray-600">@@@Model.User.Nickname</p>
                 <p> ⏩ Burası da bio işte..</p>
-                <div class="text-gray-600 mt-2">Takipçi: 1234 | Takip Edilen: 567</div>
-                @if (ViewBag.profile)
-                {
-                    <br />
-                    <a class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" href="/duzenle/@Model.User.Nickname">Profile Düzenle</a>
-                }
+
+                <div class="flex items-center gap-4 text-gray-600 mt-2 text-sm">
+                    <div class="flex items-center gap-1">
+                        <i class="bi bi-people-fill"></i>
+                        <span>Takipçi <strong>@Model.FollowersCount</strong></span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="bi bi-person-check-fill"></i>
+                        <span>Takip Edilen <strong>@Model.FollowingCount</strong></span>
+                    </div>
+                </div>
             </div>
         </div>
+
         <div class="mt-6">
             <h3 class="text-xl font-bold mb-4">Flaplar</h3>
             @foreach (var item in Model.Flaps)
@@ -55,7 +77,11 @@
                     @if (ViewBag.profile)
                     {
                         <div>
-                            <a href="/FlapSil/@item.Id?nickname=@Model.User.Nickname" onclick="return confirm('Emin misin?')" class="btn btn-danger">Sil</a>
+                            <a href="/FlapSil/@item.Id?nickname=@Model.User.Nickname"
+                               onclick="return confirm('Emin misin?')"
+                               class="text-red-600 hover:text-red-800 text-sm font-medium">
+                                ❌ Sil
+                            </a>
                         </div>
                     }
                 </div>

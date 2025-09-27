@@ -11,7 +11,8 @@ namespace Flappr.Models
         public DateTime CreatedDate { get; set; }
         [Required]
         public bool Visibility { get; set; }
-        public int YorumSayisi { get; set; }
+        public int CommentCount { get; set; }
+        public int LikeCount { get; set; }
         [ForeignKey("User")]
         public int UserId { get; set; }
         public User User { get; set; }

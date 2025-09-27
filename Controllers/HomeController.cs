@@ -408,6 +408,7 @@ namespace Flappr.Controllers
         [Route("/Profile/{UserNickname?}")]
         public async Task<IActionResult> Profile(string? UserNickname)
         {
+            var currentUserId = HttpContext.Session.GetInt32("userId");
 
             if (string.IsNullOrEmpty(UserNickname))
             {
@@ -418,7 +419,18 @@ namespace Flappr.Controllers
             }
 
             var user = await _context.Users
-        .FirstOrDefaultAsync(u => u.Username == UserNickname || u.Nickname == UserNickname);
+         .FirstOrDefaultAsync(u => u.Username == UserNickname || u.Nickname == UserNickname);
+
+            var currentUserIsOwner = user.Id == currentUserId;
+            ViewBag.IsOwner = currentUserIsOwner;
+
+            bool isFollowing = false;
+            if (currentUserId != null && !currentUserIsOwner)
+            {
+                isFollowing = await _context.Follows
+                    .AnyAsync(f => f.FollowerId == currentUserId && f.FollowingId == user.Id);
+            }
+            ViewBag.IsFollowing = isFollowing;
 
             var userDto = new UserDto
             {
@@ -452,14 +464,22 @@ namespace Flappr.Controllers
                     ImgUrl = f.User.ImgUrl,
                     Visibility = f.Visibility,
                     CreatedDate = f.CreatedDate,
-                    CommentsCount = f.YorumSayisi
+                    CommentsCount = f.CommentCount
                 })
                 .ToListAsync();
+
+            var followersCount = await _context.Follows
+                .CountAsync(f => f.FollowingId == user.Id);
+
+            var followingCount = await _context.Follows
+                .CountAsync(f => f.FollowerId == user.Id);
 
             var profilDto = new ProfileRequest
             {
                 User = userDto,
-                Flaps = flapDtos
+                Flaps = flapDtos,
+                FollowersCount = followersCount,
+                FollowingCount = followingCount
             };
 
             return View(profilDto);

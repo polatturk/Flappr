@@ -6,6 +6,9 @@ namespace Flappr.Dto
     {
         public List<FlapDto> Flaps { get; set; } = new List<FlapDto>();
         public UserDto User { get; set; }
+
+        public int FollowersCount { get; set; }   
+        public int FollowingCount { get; set; } 
     }
     public class FlapDto
     {

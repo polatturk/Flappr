@@ -7,6 +7,7 @@ namespace Flappr.Data
     public class FlapprContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Follow> Follows { get; set; }
         public DbSet<Flap> Flaps { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<ResetPwToken> ResetPwTokens { get; set; }
@@ -20,10 +21,10 @@ namespace Flappr.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Flap>()
-                .HasOne(f => f.User) // Flap’ın 1 kullanıcısı var
-                .WithMany(u => u.Flaps) // Kullanıcının birçok flap’ı var
-                .HasForeignKey(f => f.UserId) // FK alanı
-                .OnDelete(DeleteBehavior.Cascade); // User silinirse flaplar da silinsin
+                .HasOne(f => f.User) 
+                .WithMany(u => u.Flaps) 
+                .HasForeignKey(f => f.UserId) 
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
