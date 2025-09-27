@@ -12,7 +12,7 @@ namespace Flappr.Dto
     }
     public class FlapDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Detail { get; set; }
         public string Username { get; set; }
         public string? Nickname { get; set; }
@@ -24,12 +24,12 @@ namespace Flappr.Dto
 
     public class UserDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Nickname { get; set; }
         public string Username { get; set; }
         public string Mail { get; set; }
         public string? ImgUrl { get; set; }
-        public int RoleId { get; set; }
+        public Guid RoleId { get; set; }
         public string? RoleName { get; set; }
     }
 }

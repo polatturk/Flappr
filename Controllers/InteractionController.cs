@@ -28,7 +28,7 @@ namespace Flappr.Controllers
         public IActionResult ErrorMessages(){return View();}
 
         [HttpPost]
-        public IActionResult Follows(int followerId, int followingId)
+        public IActionResult Follows(Guid followerId, Guid followingId)
         {
             var existingFollow = _context.Follows
                 .FirstOrDefault(f => f.FollowerId == followerId && f.FollowingId == followingId);
@@ -48,7 +48,7 @@ namespace Flappr.Controllers
         }
 
         [HttpPost]
-        public IActionResult Likes(int flapId)
+        public IActionResult Likes(Guid flapId)
         {
             var flap = _context.Flaps.FirstOrDefault(f => f.Id == flapId);
             if (flap != null)

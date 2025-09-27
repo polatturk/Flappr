@@ -6,25 +6,22 @@ namespace Flappr.Models
 {
     public class User
     {
-        public int Id { get; set; }
-
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
         [Required]
         public string Nickname { get; set; }
-
         [Required]
         public string Username { get; set; }
-
         [Required]
         public string Password { get; set; }
-
         [Required]
         public string Mail { get; set; }
-
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
-
         public string? ImgUrl { get; set; }
         public ICollection<Flap> Flaps { get; set; }
+        public ICollection<FlapLike> FlapLikes { get; set; } = new List<FlapLike>();
+
 
     }
 

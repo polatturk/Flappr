@@ -5,31 +5,27 @@ namespace Flappr.Models
 {
     public class Flap
     {
-        public int Id { get; set; }
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
+
         [Required]
         public string Detail { get; set; }
-        public DateTime CreatedDate { get; set; }
+
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+
         [Required]
         public bool Visibility { get; set; }
+
         public int CommentCount { get; set; }
+
         public int LikeCount { get; set; }
+
         [ForeignKey("User")]
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
+
         public User User { get; set; }
+
+        public ICollection<FlapLike> Likes { get; set; } = new List<FlapLike>();
+
     }
-
-
-    public class FlapDetail
-    {
-        public Flap Flap { get; set; }
-        public List<Comment>? Comments { get; set; }
-    }
-
-    public class FlapInfo
-    {
-        public string Username { get; set; }
-        public string Detail { get; set; }
-        public string Mail { get; set; }
-    }
-
 }

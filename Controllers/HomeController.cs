@@ -63,7 +63,7 @@ namespace Flappr.Controllers
             var userMail = HttpContext.Session.GetString("Mail");
             return !string.IsNullOrEmpty(userMail);
         }
-        public string TokenUret(int userId)
+        public string TokenUret(Guid userId)
         {
             var token = Guid.NewGuid().ToString();
 
@@ -82,9 +82,9 @@ namespace Flappr.Controllers
         }
 
         public User GetMail(string email){return _context.Users.FirstOrDefault(u => u.Mail == email);}
-        public int? KullaniciGetir(string nickname){var user = _context.Users.FirstOrDefault(u => u.Nickname == nickname);return user?.Id;}
+        public Guid? KullaniciGetir(string nickname){var user = _context.Users.FirstOrDefault(u => u.Nickname == nickname);return user.Id;}
 
-        public bool FlapVarMi(int id)
+        public bool FlapVarMi(Guid id)
         {
             return _context.Flaps.Any(f => f.Id == id);
         }
@@ -146,7 +146,7 @@ namespace Flappr.Controllers
 
             if (user != null)
             {
-                HttpContext.Session.SetInt32("userId", user.Id);
+                HttpContext.Session.SetString("userId", user.Id.ToString());
                 HttpContext.Session.SetString("Mail", user.Mail);
                 HttpContext.Session.SetString("Nickname", user.Nickname);
                 HttpContext.Session.SetString("Username", user.Username);
@@ -316,7 +316,7 @@ namespace Flappr.Controllers
                 return View("Login");
             }
 
-            HttpContext.Session.SetInt32("userId", user.Id);
+            HttpContext.Session.SetString("userId", user.Id.ToString());
             HttpContext.Session.SetString("Mail", user.Mail);
 
             return RedirectToAction("Index", "Home");
@@ -338,13 +338,14 @@ namespace Flappr.Controllers
         {
             if (!ModelState.IsValid) return View("Index");
 
-            var userId = HttpContext.Session.GetInt32("userId");
+            var userIdStr = HttpContext.Session.GetString("userId");
+            if (string.IsNullOrEmpty(userIdStr)) return RedirectToAction("Login");
 
             var flap = new Flap
             {
                 Detail = dto.Detail,
                 Visibility = dto.Visibility,
-                UserId = userId.Value,
+                UserId = Guid.Parse(userIdStr),
                 CreatedDate = DateTime.Now
             };
 
@@ -354,9 +355,10 @@ namespace Flappr.Controllers
             return RedirectToAction("Index");
         }
 
+
         [CustomAuthorize]
         [Route("/Flap/{Id}")]
-        public IActionResult Flap(int Id)
+        public IActionResult Flap(Guid Id)
         {
             var flapEntity = _context.Flaps
                 .Include(f => f.User)
@@ -395,13 +397,14 @@ namespace Flappr.Controllers
                     .ToList()
             };
 
-            if (flapEntity.UserId == HttpContext.Session.GetInt32("userId"))
+            if (flapEntity.UserId == Guid.Parse(HttpContext.Session.GetString("userId")!))
             {
                 ViewBag.yetki = "full";
             }
 
-            ViewBag.id = HttpContext.Session.GetInt32("userId");
-
+            var userIdString = HttpContext.Session.GetString("userId");
+            Guid? userId = userIdString != null ? Guid.Parse(userIdString) : (Guid?)null;
+            ViewBag.id = userId;
             return View(detailFlap);
         }
 
@@ -409,18 +412,20 @@ namespace Flappr.Controllers
         [Route("/Profile/{UserNickname?}")]
         public async Task<IActionResult> Profile(string? UserNickname)
         {
-            var currentUserId = HttpContext.Session.GetInt32("userId");
+            var currentUserIdString = HttpContext.Session.GetString("userId");
+            Guid? currentUserId = currentUserIdString != null ? Guid.Parse(currentUserIdString) : (Guid?)null;
 
             if (string.IsNullOrEmpty(UserNickname))
             {
-                var userId = HttpContext.Session.GetInt32("userId");
+                var userIdString = HttpContext.Session.GetString("userId");
+                Guid? userId = userIdString != null ? Guid.Parse(userIdString) : (Guid?)null;
                 if (userId == null) return RedirectToAction("Login");
 
                 UserNickname = (await _context.Users.FindAsync(userId))?.Username;
             }
 
             var user = await _context.Users
-         .FirstOrDefaultAsync(u => u.Username == UserNickname || u.Nickname == UserNickname);
+           .FirstOrDefaultAsync(u => u.Username == UserNickname || u.Nickname == UserNickname);
 
             var currentUserIsOwner = user.Id == currentUserId;
             ViewBag.IsOwner = currentUserIsOwner;
@@ -442,7 +447,7 @@ namespace Flappr.Controllers
                 ImgUrl = user.ImgUrl
             };
 
-            bool isOwner = user.Id == HttpContext.Session.GetInt32("userId");
+            bool isOwner = Guid.TryParse(HttpContext.Session.GetString("userId"), out var id) && user.Id == id;
             ViewBag.profile = isOwner;
 
             var flapsQuery = _context.Flaps
@@ -488,9 +493,10 @@ namespace Flappr.Controllers
 
         [HttpPost]
         [Route("/addyorum")]
-        public async Task<IActionResult> AddYorum(int FlapId, string Summary)
+        public async Task<IActionResult> AddYorum(Guid FlapId, string Summary)
         {
-            var userId = HttpContext.Session.GetInt32("userId");
+            var userIdString = HttpContext.Session.GetString("userId");
+            Guid? userId = userIdString != null ? Guid.Parse(userIdString) : (Guid?)null;
             if (userId == null) return RedirectToAction("Login"); 
 
             var user = await _context.Users.FindAsync(userId.Value);
@@ -533,7 +539,7 @@ namespace Flappr.Controllers
         }
 
         [Route("/YorumSil/{Id}")]
-        public IActionResult DeleteYorum(int Id, int FlapId)
+        public IActionResult DeleteYorum(Guid Id, Guid FlapId)
         {
             var comment = _context.Comments.Find(Id);
             if (comment != null)
@@ -546,7 +552,7 @@ namespace Flappr.Controllers
         }
 
         [Route("/Flapsil/{Id}")]
-        public IActionResult FlapSil(int Id, string nickname)
+        public IActionResult FlapSil(Guid Id, string nickname)
         {
             var flap = _context.Flaps.Find(Id);
             if (flap != null)
@@ -578,7 +584,7 @@ namespace Flappr.Controllers
             return RedirectToAction("PwResetLink", new { userId = user.Id });
         }
 
-        public async Task<IActionResult> PwResetLink(int userId)
+        public async Task<IActionResult> PwResetLink(Guid userId)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == userId);

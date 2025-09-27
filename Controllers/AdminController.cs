@@ -29,11 +29,11 @@ namespace Flappr.Controllers
             return true;
         }
 
-        public int? UserIdGetirr(string nickname)
+        public Guid? UserIdGetirr(string nickname)
         {
             var user = _context.Users
                 .Where(u => u.Nickname == nickname)
-                .Select(u => (int?)u.Id)
+                .Select(u => (Guid?)u.Id)
                 .FirstOrDefault();
 
             return user;
@@ -51,8 +51,8 @@ namespace Flappr.Controllers
                 return View("Msg");
             }
 
-            int? userId = UserIdGetirr(nickname);
-            if (userId != HttpContext.Session.GetInt32("userId"))
+            Guid? userId = UserIdGetirr(nickname);
+            if (!Guid.TryParse(HttpContext.Session.GetString("userId"), out var currentUserId) || userId != currentUserId)
             {
                 ViewBag.Message = "Bu profili düzenleme yetkiniz yok.";
                 return View("Msg");

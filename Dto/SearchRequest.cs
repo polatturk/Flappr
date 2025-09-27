@@ -2,7 +2,6 @@
 
 namespace Flappr.Dto
 {
-    // Arama isteği DTO'su (formdan gelen veriler)
     public class SearchRequest
     {
         [Required]
@@ -11,10 +10,9 @@ namespace Flappr.Dto
 
     }
 
-    // Arama sonucu DTO'su (view veya API için döndürülecek veriler)
     public class SearchResponse
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Username { get; set; }
         public string Nickname { get; set; }
     }

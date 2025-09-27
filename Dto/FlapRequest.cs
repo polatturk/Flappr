@@ -4,7 +4,7 @@ namespace Flappr.Dto
 {
     public class FlapRequest
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Detail { get; set; }
         public DateTime CreatedDate { get; set; }
         public string UserNickname { get; set; }
@@ -20,12 +20,5 @@ namespace Flappr.Dto
     {
         public string Detail { get; set; }
         public bool Visibility { get; set; }
-    }
-
-    public class FlapInfoDto
-    {
-        public string Username { get; set; }
-        public string Detail { get; set; }
-        public string Mail { get; set; }
     }
 }

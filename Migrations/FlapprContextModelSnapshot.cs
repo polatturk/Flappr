@@ -24,17 +24,15 @@ namespace Flappr.Migrations
 
             modelBuilder.Entity("Flappr.Models.Comment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("FlapId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("FlapId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ImgUrl")
                         .HasColumnType("nvarchar(max)");
@@ -46,8 +44,8 @@ namespace Flappr.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
@@ -61,11 +59,9 @@ namespace Flappr.Migrations
 
             modelBuilder.Entity("Flappr.Models.Flap", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("CommentCount")
                         .HasColumnType("int");
@@ -80,8 +76,8 @@ namespace Flappr.Migrations
                     b.Property<int>("LikeCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Visibility")
                         .HasColumnType("bit");
@@ -93,22 +89,44 @@ namespace Flappr.Migrations
                     b.ToTable("Flaps");
                 });
 
-            modelBuilder.Entity("Flappr.Models.Follow", b =>
+            modelBuilder.Entity("Flappr.Models.FlapLike", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("FollowerId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("FlapId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("FollowingId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FlapId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("FlapLike");
+                });
+
+            modelBuilder.Entity("Flappr.Models.Follow", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("FollowerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FollowingId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -117,11 +135,9 @@ namespace Flappr.Migrations
 
             modelBuilder.Entity("Flappr.Models.ResetPwToken", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -133,8 +149,8 @@ namespace Flappr.Migrations
                     b.Property<bool>("Used")
                         .HasColumnType("bit");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -143,11 +159,9 @@ namespace Flappr.Migrations
 
             modelBuilder.Entity("Flappr.Models.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -201,8 +215,34 @@ namespace Flappr.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Flappr.Models.FlapLike", b =>
+                {
+                    b.HasOne("Flappr.Models.Flap", "Flap")
+                        .WithMany("Likes")
+                        .HasForeignKey("FlapId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Flappr.Models.User", "User")
+                        .WithMany("FlapLikes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Flap");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Flappr.Models.Flap", b =>
+                {
+                    b.Navigation("Likes");
+                });
+
             modelBuilder.Entity("Flappr.Models.User", b =>
                 {
+                    b.Navigation("FlapLikes");
+
                     b.Navigation("Flaps");
                 });
 #pragma warning restore 612, 618

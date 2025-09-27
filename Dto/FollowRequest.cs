@@ -2,7 +2,7 @@
 {
     public class FollowRequest
     {
-        public int FollowerId { get; set; }
-        public int FollowingId { get; set; }
+        public Guid FollowerId { get; set; }
+        public Guid FollowingId { get; set; }
     }
 }
