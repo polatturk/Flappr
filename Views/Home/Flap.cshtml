@@ -5,6 +5,8 @@
 
 @section Styles {
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
 }
 
 <body class="bg-gray-100">
@@ -37,8 +39,29 @@
                     <p class="mt-1 text-sm">
                         @Model.Flap.Detail
                     </p>
-                </div>
 
+                    <div class="flex items-center mt-4 space-x-6 text-gray-500">
+                        <a href="/Flap/@Model.Flap.Id"
+                           class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 hover:bg-gray-300 transition duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4.3-.93L3 20l1.14-3.42A7.96 7.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                            <span>@Model.Comments.Count</span>
+                        </a>
+
+                        <form method="post" action="/Interaction/Likes">
+                            <input type="hidden" name="flapId" value="@Model.Flap.Id" />
+                            <button type="submit"
+                                    class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium
+                                   @(Model.IsLikedByCurrentUser ? "bg-gray-200 text-gray-800 hover:bg-gray-300" : "bg-gray-200 text-gray-800 hover:bg-gray-300")">
+                                <i class="bi @(Model.IsLikedByCurrentUser ? "bi-suit-heart-fill text-danger" : "bi-suit-heart-fill text-white")"></i>
+                                <span>@Model.LikeCount</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
 
