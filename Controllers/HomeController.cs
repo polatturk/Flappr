@@ -89,10 +89,13 @@ namespace Flappr.Controllers
             return _context.Flaps.Any(f => f.Id == id);
         }
 
-        [CustomAuthorize]
+        //[CustomAuthorize]
         public IActionResult Index()
         {
             ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
+
+            var userIdString = HttpContext.Session.GetString("userId");
+            Guid? userId = userIdString != null ? Guid.Parse(userIdString) : (Guid?)null;
 
             var flaps = _context.Flaps
                 .Where(f => f.Visibility)
@@ -106,7 +109,8 @@ namespace Flappr.Controllers
                     UserUsername = f.User.Username,
                     UserImgUrl = f.User.ImgUrl,
                     CommentsCount = _context.Comments.Count(c => c.FlapId == f.Id),
-                    LikeCount = f.LikeCount
+                    LikeCount = f.LikeCount,
+                    IsLikedByCurrentUser = userId != null && _context.FlapLike.Any(l => l.FlapId == f.Id && l.UserId == userId)
                 })
                 .OrderByDescending(f => f.CreatedDate)
                 .ToList();
@@ -132,12 +136,12 @@ namespace Flappr.Controllers
                 return View("Login");
             }
 
-            var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
-            if (!recaptchaValid)
-            {
-                TempData["AuthError"] = "reCAPTCHA doðrulamasý baþarýsýz.";
-                return RedirectToAction("Login");
-            }
+            //var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
+            //if (!recaptchaValid)
+            //{
+            //    TempData["AuthError"] = "reCAPTCHA doðrulamasý baþarýsýz.";
+            //    return RedirectToAction("Login");
+            //}
 
             var hashedPassword = Helper.Hash(model.Password);
 
@@ -360,6 +364,10 @@ namespace Flappr.Controllers
         [Route("/Flap/{Id}")]
         public IActionResult Flap(Guid Id)
         {
+
+            var userIdString = HttpContext.Session.GetString("userId");
+            Guid? userId = userIdString != null ? Guid.Parse(userIdString) : (Guid?)null;
+
             var flapEntity = _context.Flaps
                 .Include(f => f.User)
                 .FirstOrDefault(f => f.Id == Id);
@@ -381,6 +389,7 @@ namespace Flappr.Controllers
                 UserUsername = flapEntity.User.Username,
                 UserNickname = flapEntity.User.Nickname,
                 Flap = flapEntity,
+                IsLikedByCurrentUser = userId != null && _context.FlapLike.Any(l => l.FlapId == flapEntity.Id && l.UserId == userId),
                 Comments = _context.Comments
                     .Where(c => c.FlapId == flapEntity.Id)
                     .OrderByDescending(c => c.CreatedTime)
@@ -402,8 +411,6 @@ namespace Flappr.Controllers
                 ViewBag.yetki = "full";
             }
 
-            var userIdString = HttpContext.Session.GetString("userId");
-            Guid? userId = userIdString != null ? Guid.Parse(userIdString) : (Guid?)null;
             ViewBag.id = userId;
             return View(detailFlap);
         }

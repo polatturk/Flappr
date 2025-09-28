@@ -13,8 +13,10 @@ namespace Flappr.Dto
         public Flap Flap { get; set; }
         public bool Visibility { get; set; }
         public int CommentsCount { get; set; }
-        public int LikeCount { get; set; }
         public List<Comment> Comments { get; set; } = new List<Comment>();
+        public int LikeCount { get; set; }
+        public bool IsLikedByCurrentUser { get; set; }
+
     }
     public class AddFlapDto
     {

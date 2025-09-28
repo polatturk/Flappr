@@ -50,13 +50,40 @@ namespace Flappr.Controllers
         [HttpPost]
         public IActionResult Likes(Guid flapId)
         {
+            var userIdString = HttpContext.Session.GetString("userId");
+            if (string.IsNullOrEmpty(userIdString))
+                return RedirectToAction("Login", "Auth"); // Giriş yoksa login sayfasına yönlendir
+
+            var userId = Guid.Parse(userIdString);
+
+            var existingLike = _context.FlapLike
+                .FirstOrDefault(l => l.FlapId == flapId && l.UserId == userId);
+
             var flap = _context.Flaps.FirstOrDefault(f => f.Id == flapId);
-            if (flap != null)
+            if (flap == null) return RedirectToAction("Index", "Home");
+
+            if (existingLike != null)
             {
-                flap.LikeCount += 1;
-                _context.SaveChanges();
+                _context.FlapLike.Remove(existingLike);
+                flap.LikeCount -= 1; // LikeCount'u azalt
             }
-            return RedirectToAction("Index", "Home");
+            else
+            {
+                var newLike = new FlapLike
+                {
+                    Id = Guid.NewGuid(),
+                    FlapId = flapId,
+                    UserId = userId,
+                    CreatedDate = DateTime.UtcNow
+                };
+                _context.FlapLike.Add(newLike);
+                flap.LikeCount += 1; // LikeCount'u arttır
+            }
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Home"); // Veya bulunduğun sayfaya dön
         }
+
     }
 }
