@@ -20,6 +20,8 @@ namespace Flappr.Dto
         public bool Visibility { get; set; }
         public DateTime CreatedDate { get; set; }
         public int CommentsCount { get; set; }
+        public int LikeCount { get; set; }
+        public bool IsLikedByCurrentUser { get; set; }
     }
 
     public class UserDto

@@ -89,7 +89,7 @@ namespace Flappr.Controllers
             return _context.Flaps.Any(f => f.Id == id);
         }
 
-        //[CustomAuthorize]
+        [CustomAuthorize]
         public IActionResult Index()
         {
             ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
@@ -136,12 +136,12 @@ namespace Flappr.Controllers
                 return View("Login");
             }
 
-            //var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
-            //if (!recaptchaValid)
-            //{
-            //    TempData["AuthError"] = "reCAPTCHA doðrulamasý baþarýsýz.";
-            //    return RedirectToAction("Login");
-            //}
+            var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
+            if (!recaptchaValid)
+            {
+                TempData["AuthError"] = "reCAPTCHA doðrulamasý baþarýsýz.";
+                return View("Login");
+            }
 
             var hashedPassword = Helper.Hash(model.Password);
 
@@ -159,7 +159,7 @@ namespace Flappr.Controllers
             }
 
             TempData["AuthError"] = "E-Posta veya þifre hatalý";
-            return RedirectToAction("Login");
+            return View("Login");
         }
 
         private async Task<bool> VerifyRecaptchaLogin(string token)
@@ -260,7 +260,6 @@ namespace Flappr.Controllers
 
             return View("Login");
         }
-         
 
         private async Task<bool> VerifyRecaptchaRegister(string token)
         {
@@ -286,7 +285,7 @@ namespace Flappr.Controllers
 
                 dynamic result = JsonConvert.DeserializeObject(responseString);
 
-                return result.success == true && result.score >= 0.6 && result.action == "register";
+                return result.success == true && result.score >= 0.7 && result.action == "register";
             }
             catch
             {
@@ -389,6 +388,7 @@ namespace Flappr.Controllers
                 UserUsername = flapEntity.User.Username,
                 UserNickname = flapEntity.User.Nickname,
                 Flap = flapEntity,
+                LikeCount = flapEntity.LikeCount,
                 IsLikedByCurrentUser = userId != null && _context.FlapLike.Any(l => l.FlapId == flapEntity.Id && l.UserId == userId),
                 Comments = _context.Comments
                     .Where(c => c.FlapId == flapEntity.Id)
@@ -477,9 +477,12 @@ namespace Flappr.Controllers
                     ImgUrl = f.User.ImgUrl,
                     Visibility = f.Visibility,
                     CreatedDate = f.CreatedDate,
-                    CommentsCount = f.CommentCount
+                    CommentsCount = f.CommentCount,
+                    LikeCount = _context.FlapLike.Count(l => l.FlapId == f.Id),
+                    IsLikedByCurrentUser = currentUserId != null &&
+                                           _context.FlapLike.Any(l => l.FlapId == f.Id && l.UserId == currentUserId)
                 })
-                .ToListAsync();
+                            .ToListAsync();
 
             var followersCount = await _context.Follows
                 .CountAsync(f => f.FollowingId == user.Id);
