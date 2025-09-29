@@ -42,7 +42,7 @@ namespace Flappr.Controllers
         [Route("/duzenle/{nickname}")]
         public IActionResult Duzenle(string nickname)
         {
-            ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
+            ViewData["Nickname"] = HttpContext.Session.GetString("Nickname");
 
             var checkLogin = CheckLoginn();
             if (!checkLogin)
