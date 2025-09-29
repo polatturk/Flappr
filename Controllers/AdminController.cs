@@ -4,6 +4,8 @@ using Flappr.Models;
 using Microsoft.AspNetCore.Authentication;
 using Flappr.Data;
 using Flappr.Dto;
+using Flappr.Filters;
+
 
 namespace Flappr.Controllers
 {
@@ -19,9 +21,9 @@ namespace Flappr.Controllers
             _configuration = configuration;
         }
 
-        public bool CheckLoginn()
+        public bool CheckLogin()
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("nickname")))
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Nickname")))
             {
                 return false;
             }
@@ -39,31 +41,31 @@ namespace Flappr.Controllers
             return user;
         }
 
+        [CustomAuthorize]
         [Route("/duzenle/{nickname}")]
         public IActionResult Duzenle(string nickname)
         {
             ViewData["Nickname"] = HttpContext.Session.GetString("Nickname");
 
-            var checkLogin = CheckLoginn();
+            var checkLogin = CheckLogin();
             if (!checkLogin)
             {
-                ViewBag.Message = "Bu işlemi gerçekleştirmek için giriş yapmanız gerekiyor.";
-                return View("Msg");
+                return RedirectToAction("ErrorMessage", "Interaction");
             }
 
             Guid? userId = UserIdGetirr(nickname);
             if (!Guid.TryParse(HttpContext.Session.GetString("userId"), out var currentUserId) || userId != currentUserId)
             {
-                ViewBag.Message = "Bu profili düzenleme yetkiniz yok.";
-                return View("Msg");
+                TempData["AuthError"] = "Bu profili düzenleme yetkiniz yok.";
+                return View("Profile" , "Home");
             }
 
             var user = _context.Users.FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
             {
-                ViewBag.Message = "Kullanıcı bulunamadı.";
-                return View("Msg");
+                TempData["AuthError"] = "Kullanıcı bulunamadı.";
+                return View("Profile", "Home");
             }
 
             return View(user);

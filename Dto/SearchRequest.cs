@@ -13,7 +13,7 @@ namespace Flappr.Dto
     public class SearchResponse
     {
         public Guid Id { get; set; }
-        public string Username { get; set; }
-        public string Nickname { get; set; }
+        public string UserUsername { get; set; }
+        public string UserNickname { get; set; }
     }
 }

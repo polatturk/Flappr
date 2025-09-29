@@ -641,8 +641,8 @@ namespace Flappr.Controllers
                 .Select(u => new SearchResponse
                 {
                     Id = u.Id,
-                    Username = u.Username,
-                    Nickname = u.Nickname
+                    UserUsername = u.Username,
+                    UserNickname = u.Nickname
                 })
                 .ToListAsync();
 
