@@ -35,7 +35,7 @@
 
             <h2 style="text-align:left; margin-bottom:8px;">5. Bize Ulaşın</h2>
             <p class="muted" style="text-align:left;">
-                Bu Gizlilik Politikası ile ilgili sorularınız için lütfen <a href="" style="color: var(--accent);">İletişim</a> adresinden bizimle iletişime geçin.
+                Bu Gizlilik Politikası ile ilgili sorularınız için lütfen <a href="/Interaction/Contact" style="color: var(--accent);">İletişim</a> adresinden bizimle iletişime geçin.
             </p>
         </div>
 
@@ -75,17 +75,14 @@
 
     /* card */
     .card {
-        width: 100%;
-        max-width: 720px;
-        background: rgba(10, 10, 15, 0.95); /* 🔥 koyu siyah, hafif transparan */
-        border-radius: var(--radius);
-        padding: 36px;
-        box-shadow: var(--shadow);
-        border: 1px solid rgba(255,255,255,0.04);
+        width: min(420px, 92vw);
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        border-radius: 14px;
+        padding: 28px;
         text-align: center;
-        backdrop-filter: blur(6px) saturate(120%);
-        -webkit-backdrop-filter: blur(6px) saturate(120%);
-        animation: floatIn 420ms cubic-bezier(.2,.9,.2,1);
+        box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
     }
 
     @@keyframes floatIn {

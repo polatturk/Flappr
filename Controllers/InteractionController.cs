@@ -26,6 +26,10 @@ namespace Flappr.Controllers
         public IActionResult Messages(){return View();}
         [AllowAnonymous]
         public IActionResult ErrorMessages(){return View();}
+        public IActionResult Contact() 
+        {
+            return View(); 
+        }
 
         [HttpPost]
         public IActionResult Follows(Guid followerId, Guid followingId)
