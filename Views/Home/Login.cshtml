@@ -1,10 +1,11 @@
-﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @model User
 
 @{
     ViewData["Title"] = "Login - ";
 }
+
 <style>
     body {
         background-image: url('/img/soft-gradient.jpg');
@@ -15,19 +16,20 @@
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    .login-container {
-        background: rgba(0, 0, 0, 0.5);
-        border-radius: 20px;
-        padding: 40px 30px;
+    .card {
+        width: min(390px, 90vw);
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        border-radius: 14px;
+        padding: 28px 20px;
+        text-align: center;
+        box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
         color: #fff;
-        width: 100%;
-        max-width: 400px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(8px);
-        margin: 0 auto;
+        margin: 20px auto;
     }
 
-        .login-container input {
+        .card input {
             width: 100%;
             padding: 10px 15px;
             background: rgba(255, 255, 255, 0.1);
@@ -36,126 +38,52 @@
             color: #fff;
             font-size: 1rem;
             transition: background 0.3s ease;
+            margin-bottom: 20px; /* aralık arttı */
         }
 
-            .login-container input::placeholder {
+            .card input::placeholder {
                 color: #ccc;
             }
 
-            .login-container input:focus {
+            .card input:focus {
                 background: rgba(255, 255, 255, 0.15) !important;
                 outline: none;
-                box-shadow: 0 0 5px #4da3ff;
+                box-shadow: 0 0 8px 2px rgba(77, 163, 255, 0.5); /* yumuşak glow efekti */
                 color: #fff;
+                transition: background 0.3s ease, box-shadow 0.3s ease;
             }
+
+        .card label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
 
     .btn-login {
         background-color: #4da3ff;
         border: none;
         transition: background-color 0.3s ease;
+        width: 100%;
+        padding: 10px 0;
+        border-radius: 10px;
+        font-weight: 600;
+        color: #fff;
     }
 
         .btn-login:hover {
             background-color: #1e80e0;
         }
 
-    .login-container input:focus {
-        outline: none;
-        box-shadow: none;
-    }
-
-    .auth-links {
-        margin-top: 30px;
-        text-align: center;
-    }
-
-        .auth-links a {
-            display: inline-block;
-            margin: 0 10px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            color: #a7cdf0;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-            .auth-links a:hover {
-                color: #4da3ff;
-                text-decoration: underline;
-            }
-
-    .social-login {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .social-login-title {
-        margin-bottom: 10px;
-        font-size: 0.95rem;
-        color: #ccc;
-    }
-
-    .social-icons a {
-        margin: 0 8px;
-        color: white;
-        font-size: 1.4rem;
-        transition: transform 0.3s ease, color 0.3s ease;
-    }
-
-        .social-icons a:hover {
-            color: #4da3ff;
-            transform: scale(1.2);
-        }
-
-    .position-relative .toggle-password {
+    .toggle-password {
         position: absolute;
         right: 15px;
-        top: 72%;
+        top: 55%; /* icon biraz aşağı indi */
         transform: translateY(-50%);
         cursor: pointer;
-        color: #ccc;
-        font-size: 1.1rem;
-        line-height: 1;
-        height: auto; /* 💥 BU satır önemli */
+        color: #fff;
+        font-size: 1.2rem;
     }
-
-    .action-buttons a {
-        display: inline-block;
-        margin-top: 15px;
-        margin-right: 15px;
-        font-size: 0.95rem;
-        color: #a7cdf0;
-    }
-
-        .action-buttons a i {
-            margin-right: 5px;
-        }
-
-        .action-buttons a:hover {
-            text-decoration: underline;
-            color: #4da3ff;
-        }
-
-    .auth-btn {
-        background-color: rgba(255, 255, 255, 0.1);
-        color: #a7cdf0;
-        border: 1px solid #4da3ff;
-        padding: 10px 20px;
-        font-weight: 500;
-        font-size: 0.95rem;
-        border-radius: 30px;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-    }
-
-        .auth-btn:hover {
-            background-color: #4da3ff;
-            color: #fff;
-            border-color: #4da3ff;
-            text-decoration: none;
-        }
 
     .social-btn {
         display: inline-flex;
@@ -175,7 +103,6 @@
             text-decoration: none;
         }
 
-    /* Özel renkler */
     .google {
         background-color: #db4437;
     }
@@ -184,25 +111,32 @@
             background-color: #c1351d;
         }
 
-    .github {
-        background-color: #333;
+    .auth-btn {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #a7cdf0;
+        border: 1px solid #4da3ff;
+        padding: 10px 20px;
+        font-weight: 500;
+        font-size: 14px;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
     }
 
-        .github:hover {
-            background-color: #242424;
+        .auth-btn:hover {
+            background-color: #4da3ff;
+            color: #fff;
+            border-color: #4da3ff;
+            text-decoration: none;
         }
 
-    .twitter {
-        background-color: #1da1f2;
-    }
-
-        .twitter:hover {
-            background-color: #0d8ddb;
-        }
 </style>
 
 <div class="d-flex justify-content-center align-items-center vh-100">
-    <div class="login-container">
+    <div class="card">
         <h3 class="text-center mb-4">Giriş Yap</h3>
 
         @if (TempData["AuthError"] != null)
@@ -213,54 +147,33 @@
         }
 
         <form action="/Login" method="post" autocomplete="off">
-            <div class="mb-3">
-                <label for="email" class="form-label">E-Posta Adresiniz</label>
-                <input type="email"
-                       class="form-control"
-                       id="email"
-                       name="Mail"
-                       placeholder="örnek@gmail.com"
-                       required
-                       autocomplete="off" />
+            <div class="text-left">
+                <label for="email">E-Posta Adresiniz</label>
+                <input type="email" id="email" name="Mail" placeholder="örnek@gmail.com" required autocomplete="off" />
             </div>
 
-            <div class="mb-3 position-relative">
-                <label for="password" class="form-label">Şifre</label>
-                <input type="password"
-                       class="form-control pe-5"
-                       id="password"
-                       name="Password"
-                       placeholder="Şifrenizi girin"
-                       required
-                       autocomplete="current-password" />
+            <div class="position-relative text-left">
+                <label for="password">Şifre</label>
+                <input type="password" id="password" name="Password" placeholder="Şifrenizi girin" required autocomplete="current-password" />
                 <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"></i>
             </div>
 
             <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
 
-            <button type="submit" class="btn btn-login w-100 text-white mt-3">Giriş Yap</button>
+            <button type="submit" class="btn-login mt-3">Giriş Yap</button>
         </form>
 
         <div class="social-login mt-4">
             <div class="social-login-title text-center mb-3">veya Google ile giriş yap</div>
-            <div class="d-flex justify-content-center gap-3 flex-wrap">
-                <a href="/Home/GoogleLogin" title="Google ile Giriş" class="social-btn google">
-                    <i class="fab fa-google me-2"></i> Google
-                </a>
-            </div>
+            <a href="/Home/GoogleLogin" class="social-btn google">
+                <i class="fab fa-google"></i> Google
+            </a>
         </div>
-
         <hr />
-
-        <div class="auth-links-button-group mt-4 d-flex justify-content-center gap-3 flex-wrap">
-            <a href="/Sifre-unuttum" class="btn auth-btn">
-                <i class="fa-solid fa-unlock-keyhole me-2"></i> Şifremi Unuttum
-            </a>
-            <a href="/home/register" class="btn auth-btn">
-                <i class="fa-solid fa-user-plus me-2"></i> Kayıt Ol
-            </a>
+        <div class="auth-links-button-group  d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/Sifre-unuttum" class="auth-btn"><i class="fa-solid fa-unlock-keyhole"></i> Şifremi Unuttum</a>
+            <a href="/home/register" class="auth-btn"><i class="fa-solid fa-user-plus"></i> Kayıt Ol</a>
         </div>
-
     </div>
 </div>
 
@@ -288,8 +201,8 @@
                 msg.style.opacity = "0";
                 setTimeout(function () {
                     msg.remove();
-                }, 500); 
-            }, 2000); 
+                }, 500);
+            }, 2000);
         }
     });
 </script>

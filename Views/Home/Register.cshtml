@@ -1,5 +1,5 @@
-﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
 @model Flappr.Dto.RegisterRequest
 
@@ -17,25 +17,24 @@
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    
-
-    .register-form {
-        background: rgba(0, 0, 0, 0.5);
-        border-radius: 20px;
-        padding: 40px 30px;
+    .card {
+        width: min(400px, 92vw);
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        border-radius: 14px;
+        padding: 28px 20px;
+        text-align: center;
+        box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
         color: #fff;
-        width: 100%;
-        max-width: 400px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(8px);
-        margin: 0 auto;
+        margin: 20px auto;
     }
 
-        .register-form p {
-            margin-bottom: 1.2rem;
+        .card h3 {
+            margin-bottom: 1.5rem;
         }
 
-        .register-form input {
+        .card input {
             width: 100%;
             padding: 10px 15px;
             background: rgba(255, 255, 255, 0.1);
@@ -44,20 +43,29 @@
             color: #fff;
             font-size: 1rem;
             transition: background 0.3s ease;
+            margin-bottom: 20px;
         }
 
-            .register-form input::placeholder {
+            .card input::placeholder {
                 color: #ccc;
             }
 
-            .register-form input:focus {
+            .card input:focus {
                 background: rgba(255, 255, 255, 0.15) !important;
                 outline: none;
-                box-shadow: 0 0 5px #4da3ff;
+                box-shadow: 0 0 8px 2px rgba(77, 163, 255, 0.5); /* yumuşak glow efekti */
                 color: #fff;
+                transition: background 0.3s ease, box-shadow 0.3s ease;
             }
 
-        .register-form button {
+        .card label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .card button {
             width: 100%;
             padding: 10px 0;
             background-color: #4da3ff;
@@ -70,7 +78,7 @@
             transition: background-color 0.3s ease;
         }
 
-            .register-form button:hover {
+            .card button:hover {
                 background-color: #1e80e0;
             }
 
@@ -88,7 +96,7 @@
     .social-btn {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
+        gap: 12px;
         padding: 10px 18px;
         border-radius: 30px;
         font-size: 0.95rem;
@@ -145,6 +153,7 @@
         text-decoration: none;
         display: inline-flex;
         align-items: center;
+        gap: 10px;
         margin: 5px;
     }
 
@@ -158,10 +167,20 @@
             border-color: #4da3ff;
             text-decoration: none;
         }
+
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 70%; /* icon biraz aşağı indi */
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #fff;
+        font-size: 1.2rem;
+    }
 </style>
 
-<form action="/KayitOl" method="post" autocomplete="off" class="register-form">
-    <h3 class="text-center mb-4">Kayıt Ol</h3>
+<div class="card">
+    <h3 class="text-center">Kayıt Ol</h3>
 
     @if (TempData["AuthError"] != null)
     {
@@ -170,48 +189,60 @@
         </div>
     }
 
-    <p>
+    <form action="/KayitOl" method="post" autocomplete="off">
+        <label>E-Posta Adresiniz</label>
         <input required type="email" asp-for="Mail" placeholder="örnek@gmail.com" value="@Model.Mail" />
-    </p>
-    <p>
+
+        <label>Kullanıcı Adı</label>
         <input required type="text" asp-for="Nickname" placeholder="Kullanıcı Adı" value="@Model.Nickname" />
-    </p>
-    <p>
+
+        <label>Ad Soyad</label>
         <input required type="text" asp-for="Username" placeholder="Ad Soyad" value="@Model.Username" />
-    </p>
-    <p>
-        <input required type="password" asp-for="Password" placeholder="Şifre" />
-    </p>
-    <p>
-        <input required type="password" asp-for="Pwconfirmend" placeholder="Tekrar Şifre Giriniz" />
-    </p>
 
-    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
+        <div class="position-relative mb-3">
+            <label>Şifre</label>
+            <input required type="password" asp-for="Password" placeholder="Şifre" class="form-control" />
+            <i class="fa-solid fa-eye toggle-password" onclick="togglePassword(this)"></i>
+        </div>
 
-    <button type="submit">Kayıt Ol</button>
-    
+        <div class="position-relative mb-3">
+            <label>Tekrar Şifre</label>
+            <input required type="password" asp-for="Pwconfirmend" placeholder="Tekrar Şifre Giriniz" class="form-control" />
+            <i class="fa-solid fa-eye toggle-password" onclick="togglePassword(this)"></i>
+        </div>
+
+        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
+
+        <button type="submit">Kayıt Ol</button>
+    </form>
+
     <p class="text-center mt-3 small">
-        Kayıt olarak <a href="/home/privacy" target="_blank">Gizlilik Politikası</a> ve
-        <a href="/home/termsofservice" target="_blank">Kullanım Şartları</a>'nı kabul etmiş oluyorsunuz.
+        Kayıt olarak
+        <a href="/home/privacy" class="text-warning">Gizlilik Politikası</a> ve
+        <a href="/home/termsofservice" class="text-warning">Kullanım Şartları</a>'nı kabul etmiş oluyorsunuz.
     </p>
-
-    <div class="auth-links-button-group mt-4 d-flex justify-content-center gap-3 flex-wrap">
-        <a href="/home/login" class="btn auth-btn">
-            <i class="fa-solid fa-user-plus me-2"></i> Giriş Yap
-        </a>
-    </div>
-</form>
+</div>
 
 <script>
+
+    function togglePassword(icon) {
+        const input = icon.previousElementSibling;
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.replace("fa-eye-slash", "fa-eye");
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         var msg = document.getElementById("formMessage");
         if (msg) {
             setTimeout(function () {
                 msg.style.transition = "opacity 0.5s ease";
                 msg.style.opacity = "0";
-                setTimeout(function () {
-                    msg.remove();
-                }, 500);
+                setTimeout(function () { msg.remove(); }, 500);
             }, 2000);
         }
     });
@@ -226,4 +257,3 @@
             });
     });
 </script>
-
