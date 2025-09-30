@@ -75,7 +75,7 @@
 
     <div>
         <div id="nameTab" data-tab-content>
-            <form id="updateNameForm" action="/duzenle/@Model.Id" method="post" autocomplete="off">
+            <form id="updateNameForm" action="/edit/@Model.Id" method="post" autocomplete="off">
                 <div class="mb-4 text-left">
                     <label for="name" class="tab-content-label text-white">Ad Soyad</label>
                     <input type="text" id="name" name="username" value="@Model.Username"
@@ -89,7 +89,7 @@
         </div>
 
         <div id="passwordTab" data-tab-content class="hidden">
-            <form id="updatePasswordForm" action="/duzenle/@Model.Id" method="post" autocomplete="off">
+            <form id="updatePasswordForm" action="/edit/@Model.Id" method="post" autocomplete="off">
                 <div class="mb-4 text-left">
                     <label for="password" class="tab-content-label text-white">Yeni Şifre</label>
                     <input type="password" id="password" name="password"
@@ -103,19 +103,23 @@
         </div>
 
         <div id="photoTab" data-tab-content class="hidden">
-            <form id="updatePhotoForm" action="/duzenlepp/@Model.Id" method="post" enctype="multipart/form-data" autocomplete="off">
+            <form id="updatePhotoForm" action="/edit/@Model.Id" method="post" enctype="multipart/form-data" autocomplete="off">
                 <div class="mb-4 text-left">
                     <label for="photo" class="tab-content-label text-white">Profil Fotoğrafı</label>
                     <input type="file" id="photo" name="image" accept="image/png, image/jpeg"
                            class="w-full px-3 py-2 border border-gray-700 rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
                     <small class="text-gray-400">Maksimum boyut: 2MB</small>
                 </div>
+
+                <input type="hidden" name="username" value="@Model.Username" />
                 <input type="hidden" name="nickname" value="@Model.Nickname" />
+
                 <button type="submit"
                         class="w-full bg-blue-500 text-white py-2 rounded-lg shadow-md hover:bg-blue-600">
                     Güncelle
                 </button>
             </form>
+
         </div>
     </div>
 </div>

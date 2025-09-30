@@ -57,7 +57,6 @@ namespace Flappr.Controllers
 
             await client.SendMailAsync(mailMessage);
         }
-
         public bool CheckLogin()
         {
             var userMail = HttpContext.Session.GetString("Mail");

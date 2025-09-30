@@ -97,7 +97,7 @@
 <body class="bg-gray-200">
     <div class="profile-card card">
         <div class="flex items-center">
-            <img class="w-24 h-24 rounded-full" src="/uploads/images.jpg" alt="Profile Photo">
+            <img class="w-24 h-24 rounded-full" src="/uploads/pp.jpg" alt="Profile Photo">
 
             <div class="ml-6 flex-1">
                 <div class="flex items-center justify-between">
@@ -107,7 +107,7 @@
                     @if (ViewBag.profile)
                     {
                         <a class="flex items-center gap-2 border border-gray-400 text-gray-700 px-4 py-1.5 rounded-full hover:bg-gray-100 transition text-sm font-medium"
-                           href="/duzenle/@Model.User.Nickname">
+                           href="/edit/@Model.User.Nickname">
                             ✏️ Düzenle
                         </a>
                     }

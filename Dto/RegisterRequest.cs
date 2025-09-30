@@ -23,8 +23,6 @@ namespace Flappr.Dto
         [Required]
         public string Mail { get; set; }
 
-        //public IFormFile? Image { get; set; }
-
         [FromForm(Name = "g-recaptcha-response")]
         public string RecaptchaToken { get; set; }
     }

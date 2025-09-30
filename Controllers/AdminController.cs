@@ -53,8 +53,8 @@ namespace Flappr.Controllers
         }
 
         [CustomAuthorize]
-        [Route("/duzenle/{nickname}")]
-        public IActionResult Duzenle(string nickname)
+        [Route("/edit/{nickname}")]
+        public IActionResult Edit(string nickname)
         {
             ViewData["Nickname"] = HttpContext.Session.GetString("Nickname");
 
@@ -84,15 +84,9 @@ namespace Flappr.Controllers
 
 
         [HttpPost]
-        [Route("/duzenle/{id}")]
-        public async Task<IActionResult> Duzenle(RegisterRequest model)
+        [Route("/edit/{id}")]
+        public async Task<IActionResult> Edit(UserDto model)
         {
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Message = "Geçersiz veri gönderildi.";
-                return View("Msg");
-            }
-
             var user = await _context.Users.FindAsync(model.Id);
             if (user == null)
             {
@@ -107,25 +101,25 @@ namespace Flappr.Controllers
                 user.Password = Helper.Hash(model.Password);
             }
 
-            //if (model.Image != null && model.Image.Length > 0)
-            //{
-            //    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Image.FileName);
-            //    var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            if (model.ImgUrl != null && model.Image.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Image.FileName);
+                var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
 
-            //    if (!Directory.Exists(uploadPath))
-            //    {
-            //        Directory.CreateDirectory(uploadPath);
-            //    }
+                if (!Directory.Exists(uploadPath))
+                {
+                    Directory.CreateDirectory(uploadPath);
+                }
 
-            //    var filePath = Path.Combine(uploadPath, fileName);
+                var filePath = Path.Combine(uploadPath, fileName);
 
-            //    using (var stream = new FileStream(filePath, FileMode.Create))
-            //    {
-            //        await model.Image.CopyToAsync(stream);
-            //    }
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.Image.CopyToAsync(stream);
+                }
 
-            //    user.ImgUrl = $"/uploads/{fileName}";
-            //}
+                user.ImgUrl = $"/uploads/{fileName}";
+            }
 
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
@@ -133,7 +127,6 @@ namespace Flappr.Controllers
             ViewBag.Message = "Profil başarıyla güncellendi.";
             return View("Msg");
         }
-
 
         [CustomAuthorize]
         [Route("/flapEdit/{flapId}")]
