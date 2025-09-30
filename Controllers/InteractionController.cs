@@ -52,11 +52,11 @@ namespace Flappr.Controllers
         }
 
         [HttpPost]
-        public IActionResult Likes(Guid flapId)
+        public IActionResult Likes(Guid flapId, string returnUrl)
         {
             var userIdString = HttpContext.Session.GetString("userId");
             if (string.IsNullOrEmpty(userIdString))
-                return RedirectToAction("Login", "Auth"); // Giriş yoksa login sayfasına yönlendir
+                return RedirectToAction("Login", "Home"); 
 
             var userId = Guid.Parse(userIdString);
 
@@ -69,7 +69,7 @@ namespace Flappr.Controllers
             if (existingLike != null)
             {
                 _context.FlapLike.Remove(existingLike);
-                flap.LikeCount -= 1; // LikeCount'u azalt
+                flap.LikeCount -= 1;
             }
             else
             {
@@ -81,13 +81,15 @@ namespace Flappr.Controllers
                     CreatedDate = DateTime.UtcNow
                 };
                 _context.FlapLike.Add(newLike);
-                flap.LikeCount += 1; // LikeCount'u arttır
+                flap.LikeCount += 1;
             }
 
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Home"); // Veya bulunduğun sayfaya dön
-        }
+            if (!string.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
 
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

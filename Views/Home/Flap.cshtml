@@ -6,25 +6,27 @@
 @section Styles {
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
 }
 
 <body class="bg-gray-100">
 
-    <div class="max-w-lg mx-auto mt-10">
+    <div class="max-w-lg mx-auto mt-10 space-y-4">
 
+        <!-- Geri Butonu -->
         <div class="p-4">
-            <a href="javascript:history.back()" class="inline-flex items-center text-blue-500 hover:text-blue-600 font-medium">
+            <a href="/home/Index" class="inline-flex items-center text-blue-500 hover:text-blue-600 font-medium">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
                 Geri
             </a>
         </div>
-        <div class="bg-blue-50 p-4 rounded-lg shadow-md border border-blue-300">
+
+        <!-- Flap Detay -->
+        <div class="flap-item">
             <div class="flex items-start">
                 <a href="/profile/@Model.UserNickname">
-                    <img class="w-12 h-12 rounded-full" src="/uploads/images.jpg" alt="Profil">
+                    <img class="flap-avatar" src="/uploads/images.jpg" alt="Profil">
                 </a>
                 <div class="ml-4 w-full">
                     <div class="flex items-center space-x-2">
@@ -41,21 +43,20 @@
                     </p>
 
                     <div class="flex items-center mt-4 space-x-6 text-gray-500">
-                        <a href="/Flap/@Model.Flap.Id"
-                           class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 hover:bg-gray-300 transition duration-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                      d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4.3-.93L3 20l1.14-3.42A7.96 7.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        <a href="/Flap/@Model.Flap.Id" class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 hover:bg-gray-300 transition duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4.3-.93L3 20l1.14-3.42A7.96 7.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                             </svg>
                             <span>@Model.Comments.Count</span>
                         </a>
 
+
+
                         <form method="post" action="/Interaction/Likes">
                             <input type="hidden" name="flapId" value="@Model.Flap.Id" />
-                            <button type="submit"
-                                    class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium
-                                   @(Model.IsLikedByCurrentUser ? "bg-gray-200 text-gray-800 hover:bg-gray-300" : "bg-gray-200 text-gray-800 hover:bg-gray-300")">
+                            <input type="hidden" name="returnUrl" value="@Url.Action("Flap", "Home", new { id = Model.Flap.Id })" />
+                            <button type="submit" class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium
+                                    @(Model.IsLikedByCurrentUser ? "bg-gray-200 text-gray-800 hover:bg-gray-300" : "bg-gray-200 text-gray-800 hover:bg-gray-300")">
                                 <i class="bi @(Model.IsLikedByCurrentUser ? "bi-suit-heart-fill text-danger" : "bi-suit-heart-fill text-white")"></i>
                                 <span>@Model.LikeCount</span>
                             </button>
@@ -65,86 +66,132 @@
             </div>
         </div>
 
-        <div class="bg-white p-4 rounded-xl shadow-md mt-4">
-            <h3 class="font-semibold text-lg text-gray-800 mb-2">Yorum Yap</h3>
-            <form class="flex flex-col gap-2" action="/AddYorum" method="post" autocomplete="off" onsubmit="return checkWordLimit()">
-                <textarea id="commentTextarea"
-                          name="Summary"
-                          rows="4"
-                          maxlength="280"
-                          class="w-full p-3 border border-gray-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                          placeholder="Yorumunuzu buraya yazın... (max 280 karakter)"></textarea>
-
-                <div class="flex justify-between items-center text-sm text-gray-500">
+        <!-- Yorum Formu -->
+        <div class="flap-item">
+            <h3 class="font-semibold text-lg mb-2">Yorum Yap</h3>
+            <form action="/AddYorum" method="post" class="flex flex-col gap-2" onsubmit="return checkWordLimit()">
+                <textarea id="commentTextarea" name="Summary" rows="4" maxlength="280"
+                          class="flap-textarea" placeholder="Yorumunuzu buraya yazın... (max 280 karakter)"></textarea>
+                <div class="flex justify-between items-center text-sm text-white">
                     <span id="charCount">0 / 280</span>
                 </div>
-
                 <input type="hidden" name="FlapId" value="@Model.Flap.Id" />
-
-                <button type="submit"
-                        class="self-end px-5 py-2 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-600 transition-colors duration-200">
-                    Gönder
-                </button>
+                <button type="submit" class="flap-btn self-end">Gönder</button>
             </form>
         </div>
 
-        <style>
-            .comment-text {
-                word-wrap: break-word; /* uzun kelimeleri böler */
-                word-break: break-word; /* tarayıcıya göre fallback */
-                white-space: pre-wrap; /* satır kaydırmayı korur */
-            }
-        </style>
-
-        <script>
-            const textarea = document.getElementById('commentTextarea');
-            const charCount = document.getElementById('charCount');
-
-            textarea.addEventListener('input', () => {
-                const length = textarea.value.length;
-                charCount.textContent = `${length} / 280`;
-            });
-
-            function checkWordLimit() {
-                if (textarea.value.length > 280) {
-                    alert("Yorum 280 karakterden uzun olamaz!");
-                    return false;
-                }
-                if (textarea.value.trim().length === 0) {
-                    alert("Yorum boş olamaz!");
-                    return false;
-                }
-                return true;
-            }
-        </script>
-
+        <!-- Yorumlar -->
         @if (Model.Comments != null && Model.Comments.Any())
         {
             @foreach (var item in Model.Comments)
             {
-                <div class="bg-white p-4 rounded-lg shadow-md mt-4">
+                <div class="flap-item">
                     <div class="flex items-start">
                         <a href="/profile/@item.Nickname">
-                            <img class="w-12 h-12 rounded-full" src="@item.ImgUrl ?? " /uploads/images.jpg"" alt="Yorum Yapan Profil">
+                            <img class="flap-avatar" src="@item.ImgUrl ?? " /uploads/images.jpg"" alt="Yorum Yapan Profil">
                         </a>
                         <div class="ml-4 w-full">
                             <div class="flex items-center">
-                                <a href="/profile/@item.Nickname" class="font-bold text-sm">
-                                    @item.Username
-                                </a>
+                                <a href="/profile/@item.Nickname" class="font-bold text-sm">@item.Username</a>
                                 <span class="text-gray-500 text-sm ml-2">@("@" + item.Nickname)</span>
                                 <span class="text-gray-500 text-sm ml-2">•</span>
                                 <span class="text-gray-500 text-sm ml-2">@TimeHelper.FormatTime(item.CreatedTime)</span>
                             </div>
-                            <p class="mt-2 text-gray-700 comment-text">@item.Summary</p>
+                            <p class="mt-2 comment-text">@item.Summary</p>
                         </div>
                         @if (ViewBag.yetki == "full" || ViewBag.id == item.UserId)
                         {
-                            <a href="/YorumSil/@item.Id?FlapId=@Model.Flap.Id" onclick="return confirm('Emin misin?')" class="btn btn-danger">Sil</a>
+                            <a href="/YorumSil/@item.Id?FlapId=@Model.Flap.Id" onclick="return confirm('Emin misin?')" class="btn btn-danger ml-2">Sil</a>
                         }
                     </div>
                 </div>
             }
         }
     </div>
+
+    <style>
+        .flap-item {
+            background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            backdrop-filter: blur(6px);
+            transition: box-shadow 0.3s ease;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+            .flap-item:hover {
+                box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            }
+
+        .flap-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin-right: 12px;
+            object-fit: cover;
+        }
+
+        .flap-textarea {
+            width: 100%;
+            border: none;
+            resize: none;
+            font-size: 15px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            color: #fff !important;
+            transition: background 0.2s ease, box-shadow 0.3s ease;
+        }
+
+            .flap-textarea:focus {
+                background: rgba(255,255,255,0.1);
+                outline: none;
+                box-shadow: 0 0 8px 2px rgba(77, 163, 255, 0.5);
+            }
+
+        .flap-btn {
+            background: linear-gradient(135deg, #4da3ff, #1e80e0);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 25px;
+            color: #fff;
+            font-weight: 600;
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+            .flap-btn:hover {
+                transform: translateY(-2px);
+                background: linear-gradient(135deg, #1e80e0, #4da3ff);
+            }
+
+        .comment-text {
+            word-wrap: break-word;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+    </style>
+
+    <script>
+        const textarea = document.getElementById('commentTextarea');
+        const charCount = document.getElementById('charCount');
+
+        textarea.addEventListener('input', () => {
+            charCount.textContent = `${textarea.value.length} / 280`;
+        });
+
+        function checkWordLimit() {
+            if (textarea.value.length > 280) {
+                alert("Yorum 280 karakterden uzun olamaz!");
+                return false;
+            }
+            if (textarea.value.trim().length === 0) {
+                alert("Yorum boş olamaz!");
+                return false;
+            }
+            return true;
+        }
+    </script>
+
 </body>

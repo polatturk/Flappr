@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication;
 using Flappr.Data;
 using Flappr.Dto;
 using Flappr.Filters;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Flappr.Controllers
@@ -31,7 +33,7 @@ namespace Flappr.Controllers
             return true;
         }
 
-        public Guid? UserIdGetirr(string nickname)
+        public Guid? GetUserId(string nickname)
         {
             var user = _context.Users
                 .Where(u => u.Nickname == nickname)
@@ -39,6 +41,15 @@ namespace Flappr.Controllers
                 .FirstOrDefault();
 
             return user;
+        }
+        public Guid? GetFlapId(Guid flapId)
+        {
+            var flap = _context.Flaps
+                .Where(f => f.Id == flapId)
+                .Select(f => (Guid?)f.Id)
+                .FirstOrDefault();
+
+            return flap;
         }
 
         [CustomAuthorize]
@@ -53,7 +64,7 @@ namespace Flappr.Controllers
                 return RedirectToAction("ErrorMessage", "Interaction");
             }
 
-            Guid? userId = UserIdGetirr(nickname);
+            Guid? userId = GetUserId(nickname);
             if (!Guid.TryParse(HttpContext.Session.GetString("userId"), out var currentUserId) || userId != currentUserId)
             {
                 TempData["AuthError"] = "Bu profili düzenleme yetkiniz yok.";
@@ -121,6 +132,81 @@ namespace Flappr.Controllers
 
             ViewBag.Message = "Profil başarıyla güncellendi.";
             return View("Msg");
+        }
+
+
+        [CustomAuthorize]
+        [Route("/flapEdit/{flapId}")]
+        public IActionResult FlapEdit(Guid flapId)
+        {
+            var userIdSession = HttpContext.Session.GetString("userId");
+            if (!Guid.TryParse(userIdSession, out var currentUserId))
+            {
+                TempData["AuthError"] = "Giriş bilgileri alınamadı.";
+                return RedirectToAction("ErrorMessage", "Interaction");
+            }
+
+            var flap = _context.Flaps
+                 .Include(f => f.User) 
+                 .FirstOrDefault(f => f.Id == flapId);
+
+            if (flap == null)
+            {
+                TempData["AuthError"] = "Flap bulunamadı.";
+                return RedirectToAction("Profile", "Home");
+            }
+
+            if (flap.UserId != currentUserId)
+            {
+                TempData["AuthError"] = "Bu flap'ı düzenleme yetkiniz yok.";
+                return RedirectToAction("Profile", "Home");
+            }
+
+            var model = new FlapRequest
+            {
+                Id = flap.Id,
+                Detail = flap.Detail,
+                CreatedDate = flap.CreatedDate,
+                UserUsername = flap.User.Username,
+                UserNickname = flap.User.Nickname,
+                UserImgUrl = flap.User.ImgUrl
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("/flapEdit/{flapId}")]
+        public async Task<IActionResult> FlapEdit(Guid flapId, string detail)
+        {
+            var userIdSession = HttpContext.Session.GetString("userId");
+            if (!Guid.TryParse(userIdSession, out var currentUserId))
+            {
+                TempData["AuthError"] = "Giriş bilgileri alınamadı.";
+                return RedirectToAction("ErrorMessage", "Interaction");
+            }
+
+            var flap = _context.Flaps.FirstOrDefault(f => f.Id == flapId);
+
+            if (flap == null)
+            {
+                TempData["AuthError"] = "Flap bulunamadı.";
+                return RedirectToAction("Profile", "Home");
+            }
+
+            if (flap.UserId != currentUserId)
+            {
+                TempData["AuthError"] = "Bu flap'ı düzenleme yetkiniz yok.";
+                return RedirectToAction("Profile", "Home");
+            }
+
+            flap.Detail = detail;
+            flap.CreatedDate = DateTime.UtcNow;
+            _context.Flaps.Update(flap);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Flap başarıyla güncellendi!";
+            return RedirectToAction("Profile", "Home", new { nickname = flap.User.Nickname });
         }
     }
 }

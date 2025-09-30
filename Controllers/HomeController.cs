@@ -321,6 +321,7 @@ namespace Flappr.Controllers
 
             HttpContext.Session.SetString("userId", user.Id.ToString());
             HttpContext.Session.SetString("Mail", user.Mail);
+            HttpContext.Session.SetString("Nickname", user.Nickname);
 
             return RedirectToAction("Index", "Home");
         }

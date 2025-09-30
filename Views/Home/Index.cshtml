@@ -16,7 +16,7 @@
         top: 0;
         left: 0;
         height: 100vh;
-        width: 200px;
+        width: 220px;
         background-color: rgba(0, 0, 0, 0.85);
         display: flex;
         flex-direction: column;
@@ -138,7 +138,7 @@
         padding: 12px;
         border-radius: 12px;
         background: rgba(255,255,255,0.05);
-        color: #fff !important; /* yazıyı beyaz yapar */
+        color: #fff !important;
         transition: background 0.2s ease, box-shadow 0.3s ease;
     }
 
@@ -230,7 +230,7 @@
 
     body, .flap-item {
         font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        color: #0f1419;
+        color: #fff;
     }
 
         .flap-item h2 a {
@@ -322,28 +322,31 @@
                     <img class="flap-avatar" src="/uploads/images.jpg" alt="Profile Photo">
                 </a>
                 <div class="ml-3 w-100">
-                    <div class="d-flex align-items-center mb-1">
+                    <div class="d-flex align-items-center space-x-2">
                         <h2 class="font-weight-bold mb-0">
                             <a href="/profile/@flap.UserNickname">@flap.UserUsername</a>
                         </h2>
-                        <span class="text-muted ml-2">@("@" + flap.UserNickname)</span>
-                        <span class="text-muted mx-1">·</span>
-                        <span class="text-muted">@TimeHelper.FormatTime(flap.CreatedDate)</span>
+                        <span class="text-gray-500 text-sm">@("@" + flap.UserNickname)</span>
+                        <span class="text-gray-500 text-sm">·</span>
+                        <span class="text-gray-500 text-sm">@TimeHelper.FormatTime(flap.CreatedDate)</span>
                     </div>
 
                     <a href="/Flap/@flap.Id" class="text-white block mt-2">@flap.Detail</a>
 
                     <div class="d-flex mt-3 gap-3 text-white">
-                        <a href="/Flap/@flap.Id" class="d-flex align-items-center gap-1 px-3 py-1 rounded-full bg-gray-700 hover:bg-gray-600 transition">
-                            <i class="fas fa-comment"></i> @flap.CommentsCount
+                        <a href="/Flap/@flap.Id" class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 hover:bg-gray-300 transition duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4.3-.93L3 20l1.14-3.42A7.96 7.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                            <span>@flap.Comments.Count</span>
                         </a>
 
-                        <form method="post" action="/Interaction/Likes" class="d-flex align-items-center">
+                        <form method="post" action="/Interaction/Likes">
                             <input type="hidden" name="flapId" value="@flap.Id" />
-                            <button type="submit"
-                                    class="d-flex align-items-center gap-1 px-3 py-1 rounded-full bg-gray-700 hover:bg-gray-600 transition text-white">
-                                <i class="bi @(flap.IsLikedByCurrentUser ? "bi-suit-heart-fill text-danger" : "bi-suit-heart")"></i>
-                                @flap.LikeCount
+                            <button type="submit" class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium
+                                    @(flap.IsLikedByCurrentUser ? "bg-gray-200 text-gray-800 hover:bg-gray-300" : "bg-gray-200 text-gray-800 hover:bg-gray-300")">
+                                <i class="bi @(flap.IsLikedByCurrentUser ? "bi-suit-heart-fill text-danger" : "bi-suit-heart-fill text-white")"></i>
+                                <span>@flap.LikeCount</span>
                             </button>
                         </form>
                     </div>
