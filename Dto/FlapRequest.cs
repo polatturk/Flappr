@@ -11,6 +11,7 @@ namespace Flappr.Dto
         public string UserUsername { get; set; }
         public string UserImgUrl { get; set; }
         public Flap Flap { get; set; }
+        public UserDto User { get; set; }
         public bool Visibility { get; set; }
         public int CommentsCount { get; set; }
         public List<Comment> Comments { get; set; } = new List<Comment>();

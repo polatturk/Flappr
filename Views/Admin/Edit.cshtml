@@ -74,52 +74,87 @@
 
 
     <div>
-        <div id="nameTab" data-tab-content>
+        <div id="nameTab" data-tab-content class="@(ViewBag.ActiveTab == "Username" ? "" : "hidden")">
             <form id="updateNameForm" action="/edit/@Model.Id" method="post" autocomplete="off">
+                <input type="hidden" name="FormType" value="Username" />
+
                 <div class="mb-4 text-left">
                     <label for="name" class="tab-content-label text-white">Ad Soyad</label>
-                    <input type="text" id="name" name="username" value="@Model.Username"
+                    <input type="text" id="name" name="Username" value="@Model.Username"
                            class="w-full px-3 py-2 border border-gray-700 rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
                 </div>
                 <button type="submit"
                         class="w-full bg-blue-500 text-white py-2 rounded-lg shadow-md hover:bg-blue-600">
                     Güncelle
                 </button>
+                @if (TempData["UsernameMessage"] != null)
+                {
+                    <div class="alert-message alert alert-danger text-center" style="margin-top:10px;">
+                        @TempData["UsernameMessage"]
+                    </div>
+                }
             </form>
         </div>
 
-        <div id="passwordTab" data-tab-content class="hidden">
+        <div id="passwordTab" data-tab-content class="@(ViewBag.ActiveTab == "Password" ? "" : "hidden")">
             <form id="updatePasswordForm" action="/edit/@Model.Id" method="post" autocomplete="off">
+                <input type="hidden" name="FormType" value="Password" />
+
                 <div class="mb-4 text-left">
                     <label for="password" class="tab-content-label text-white">Yeni Şifre</label>
-                    <input type="password" id="password" name="password"
+                    <input type="password" id="password" name="Password"
                            class="w-full px-3 py-2 border border-gray-700 rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
                 </div>
                 <button type="submit"
                         class="w-full bg-blue-500 text-white py-2 rounded-lg shadow-md hover:bg-blue-600">
                     Güncelle
                 </button>
+                @if (TempData["PasswordMessage"] != null)
+                {
+                    <div class="alert-message alert alert-danger text-center" style="margin-top:10px;">
+                        @TempData["PasswordMessage"]
+                    </div>
+                }
             </form>
         </div>
 
-        <div id="photoTab" data-tab-content class="hidden">
+        <div id="photoTab" data-tab-content class="@(ViewBag.ActiveTab == "Photo" ? "" : "hidden")">
             <form id="updatePhotoForm" action="/edit/@Model.Id" method="post" enctype="multipart/form-data" autocomplete="off">
+                <input type="hidden" name="FormType" value="Photo" />
+
                 <div class="mb-4 text-left">
                     <label for="photo" class="tab-content-label text-white">Profil Fotoğrafı</label>
-                    <input type="file" id="photo" name="image" accept="image/png, image/jpeg"
+                    <input type="file" id="photo" name="Image" accept="image/png, image/jpeg"
                            class="w-full px-3 py-2 border border-gray-700 rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
                     <small class="text-gray-400">Maksimum boyut: 2MB</small>
                 </div>
 
-                <input type="hidden" name="username" value="@Model.Username" />
-                <input type="hidden" name="nickname" value="@Model.Nickname" />
+                <input type="hidden" name="Username" value="@Model.Username" />
+                <input type="hidden" name="Nickname" value="@Model.Nickname" />
 
                 <button type="submit"
                         class="w-full bg-blue-500 text-white py-2 rounded-lg shadow-md hover:bg-blue-600">
                     Güncelle
                 </button>
+                @if (TempData["PhotoMessage"] != null)
+                {
+                    <div class="alert-message alert alert-danger text-center" style="margin-top:10px;">
+                        @TempData["PhotoMessage"]
+                    </div>
+                }
             </form>
 
         </div>
+        <script>
+            // Tüm alert-message sınıflı divleri seç
+            document.querySelectorAll('.alert-message').forEach(function (msg) {
+                // 2 saniye sonra fade out
+                setTimeout(function () {
+                    msg.style.transition = "opacity 0.5s";
+                    msg.style.opacity = 0;
+                    setTimeout(function () { msg.remove(); }, 500);
+                }, 2000);
+            });
+        </script>
     </div>
 </div>

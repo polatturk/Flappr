@@ -96,8 +96,15 @@
  </style>
 <body class="bg-gray-200">
     <div class="profile-card card">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div id="formMessage" class="alert alert-success text-center">
+                @TempData["SuccessMessage"]
+            </div>
+        }
         <div class="flex items-center">
-            <img class="w-24 h-24 rounded-full" src="/uploads/pp.jpg" alt="Profile Photo">
+            
+            <img class="w-24 h-24 rounded-full" src="@(Model.User.ImgUrl)" alt="Profile Photo">
 
             <div class="ml-6 flex-1">
                 <div class="flex items-center justify-between">
@@ -172,7 +179,7 @@
                     }
 
                     <div class="flex items-center gap-3 mb-2">
-                        <img src="@item.ImgUrl ?? " /uploads/images.jpg"" alt="Profil" class="w-10 h-10 rounded-full">
+                        <img src="@(Model.User.ImgUrl)" alt="Profil" class="w-10 h-10 rounded-full">
                         <div class="flex items-center">
                             <h3 class="text-white font-semibold">@item.Username</h3>
                             <span class="text-gray-400 text-base ml-2">@("@" + item.Nickname)</span>
@@ -223,6 +230,19 @@
                 </script>
             }
         </div>
-
-    </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var msg = document.getElementById("formMessage");
+                if (msg) {
+                    setTimeout(function () {
+                        msg.style.transition = "opacity 0.5s ease";
+                        msg.style.opacity = "0";
+                        setTimeout(function () {
+                            msg.remove();
+                        }, 500);
+                    }, 2000);
+                }
+            });
+        </script>
+    </div>  
 </body>

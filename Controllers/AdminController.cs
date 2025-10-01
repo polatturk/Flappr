@@ -7,6 +7,7 @@ using Flappr.Dto;
 using Flappr.Filters;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Eventing.Reader;
 
 
 namespace Flappr.Controllers
@@ -85,48 +86,87 @@ namespace Flappr.Controllers
 
         [HttpPost]
         [Route("/edit/{id}")]
-        public async Task<IActionResult> Edit(UserDto model)
+        public async Task<IActionResult> Edit(UserDto model, string FormType)
         {
             var user = await _context.Users.FindAsync(model.Id);
-            if (user == null)
+            if (user == null) return NotFound();
+
+            bool isUpdated = false;
+
+            switch (FormType)
             {
-                ViewBag.Message = "Kullanıcı bulunamadı.";
-                return View("Msg");
+                case "Username":
+                    if (!string.IsNullOrWhiteSpace(model.Username) && user.Username != model.Username)
+                    {
+                        user.Username = model.Username;
+                        isUpdated = true;
+                    }
+
+                    if (isUpdated)
+                        TempData["SuccessMessage"] = "Kullanıcı adı başarıyla güncellendi.";
+                    else
+                        TempData["UsernameMessage"] = "Kullanıcı adı için değişiklik yapılmadı..";
+                break;
+
+                case "Password":
+                    if (!string.IsNullOrWhiteSpace(model.Password))
+                    {
+                        user.Password = Helper.Hash(model.Password);
+                        isUpdated = true;
+                    }
+
+                    if (isUpdated)
+                        TempData["SuccessMessage"] = "Şifre başarıyla güncellendi.";
+                    else
+                        TempData["PasswordMessage"] = "Şifre değişiklik yapılmadı.";
+                break;
+
+                case "Photo":
+                    if (model.Image != null && model.Image.Length > 0)
+                    {
+                        const long maxFileSize = 2 * 1024 * 1024; // 2 MB
+                        if (model.Image.Length <= maxFileSize)
+                        {
+                            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(model.Image.FileName)}";
+                            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+                            if (!Directory.Exists(uploadPath))
+                                Directory.CreateDirectory(uploadPath);
+
+                            var filePath = Path.Combine(uploadPath, fileName);
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await model.Image.CopyToAsync(stream);
+                            }
+
+                            user.ImgUrl = $"/uploads/{fileName}";
+                            isUpdated = true;
+                            TempData["SuccessMessage"] = "Fotoğraf başarıyla güncellendi.";
+                        }
+                        else
+                        {
+                            TempData["PhotoMessage"] = "Fotoğraf yükleme hatası ! Maksimum boyut 2MB";
+                        }
+                    }
+                    else
+                    {
+                        TempData["PhotoMessage"] = "Fotoğraf seçilmedi.";
+                    }
+                break;
+
             }
 
-            user.Username = model.Username;
-
-            if (!string.IsNullOrWhiteSpace(model.Password))
+            if (isUpdated)
             {
-                user.Password = Helper.Hash(model.Password);
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Profile", "Home");
             }
-
-            if (model.ImgUrl != null && model.Image.Length > 0)
-            {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Image.FileName);
-                var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-
-                if (!Directory.Exists(uploadPath))
-                {
-                    Directory.CreateDirectory(uploadPath);
-                }
-
-                var filePath = Path.Combine(uploadPath, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await model.Image.CopyToAsync(stream);
-                }
-
-                user.ImgUrl = $"/uploads/{fileName}";
-            }
-
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-
-            ViewBag.Message = "Profil başarıyla güncellendi.";
-            return View("Msg");
+            ViewBag.ActiveTab = FormType;
+            return View(user);
         }
+
 
         [CustomAuthorize]
         [Route("/flapEdit/{flapId}")]
@@ -135,7 +175,6 @@ namespace Flappr.Controllers
             var userIdSession = HttpContext.Session.GetString("userId");
             if (!Guid.TryParse(userIdSession, out var currentUserId))
             {
-                TempData["AuthError"] = "Giriş bilgileri alınamadı.";
                 return RedirectToAction("ErrorMessage", "Interaction");
             }
 

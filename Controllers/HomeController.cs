@@ -88,14 +88,31 @@ namespace Flappr.Controllers
             return _context.Flaps.Any(f => f.Id == id);
         }
 
-        [CustomAuthorize]
+        //[CustomAuthorize]
         public IActionResult Index()
         {
-            ViewData["Nickname"] = HttpContext.Session.GetString("nickname");
-
+            // Session'dan kullanýcý bilgilerini al
             var userIdString = HttpContext.Session.GetString("userId");
             Guid? userId = userIdString != null ? Guid.Parse(userIdString) : (Guid?)null;
 
+            // Current user bilgisi (flap ekleme formu için)
+            UserDto currentUser = null;
+            if (userId != null)
+            {
+                currentUser = _context.Users
+                    .Where(u => u.Id == userId)
+                    .Select(u => new UserDto
+                    {
+                        Id = u.Id,
+                        Nickname = u.Nickname,
+                        Username = u.Username,
+                        ImgUrl = u.ImgUrl
+                    })
+                    .FirstOrDefault();
+            }
+            ViewBag.CurrentUser = currentUser;
+
+            // Flapleri listele
             var flaps = _context.Flaps
                 .Where(f => f.Visibility)
                 .Include(f => f.User)
@@ -117,6 +134,7 @@ namespace Flappr.Controllers
             return View(flaps);
         }
 
+
         [AllowAnonymous]
         [HttpGet]
         public IActionResult Login(){return View();}
@@ -135,12 +153,12 @@ namespace Flappr.Controllers
                 return View("Login");
             }
 
-            var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
-            if (!recaptchaValid)
-            {
-                TempData["AuthError"] = "reCAPTCHA doðrulamasý baþarýsýz.";
-                return View("Login");
-            }
+            //var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
+            //if (!recaptchaValid)
+            //{
+            //    TempData["AuthError"] = "reCAPTCHA doðrulamasý baþarýsýz.";
+            //    return View("Login");
+            //}
 
             var hashedPassword = Helper.Hash(model.Password);
 

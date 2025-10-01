@@ -1,4 +1,5 @@
 ﻿using Flappr.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Flappr.Dto
 {
@@ -6,7 +7,6 @@ namespace Flappr.Dto
     {
         public List<FlapDto> Flaps { get; set; } = new List<FlapDto>();
         public UserDto User { get; set; }
-
         public int FollowersCount { get; set; }   
         public int FollowingCount { get; set; } 
     }
@@ -31,6 +31,7 @@ namespace Flappr.Dto
         public string Username { get; set; }
         public string Mail { get; set; }
         public string? ImgUrl { get; set; }
+        [NotMapped]
         public IFormFile? Image { get; set; }
         public Guid RoleId { get; set; }
         public string? RoleName { get; set; }

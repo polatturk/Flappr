@@ -296,7 +296,7 @@
     <div class="flap-form card-glass">
         <form action="/AddFlap" method="post" autocomplete="off">
             <div class="d-flex align-items-start mb-3">
-                <img src="/images/avatar.png" alt="User Avatar" class="flap-avatar" />
+                <img src="@(ViewBag.CurrentUser?.ImgUrl)" alt="User Avatar" class="flap-avatar" />
                 <textarea name="detail" class="form-control flap-textarea" id="FlapContent" rows="3" placeholder="Neler oluyor?"></textarea>
             </div>
 
@@ -319,7 +319,7 @@
         <div class="flap-item">
             <div class="d-flex align-items-start">
                 <a href="/profile/@flap.UserNickname">
-                    <img class="flap-avatar" src="/uploads/images.jpg" alt="Profile Photo">
+                    <img class="flap-avatar" src="@(ViewBag.CurrentUser?.ImgUrl)" alt="Profile Photo">
                 </a>
                 <div class="ml-3 w-100">
                     <div class="d-flex align-items-center space-x-2">
