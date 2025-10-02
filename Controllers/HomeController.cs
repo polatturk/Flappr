@@ -405,6 +405,7 @@ namespace Flappr.Controllers
                 CreatedDate = flapEntity.CreatedDate,
                 UserUsername = flapEntity.User.Username,
                 UserNickname = flapEntity.User.Nickname,
+                UserImgUrl = flapEntity.User.ImgUrl,
                 Flap = flapEntity,
                 LikeCount = flapEntity.LikeCount,
                 IsLikedByCurrentUser = userId != null && _context.FlapLike.Any(l => l.FlapId == flapEntity.Id && l.UserId == userId),
@@ -570,14 +571,19 @@ namespace Flappr.Controllers
         public IActionResult DeleteYorum(Guid Id, Guid FlapId)
         {
             var comment = _context.Comments.Find(Id);
-            if (comment != null)
-            {
-                _context.Comments.Remove(comment);
-                _context.SaveChanges();
-            }
+            if (comment == null)
+                return NotFound();
+
+            var flap = _context.Flaps.Find(FlapId);
+            if (flap == null)
+                return NotFound();
+
+            _context.Comments.Remove(comment);
+            _context.SaveChanges();
 
             return RedirectToAction("Flap", new { Id = FlapId });
         }
+
 
         [Route("/Flapsil/{Id}")]
         public IActionResult FlapSil(Guid Id, string nickname)

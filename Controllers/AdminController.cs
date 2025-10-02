@@ -211,24 +211,11 @@ namespace Flappr.Controllers
         [Route("/flapEdit/{flapId}")]
         public async Task<IActionResult> FlapEdit(Guid flapId, string detail)
         {
-            var userIdSession = HttpContext.Session.GetString("userId");
-            if (!Guid.TryParse(userIdSession, out var currentUserId))
-            {
-                TempData["AuthError"] = "Giriş bilgileri alınamadı.";
-                return RedirectToAction("ErrorMessage", "Interaction");
-            }
-
             var flap = _context.Flaps.FirstOrDefault(f => f.Id == flapId);
 
             if (flap == null)
             {
                 TempData["AuthError"] = "Flap bulunamadı.";
-                return RedirectToAction("Profile", "Home");
-            }
-
-            if (flap.UserId != currentUserId)
-            {
-                TempData["AuthError"] = "Bu flap'ı düzenleme yetkiniz yok.";
                 return RedirectToAction("Profile", "Home");
             }
 
@@ -238,7 +225,7 @@ namespace Flappr.Controllers
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Flap başarıyla güncellendi!";
-            return RedirectToAction("Profile", "Home", new { nickname = flap.User.Nickname });
+            return RedirectToAction("Profile", "Home");
         }
     }
 }

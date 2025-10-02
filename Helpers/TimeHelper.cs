@@ -7,7 +7,7 @@ namespace Flappr.Helpers
     {
         public static string FormatTime(DateTime createdDate)
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var diff = now - createdDate;
 
             if (diff.TotalDays < 1)

@@ -88,7 +88,7 @@
                 <div class="flap-item">
                     <div class="flex items-start">
                         <a href="/profile/@item.Nickname">
-                            <img class="flap-avatar" src="@(ViewBag.CurrentUser?.ImgUrl ?? "/images/default-profile.png")" alt="Yorum Yapan Profil">
+                            <img class="flap-avatar" src="@(item.ImgUrl ?? "/images/default-profile.png")" alt="Yorum Yapan Profil">
                         </a>
                         <div class="ml-4 w-full">
                             <div class="flex items-center">
@@ -99,9 +99,13 @@
                             </div>
                             <p class="mt-2 comment-text">@item.Summary</p>
                         </div>
-                        @if (ViewBag.yetki == "full" || ViewBag.id == item.UserId)
+                        @if (ViewBag.id == item.UserId || ViewBag.id == Model.Flap.UserId)
                         {
-                            <a href="/YorumSil/@item.Id?FlapId=@Model.Flap.Id" onclick="return confirm('Emin misin?')" class="btn btn-danger ml-2">Sil</a>
+                            <a href="/YorumSil/@item.Id?FlapId=@Model.Flap.Id"
+                               onclick="return confirm('Emin misin?')"
+                               class="btn btn-danger ml-2">
+                                Sil
+                            </a>
                         }
                     </div>
                 </div>

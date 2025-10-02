@@ -34,7 +34,7 @@
     <div class="max-w-2xl mx-auto mt-10">
         <div class="card">
             <div class="flex items-center gap-3 mb-4">
-                <img src="@Model.UserImgUrl ?? " /uploads/images.jpg"" alt="Profil" class="w-12 h-12 rounded-full">
+                <img src="@(Model.UserImgUrl)" alt="Profil" class="w-12 h-12 rounded-full">
                 <div class="flex items-center space-x-2 text-sm text-gray-600">
                     <span class="font-sm text-white">@Model.UserUsername</span>
                     <span>@("@" + Model.UserNickname)</span>
@@ -44,11 +44,16 @@
 
             </div>
 
-            <form method="post">
+            <form method="post" action="/FlapEdit/@Model.Id">
                 <textarea name="detail" class="card-textarea" rows="5">@Model.Detail</textarea>
                 <div class="flex justify-end gap-2">
-                    <a href="/Profile/@Model.UserNickname" class="px-4 py-2 rounded-md border hover:bg-gray-100 transition">İptal</a>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">Kaydet</button>
+                    <a href="javascript:history.back()"
+                       class="px-4 py-2 rounded-md border hover:bg-gray-100 transition">Geri Dön</a>
+
+                    <button type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                        Kaydet
+                    </button>
                 </div>
             </form>
         </div>

@@ -1,4 +1,6 @@
 ﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
 @model Flappr.Dto.RegisterRequest
@@ -137,7 +139,7 @@
         }
 
     .auth-links-button-group {
-        margin-top: 30px;
+        margin-top: 5px;
         text-align: center;
     }
 
@@ -147,14 +149,13 @@
         border: 1px solid #4da3ff;
         padding: 10px 20px;
         font-weight: 500;
-        font-size: 0.95rem;
+        font-size: 16px;
         border-radius: 30px;
         transition: all 0.3s ease;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        margin: 5px;
+        gap: 8px;
     }
 
         .auth-btn i {
@@ -221,6 +222,11 @@
         <a href="/home/privacy" class="text-warning">Gizlilik Politikası</a> ve
         <a href="/home/termsofservice" class="text-warning">Kullanım Şartları</a>'nı kabul etmiş oluyorsunuz.
     </p>
+    <hr />
+    <div class="auth-links-button-group  d-flex justify-content-center gap-3 flex-wrap">
+        <a href="/Sifre-unuttum" class="auth-btn"><i class="fa-solid fa-unlock-keyhole"></i> Şifremi Unuttum</a>
+        <a href="/home/login" class="auth-btn"><i class="bi bi-arrow-left-circle-fill"></i> Giriş Yap</a>
+    </div>
 </div>
 
 <script>
