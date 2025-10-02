@@ -9,7 +9,8 @@ namespace Flappr.Filters
         {
             var httpContext = context.HttpContext;
 
-            var userId = httpContext.Session.GetInt32("userId");
+            var userIdString = httpContext.Session.GetString("userId");
+            Guid? userId = !string.IsNullOrEmpty(userIdString) ? Guid.Parse(userIdString) : (Guid?)null;
             var mail = httpContext.Session.GetString("Mail");
 
             if (userId == null || string.IsNullOrEmpty(mail))

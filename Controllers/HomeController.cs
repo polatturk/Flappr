@@ -88,14 +88,12 @@ namespace Flappr.Controllers
             return _context.Flaps.Any(f => f.Id == id);
         }
 
-        //[CustomAuthorize]
+        [CustomAuthorize]
         public IActionResult Index()
         {
-            // Session'dan kullanýcý bilgilerini al
             var userIdString = HttpContext.Session.GetString("userId");
             Guid? userId = userIdString != null ? Guid.Parse(userIdString) : (Guid?)null;
 
-            // Current user bilgisi (flap ekleme formu için)
             UserDto currentUser = null;
             if (userId != null)
             {
@@ -112,7 +110,6 @@ namespace Flappr.Controllers
             }
             ViewBag.CurrentUser = currentUser;
 
-            // Flapleri listele
             var flaps = _context.Flaps
                 .Where(f => f.Visibility)
                 .Include(f => f.User)
@@ -134,7 +131,6 @@ namespace Flappr.Controllers
             return View(flaps);
         }
 
-
         [AllowAnonymous]
         [HttpGet]
         public IActionResult Login(){return View();}
@@ -153,12 +149,12 @@ namespace Flappr.Controllers
                 return View("Login");
             }
 
-            //var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
-            //if (!recaptchaValid)
-            //{
-            //    TempData["AuthError"] = "reCAPTCHA doðrulamasý baþarýsýz.";
-            //    return View("Login");
-            //}
+            var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
+            if (!recaptchaValid)
+            {
+                TempData["AuthError"] = "reCAPTCHA doðrulamasý baþarýsýz.";
+                return View("Login");
+            }
 
             var hashedPassword = Helper.Hash(model.Password);
 
@@ -496,12 +492,12 @@ namespace Flappr.Controllers
                     ImgUrl = f.User.ImgUrl,
                     Visibility = f.Visibility,
                     CreatedDate = f.CreatedDate,
-                    CommentsCount = f.CommentCount,
+                    CommentsCount = _context.Comments.Count(c => c.FlapId == f.Id),
                     LikeCount = _context.FlapLike.Count(l => l.FlapId == f.Id),
                     IsLikedByCurrentUser = currentUserId != null &&
-                                           _context.FlapLike.Any(l => l.FlapId == f.Id && l.UserId == currentUserId)
+                               _context.FlapLike.Any(l => l.FlapId == f.Id && l.UserId == currentUserId)
                 })
-                            .ToListAsync();
+                .ToListAsync();
 
             var followersCount = await _context.Follows
                 .CountAsync(f => f.FollowingId == user.Id);
@@ -547,20 +543,21 @@ namespace Flappr.Controllers
             await _context.SaveChangesAsync();
 
             var flap = await _context.Flaps.Include(f => f.User)
-                        .FirstOrDefaultAsync(f => f.Id == FlapId);
+            .FirstOrDefaultAsync(f => f.Id == FlapId);
 
-            if (flap != null)
+            if (flap != null && flap.UserId != comment.UserId)
             {
-                if (comment.UserId != flap.UserId)
+                var flapOwner = flap.User;
+                if (!string.IsNullOrWhiteSpace(flapOwner.Mail))
                 {
                     using var reader = new StreamReader("wwwroot/mailTemp/mailtemp.html");
                     var template = await reader.ReadToEndAsync();
                     var mailbody = template
-                        .Replace("{{Username}}", flap.User.Username)
+                        .Replace("{{Username}}", flapOwner.Username)
                         .Replace("{{FlapDetail}}", flap.Detail);
 
                     string subject = "Flap’ýnýza yeni bir yorum yapýldý!";
-                    await SendEmailAsync(flap.User.Mail, subject, mailbody);
+                    await SendEmailAsync(flapOwner.Mail, subject, mailbody);
                 }
             }
 
@@ -588,9 +585,14 @@ namespace Flappr.Controllers
         [Route("/Flapsil/{Id}")]
         public IActionResult FlapSil(Guid Id, string nickname)
         {
-            var flap = _context.Flaps.Find(Id);
+            var flap = _context.Flaps
+                               .Include(f => f.Likes)
+                               .FirstOrDefault(f => f.Id == Id);
+
             if (flap != null)
             {
+                _context.FlapLike.RemoveRange(flap.Likes);
+
                 _context.Flaps.Remove(flap);
                 _context.SaveChanges();
             }

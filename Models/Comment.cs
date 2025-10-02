@@ -15,6 +15,7 @@ namespace Flappr.Models
         public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
 
         public Guid FlapId { get; set; }
+        public Flap Flap { get; set; }
 
         [ForeignKey("User")]
         public Guid UserId { get; set; }

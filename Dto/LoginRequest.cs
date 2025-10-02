@@ -9,7 +9,7 @@ namespace Flappr.Dto
         public string Mail { get; set; }
         [Required]
         public string Password { get; set; }
-        //[FromForm(Name = "g-recaptcha-response")]
-        //public string RecaptchaToken { get; set; }
+        [FromForm(Name = "g-recaptcha-response")]
+        public string RecaptchaToken { get; set; }
     }
 }

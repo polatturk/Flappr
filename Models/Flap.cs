@@ -26,6 +26,8 @@ namespace Flappr.Models
         public User User { get; set; }
 
         public ICollection<FlapLike> Likes { get; set; } = new List<FlapLike>();
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
 
     }
 }

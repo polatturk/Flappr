@@ -13,8 +13,6 @@
 
 }
  <style>
-    /* Profil ve Flap Kartları için ortak card stili */
-    /* Card genel stili */
     .card {
         background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
         border-radius: 0.75rem;
@@ -23,34 +21,29 @@
         margin-bottom: 1.5rem;
     }
 
-    /* Profil kartı */
     .profile-card {
         max-width: 42rem;
         margin: 2.5rem auto;
     }
 
-    /* Kullanıcı bilgileri flex */
     .card .user-info {
         display: flex;
         align-items: center;
         gap: 1rem;
     }
 
-        /* Username, nickname ve datetime yan yana ve beyaz */
         .card .user-info .user-names {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: #ffffff; /* beyaz yazı */
+            color: #ffffff; 
         }
 
-    /* Bio beyaz */
     .card .bio {
         color: #ffffff;
         margin-top: 0.25rem;
     }
 
-    /* Takipçi ve takip edilen beyaz */
     .card .followers-info {
         display: flex;
         gap: 1rem;
@@ -59,18 +52,15 @@
         font-size: 0.875rem;
     }
 
-    /* Flaplar başlığı beyaz */
     .card h3 {
         color: #ffffff;
     }
 
-    /* Flap detay beyaz */
     .card .flap-detail {
         color: #ffffff;
         margin-top: 0.5rem;
     }
 
-    /* Butonlar */
     .card .actions {
         display: flex;
         gap: 1.5rem;
@@ -96,13 +86,20 @@
  </style>
 <body class="bg-gray-200">
     <div class="profile-card card">
+        <a href="@Url.Action("Index", "Home")"
+           class="absolute top-0 left-0 m-2 p-2 bg-white rounded-full shadow hover:bg-gray-100 transition"
+           title="Geri">
+            <i class="bi bi-arrow-left"></i>
+        </a>
         @if (TempData["SuccessMessage"] != null)
         {
             <div id="formMessage" class="alert alert-success text-center">
                 @TempData["SuccessMessage"]
             </div>
         }
+        
         <div class="flex items-center">
+            
             
             <img class="w-24 h-24 rounded-full" src="@(Model.User.ImgUrl)" alt="Profile Photo">
 
@@ -123,7 +120,7 @@
                         @if (ViewBag.currentUserIsOwner != true)
                         {
                             <form method="post" action="/Interaction/Follows">
-                                <input type="hidden" name="followerId" value="@Context.Session.GetInt32("userId")" />
+                                <input type="hidden" name="followerId" value="@Context.Session.GetString("userId")" />
                                 <input type="hidden" name="followingId" value="@Model.User.Id" />
                                 <button type="submit"
                                         class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium
@@ -154,25 +151,20 @@
         </div>
 
         <div class="mt-6">
-            <h3 class="text-white text-xl font-bold mb-4">Flaplar</h3>
             @foreach (var item in Model.Flaps)
             {
                 <div class="card relative">
                     @if (ViewBag.profile)
                     {
                         <div class="absolute top-2 right-2">
-                            <button id="menu-btn-@item.Id" type="button"
-                                    class="p-2 rounded-full focus:outline-none text-white hover:bg-transparent">
+                            <button type="button" class="menu-btn p-2 rounded-full focus:outline-none text-white hover:bg-transparent" data-id="@item.Id">
                                 <i class="bi bi-three-dots-vertical"></i>
                             </button>
 
-                            <div id="menu-dropdown-@item.Id" class="hidden absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-md ring-1 ring-black ring-opacity-5 z-10">
+                            <div id="menu-dropdown-@item.Id" class="menu-dropdown hidden absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-md ring-1 ring-black ring-opacity-5 z-10">
                                 <div class="py-1">
-                                    <a href="/flapEdit/@item.Id"
-                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-white hover:text-gray-700">Düzenle</a>
-                                    <a href="/FlapSil/@item.Id?nickname=@Model.User.Nickname"
-                                       onclick="return confirm('Emin misin?')"
-                                       class="block px-4 py-2 text-sm text-red-600 hover:bg-white hover:text-red-600">Sil</a>
+                                    <a href="/flapEdit/@item.Id" class="block px-4 py-2 text-sm text-gray-700 hover:bg-white hover:text-gray-700">Düzenle</a>
+                                    <a href="/FlapSil/@item.Id?nickname=@Model.User.Nickname" onclick="return confirm('Emin misin?')" class="block px-4 py-2 text-sm text-red-600 hover:bg-white hover:text-red-600">Sil</a>
                                 </div>
                             </div>
                         </div>
@@ -231,18 +223,22 @@
             }
         </div>
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var msg = document.getElementById("formMessage");
-                if (msg) {
-                    setTimeout(function () {
-                        msg.style.transition = "opacity 0.5s ease";
-                        msg.style.opacity = "0";
-                        setTimeout(function () {
-                            msg.remove();
-                        }, 500);
-                    }, 2000);
-                }
+            document.addEventListener("DOMContentLoaded", () => {
+                document.querySelectorAll(".menu-btn").forEach(btn => {
+                    btn.addEventListener("click", (e) => {
+                        e.stopPropagation(); 
+                        const id = btn.dataset.id;
+                        const dropdown = document.getElementById(`menu-dropdown-${id}`);
+                        dropdown.classList.toggle("hidden");
+                    });
+                });
+
+                window.addEventListener("click", () => {
+                    document.querySelectorAll(".menu-dropdown").forEach(dd => dd.classList.add("hidden"));
+                });
             });
         </script>
+
+
     </div>  
 </body>

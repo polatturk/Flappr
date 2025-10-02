@@ -19,27 +19,40 @@ namespace Flappr.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
+            // Flap - User
             modelBuilder.Entity<Flap>()
                 .HasOne(f => f.User)
                 .WithMany(u => u.Flaps)
                 .HasForeignKey(f => f.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-           modelBuilder.Entity<FlapLike>()
-               .HasOne(f => f.Flap)
-               .WithMany(f => f.Likes)
-               .HasForeignKey(f => f.FlapId)
-               .OnDelete(DeleteBehavior.Restrict);
+            // FlapLike - Flap
+            modelBuilder.Entity<FlapLike>()
+                .HasOne(fl => fl.Flap)
+                .WithMany(f => f.Likes)
+                .HasForeignKey(fl => fl.FlapId)
+                .OnDelete(DeleteBehavior.Restrict);
 
+            // Comment - Flap
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.Flap)
+                .WithMany(f => f.Comments)
+                .HasForeignKey(c => c.FlapId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-           modelBuilder.Entity<FlapLike>()
-               .HasOne(f => f.User)
-               .WithMany(u => u.FlapLikes)
-               .HasForeignKey(f => f.UserId)
-               .OnDelete(DeleteBehavior.Restrict);
+            // FlapLike - User
+            modelBuilder.Entity<FlapLike>()
+                .HasOne(fl => fl.User)
+                .WithMany(u => u.FlapLikes)
+                .HasForeignKey(fl => fl.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
+            // Comment - User
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.User)
+                .WithMany(u => u.Comments)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

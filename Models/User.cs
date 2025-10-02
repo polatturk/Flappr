@@ -21,7 +21,7 @@ namespace Flappr.Models
         public string? ImgUrl { get; set; }
         public ICollection<Flap> Flaps { get; set; }
         public ICollection<FlapLike> FlapLikes { get; set; } = new List<FlapLike>();
-
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     }
 
