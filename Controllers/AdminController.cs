@@ -104,8 +104,21 @@ namespace Flappr.Controllers
                     if (isUpdated)
                         TempData["SuccessMessage"] = "Kullanıcı adı başarıyla güncellendi.";
                     else
-                        TempData["UsernameMessage"] = "Kullanıcı adı için değişiklik yapılmadı..";
+                        TempData["UsernameMessage"] = "Kullanıcı adı için değişiklik yapılmadı!";
                 break;
+
+                case "Biography":
+                    if (!string.IsNullOrWhiteSpace(model.Biography))
+                    {
+                        user.Biography = model.Biography;
+                        isUpdated = true;
+                    }
+
+                    if (isUpdated)
+                        TempData["SuccessMessage"] = "Biyografi başarıyla güncellendi.";
+                    else
+                        TempData["BiographyMessage"] = "Biyografi için değişiklik yapılmadı!";
+                    break;
 
                 case "Password":
                     if (!string.IsNullOrWhiteSpace(model.Password))
@@ -117,13 +130,13 @@ namespace Flappr.Controllers
                     if (isUpdated)
                         TempData["SuccessMessage"] = "Şifre başarıyla güncellendi.";
                     else
-                        TempData["PasswordMessage"] = "Şifre değişiklik yapılmadı.";
+                        TempData["PasswordMessage"] = "Şifre için değişiklik yapılmadı!";
                 break;
 
                 case "Photo":
                     if (model.Image != null && model.Image.Length > 0)
                     {
-                        const long maxFileSize = 2 * 1024 * 1024; // 2 MB
+                        const long maxFileSize = 2 * 1024 * 1024;
                         if (model.Image.Length <= maxFileSize)
                         {
                             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(model.Image.FileName)}";
@@ -144,7 +157,7 @@ namespace Flappr.Controllers
                         }
                         else
                         {
-                            TempData["PhotoMessage"] = "Fotoğraf yükleme hatası ! Maksimum boyut 2MB";
+                            TempData["PhotoMessage"] = "Fotoğraf yükleme hatası! Maksimum boyut 2MB";
                         }
                     }
                     else

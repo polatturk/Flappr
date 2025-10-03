@@ -19,6 +19,7 @@ namespace Flappr.Models
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
         public string? ImgUrl { get; set; }
+        public string? Biography { get; set; }
         public ICollection<Flap> Flaps { get; set; }
         public ICollection<FlapLike> FlapLikes { get; set; } = new List<FlapLike>();
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();

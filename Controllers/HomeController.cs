@@ -80,14 +80,6 @@ namespace Flappr.Controllers
             return token;
         }
 
-        public User GetMail(string email){return _context.Users.FirstOrDefault(u => u.Mail == email);}
-        public Guid? KullaniciGetir(string nickname){var user = _context.Users.FirstOrDefault(u => u.Nickname == nickname);return user.Id;}
-
-        public bool FlapVarMi(Guid id)
-        {
-            return _context.Flaps.Any(f => f.Id == id);
-        }
-
         [CustomAuthorize]
         public IActionResult Index()
         {
@@ -466,6 +458,7 @@ namespace Flappr.Controllers
                 Nickname = user.Nickname,
                 Username = user.Username,
                 Mail = user.Mail,
+                Biography = user.Biography,
                 ImgUrl = user.ImgUrl
             };
 

@@ -31,6 +31,7 @@ namespace Flappr.Dto
         public string Username { get; set; }
         public string Mail { get; set; }
         public string? ImgUrl { get; set; }
+        public string? Biography { get; set; }
         [NotMapped]
         public IFormFile? Image { get; set; }
         public Guid RoleId { get; set; }
