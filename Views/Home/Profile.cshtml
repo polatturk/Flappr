@@ -86,17 +86,18 @@
  </style>
 <body class="bg-gray-200">
     <div class="profile-card card">
-        <a href="@Url.Action("Index", "Home")"
-           class="absolute top-0 left-0 m-2 p-2 bg-white rounded-full shadow hover:bg-gray-100 transition"
-           title="Geri">
-            <i class="bi bi-arrow-left"></i>
-        </a>
         @if (TempData["SuccessMessage"] != null)
         {
             <div id="formMessage" class="alert alert-success text-center">
                 @TempData["SuccessMessage"]
             </div>
         }
+        <a href="@Url.Action("Index", "Home")"
+           class="absolute top-0 left-0 m-2 p-2 bg-white rounded-full shadow hover:bg-gray-100 transition"
+           title="Geri">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        
         
         <div class="flex items-center">
             
@@ -223,6 +224,19 @@
             }
         </div>
         <script>
+
+            document.addEventListener("DOMContentLoaded", function () {
+                var msg = document.getElementById("formMessage");
+                if (msg) {
+                    setTimeout(function () {
+                        msg.style.transition = "opacity 0.5s ease";
+                        msg.style.opacity = "0";
+                        setTimeout(function () {
+                            msg.remove();
+                        }, 500);
+                    }, 2000);
+                }
+            });
             document.addEventListener("DOMContentLoaded", () => {
                 document.querySelectorAll(".menu-btn").forEach(btn => {
                     btn.addEventListener("click", (e) => {

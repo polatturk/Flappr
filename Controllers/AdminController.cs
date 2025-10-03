@@ -83,7 +83,6 @@ namespace Flappr.Controllers
             return View(user);
         }
 
-
         [HttpPost]
         [Route("/edit/{id}")]
         public async Task<IActionResult> Edit(UserDto model, string FormType)
