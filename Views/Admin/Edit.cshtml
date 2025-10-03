@@ -48,18 +48,6 @@
                 target.classList.remove('hidden');
             });
         });
-
-        document.getElementById('updatePhotoForm').addEventListener('submit', function (event) {
-            const fileInput = document.getElementById('photo');
-            const file = fileInput.files[0];
-            if (file) {
-                const maxSize = 2 * 1024 * 1024; // 2MB
-                if (file.size > maxSize) {
-                    alert('Dosya boyutu 2MB\'dan fazla olamaz.');
-                    event.preventDefault();
-                }
-            }
-        });
     </script>
 }
 
