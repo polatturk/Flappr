@@ -11,6 +11,7 @@ namespace Flappr.Data
         public DbSet<Flap> Flaps { get; set; }
         public DbSet<FlapLike> FlapLike { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         public DbSet<ResetPwToken> ResetPwTokens { get; set; }
 
         public FlapprContext(DbContextOptions<FlapprContext> options) : base(options)

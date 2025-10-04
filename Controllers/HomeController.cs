@@ -15,6 +15,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Flappr.Filters;
+using Microsoft.AspNetCore.SignalR;
+using Flappr.Hubs;
 
 namespace Flappr.Controllers
 {
@@ -22,12 +24,14 @@ namespace Flappr.Controllers
     {
         private readonly FlapprContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        //Dependency Injection (DI) ile hem IConfiguration hem DbContext alýyorum
-        public HomeController(FlapprContext context, IConfiguration configuration)
+        //Dependency Injection (DI) ile IConfiguration, DbContext ve SignalR alýyorum
+        public HomeController(FlapprContext context, IConfiguration configuration, IHubContext<NotificationHub> hubContext)
         {
             _context = context;
             _configuration = configuration;
+            _hubContext = hubContext;
         }
 
         // SMTP ayarlarý sadece burada var diðer metodlarda tekrar yazmamak icin boyle bir helper metodu yaptim
@@ -85,6 +89,18 @@ namespace Flappr.Controllers
         {
             var userIdString = HttpContext.Session.GetString("userId");
             Guid? userId = userIdString != null ? Guid.Parse(userIdString) : (Guid?)null;
+
+            if (!string.IsNullOrEmpty(userIdString))
+            {
+                var unreadCount = _context.Notifications
+                    .Count(n => n.UserId == userId.ToString() && !n.IsRead);
+
+                ViewBag.UnreadCount = unreadCount;
+            }
+            else
+            {
+                ViewBag.UnreadCount = 0;
+            }
 
             UserDto currentUser = null;
             if (userId != null)
@@ -575,6 +591,20 @@ namespace Flappr.Controllers
                     string subject = "Flap’ýnýza yeni bir yorum yapýldý!";
                     await SendEmailAsync(flapOwner.Mail, subject, mailbody);
                 }
+                var notification = new Notification
+                {
+                    UserId = flapOwner.Id.ToString(),
+                    SenderId = user.Id.ToString(),
+                    Type = "Comment",
+                    Message = $"{user.Nickname} flap’ýnýza yorum yaptý: \"{Summary}\"",
+                    IsRead = false
+                };
+                _context.Notifications.Add(notification);
+                await _context.SaveChangesAsync();
+
+                //SignalR ile canlý gönderim
+                await _hubContext.Clients.User(flapOwner.Id.ToString())
+                    .SendAsync("ReceiveNotification", notification.Message);
             }
 
             return RedirectToAction("Flap", new { Id = FlapId });

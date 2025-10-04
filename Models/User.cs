@@ -16,7 +16,7 @@ namespace Flappr.Models
         public string Password { get; set; }
         [Required]
         public string Mail { get; set; }
-        public DateTime Created { get; set; }
+        public DateTime Created { get; set; } = DateTime.UtcNow;
         public DateTime Updated { get; set; }
         public string? ImgUrl { get; set; }
         public string? Biography { get; set; }

@@ -6,6 +6,8 @@ using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Flappr.Data;
+using Flappr.Hubs;
+
 
 namespace Flappr
 {
@@ -30,7 +32,6 @@ namespace Flappr
                 options.Cookie.IsEssential = true;
             });
 
-            // GOOGLE  AUTHENTICATION
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -43,6 +44,8 @@ namespace Flappr
                 options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
             });
 
+            // SignalR
+            builder.Services.AddSignalR();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -61,6 +64,9 @@ namespace Flappr
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            //SignalR hub
+            app.MapHub<NotificationHub>("/notificationHub");
 
             app.MapControllerRoute(
                 name: "default",

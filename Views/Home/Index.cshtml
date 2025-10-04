@@ -288,7 +288,18 @@
         <li><a asp-controller="Home" asp-action="Profile"><i class="fas fa-user"></i> Profil</a></li>
         <li><a asp-area="" asp-controller="Home" asp-action="Search"><i class="fas fa-search"></i> Ara</a></li>
         <li><a asp-area="" asp-controller="Home" asp-action="Search"><i class="fas fa-compass"></i> Keşfet</a></li>
-        <li><a asp-area="" asp-controller="Home" asp-action="Search"><i class="fas fa-bell"></i> Bildirimler</a></li>
+        <li class="relative">
+            <a asp-area="" asp-controller="Interaction" asp-action="Notifications" class="flex items-center">
+                <i class="fas fa-bell text-lg"></i>
+                <span class="ml-2">Bildirimler</span>
+                @if (ViewBag.UnreadCount > 0)
+                {
+                    <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        @ViewBag.UnreadCount
+                    </span>
+                }
+            </a>
+        </li>
         <li><a asp-area="" asp-controller="Home" asp-action="Search"><i class="fas fa-envelope"></i> Mesajlar</a></li>
         <li><a asp-area="" asp-controller="Home" asp-action="Search"><i class="fas fa-cog"></i> Ayarlar</a></li>
     </ul>

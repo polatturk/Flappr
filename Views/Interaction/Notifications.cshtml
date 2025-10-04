@@ -1,1 +1,114 @@
-﻿
+﻿@using Flappr.Helpers
+@model List<Flappr.Models.Notification>
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        .notification-card {
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .notification-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(129, 140, 248, 0.3), rgba(139, 92, 246, 0.3));
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .notification-card:hover::before {
+            opacity: 1;
+        }
+        .notification-content {
+            position: relative;
+            z-index: 10;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .btn-read {
+            cursor: pointer;
+        }
+    </style>
+}
+
+<div class="min-h-screen bg-gray-900 text-white p-6">
+    <h2 class="text-3xl font-bold mb-6 flex items-center">
+        <i class="fas fa-bell mr-3 text-yellow-400"></i> Bildirimler
+    </h2>
+
+    @if (!Model.Any())
+    {
+        <div class="bg-gray-800 p-8 rounded-2xl shadow-lg text-center">
+            <i class="fas fa-inbox text-gray-500 text-5xl mb-3"></i>
+            <p class="text-gray-400 text-lg">Hiç bildirimin yok 🎉</p>
+        </div>
+    }
+    else
+    {
+        <div class="space-y-4">
+            @foreach (var notif in Model)
+            {
+                var bgColor = notif.Type switch
+                {
+                    "Like" => "bg-pink-500",
+                    "Comment" => "bg-blue-500",
+                    "Follow" => "bg-green-500",
+                    _ => "bg-gray-500"
+                };
+
+                var iconClass = notif.Type switch
+                {
+                    "Like" => "fa-heart",
+                    "Comment" => "fa-comment",
+                    "Follow" => "fa-user-plus",
+                    _ => "fa-bell"
+                };
+                <div class="notification-card relative flex items-start gap-4 bg-gray-800 p-4 rounded-2xl shadow hover:shadow-lg">
+
+                    <!-- Bildirim Tipi İkonu -->
+                    <span class="flex items-center justify-center w-12 h-12 rounded-full @bgColor">
+                        <i class="fas @iconClass text-white text-lg"></i>
+                    </span>
+
+                    <div class="notification-content flex-1 relative z-10">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-gray-400 text-sm">@TimeHelper.FormatTime(notif.CreatedDate)</span>
+                            
+                            <!-- Okundu butonu -->
+                            <form asp-action="MarkAsRead" asp-controller="Interaction" method="post" class="ml-2">
+                                <input type="hidden" name="id" value="@notif.Id" />
+                                <button type="submit" class="btn-read text-xs flex items-center gap-1
+                                    @(notif.IsRead ? "text-gray-400" : "text-red-400")">
+                                    <i class="fas @(notif.IsRead ? "fa-check" : "fa-circle")"></i>
+                                    @(notif.IsRead ? "Okundu" : "Okundu olarak işaretle")
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Mesaj -->
+                        <p class="text-white text-sm line-clamp-2 hover:line-clamp-none cursor-pointer">@notif.Message</p>
+                    </div>
+
+                    <!-- Sil Butonu -->
+                    <form asp-action="DeleteNotification" asp-controller="Interaction" method="post"
+                          class="absolute top-2 right-2 z-20 pointer-events-auto">
+                        <input type="hidden" name="id" value="@notif.Id" />
+                        <button type="submit" class="text-gray-400 hover:text-red-500">
+                            <i class="bi bi-trash-fill text-lg"></i>
+                        </button>
+                    </form>
+                </div>
+            }
+        </div>
+    }
+</div>
