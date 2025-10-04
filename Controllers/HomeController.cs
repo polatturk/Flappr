@@ -141,12 +141,12 @@ namespace Flappr.Controllers
                 return View("Login");
             }
 
-            var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
-            if (!recaptchaValid)
-            {
-                TempData["AuthError"] = "reCAPTCHA doðrulamasý baþarýsýz.";
-                return View("Login");
-            }
+            //var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
+            //if (!recaptchaValid)
+            //{
+            //    TempData["AuthError"] = "reCAPTCHA doðrulamasý baþarýsýz.";
+            //    return View("Login");
+            //}
 
             var hashedPassword = Helper.Hash(model.Password);
 
@@ -345,10 +345,22 @@ namespace Flappr.Controllers
         [Route("/AddFlap")]
         public IActionResult AddFlap(AddFlapDto dto)
         {
-            if (!ModelState.IsValid) return View("Index");
 
             var userIdStr = HttpContext.Session.GetString("userId");
-            if (string.IsNullOrEmpty(userIdStr)) return RedirectToAction("Login");
+            if (string.IsNullOrEmpty(userIdStr))
+                return RedirectToAction("Login");
+
+            if (string.IsNullOrWhiteSpace(dto.Detail))
+            {
+                TempData["FlapMessage"] = "Flap içeriði boþ olamaz!";
+                return RedirectToAction("Index");
+            }
+
+            if (dto.Detail.Length > 200)
+            {
+                TempData["FlapMessage"] = "Flap en fazla 200 karakter olabilir!";
+                return RedirectToAction("Index");
+            }
 
             var flap = new Flap
             {
@@ -522,6 +534,17 @@ namespace Flappr.Controllers
             if (user == null || string.IsNullOrWhiteSpace(Summary))
                 return RedirectToAction("Flap", new { Id = FlapId });
 
+            if (string.IsNullOrWhiteSpace(Summary))
+            {
+                TempData["CommentMessage"] = "Yorum boþ olamaz!";
+                return RedirectToAction("Flap", new { Id = FlapId });
+            }
+
+            if (Summary.Length > 200)
+            {
+                TempData["CommentMessage"] = "Yorum 200 karakteri geçemez!";
+                return RedirectToAction("Flap", new { Id = FlapId });
+            }
             var comment = new Comment
             {
                 FlapId = FlapId,

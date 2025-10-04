@@ -45,17 +45,52 @@
             </div>
 
             <form method="post" action="/FlapEdit/@Model.Id">
-                <textarea name="detail" class="card-textarea" rows="5">@Model.Detail</textarea>
+                <textarea id="FlapEdit" name="detail" class="card-textarea" rows="5">@Model.Detail</textarea>
+                <div class="flex justify-between items-center text-sm text-white">
+                    <span id="charCount">0 / 200</span>
+                </div>
                 <div class="flex justify-end gap-2">
-                    <a href="javascript:history.back()"
-                       class="px-4 py-2 rounded-md border hover:bg-gray-100 transition">Geri Dön</a>
+                    <a href="/Profile"
+                       class="px-4 py-2 rounded-md border hover:bg-gray-100 transition">
+                        Geri Dön
+                    </a>
 
                     <button type="submit"
                             class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
                         Kaydet
                     </button>
                 </div>
+                @if (TempData["FlapEditMessage"] != null)
+                {
+                    <div class="alert-message alert alert-danger text-center" style="margin-top:10px;">
+                        @TempData["FlapEditMessage"]
+                    </div>
+                }
             </form>
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const flapEditInput = document.getElementById("FlapEdit");
+            const charCount = document.getElementById("charCount");
+
+            if (flapEditInput && charCount) {
+                function updateCount() {
+                    let length = flapEditInput.value.length;
+                    charCount.textContent = `${length} / 200`;
+                    charCount.style.color = length > 200 ? "red" : "white";
+                }
+
+                updateCount();
+                flapEditInput.addEventListener("input", updateCount);
+            }
+        });
+        document.querySelectorAll('.alert-message').forEach(function (msg) {
+            setTimeout(function () {
+                msg.style.transition = "opacity 0.5s";
+                msg.style.opacity = 0;
+                setTimeout(function () { msg.remove(); }, 500);
+            }, 2000);
+        });
+    </script>
 </body>

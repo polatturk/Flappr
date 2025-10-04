@@ -222,6 +222,13 @@
             }
 
 
+    .flap-detail {
+        white-space: pre-wrap; /* Satır sonu ve boşlukları korur */
+        word-break: break-word; /* Uzun kelime veya linkler satırdan taşarsa kır */
+        max-height: 200px; /* İstersen yüksekliği sınırla */
+        overflow: hidden; /* Taşan kısmı gizle */
+        line-height: 1.6; /* Okunabilir satır yüksekliği */
+    }
     /* Label */
     .flap-label {
         font-size: 14px;
@@ -297,20 +304,31 @@
         <form action="/AddFlap" method="post" autocomplete="off">
             <div class="d-flex align-items-start mb-3">
                 <img src="@(ViewBag.CurrentUser?.ImgUrl)" alt="User Avatar" class="flap-avatar" />
-                <textarea name="detail" class="form-control flap-textarea" id="FlapContent" rows="3" placeholder="Neler oluyor?"></textarea>
+                <textarea id="FlapContent" name="detail" class="form-control flap-textarea" rows="3" required placeholder="Neler oluyor?"></textarea>
+                
             </div>
-
+            
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex gap-2 align-items-center">
-                    <select class="form-select flap-select" id="visibilitySelect" name="visibility">
+                    <select class="form-select flap-select" id="visibilitySelect" name="visibility" required>
                         <option value="true">🌍 Herkese Açık</option>
                         <option value="false">🔒 Gizli</option>
                     </select>
-                    <label for="visibilitySelect" class="flap-label">Görünürlük</label>
-                </div>
 
+                </div>
+                
+                <div class="flex justify-between items-center text-sm text-white">
+                    <span id="charCount">0 / 200</span>
+                </div>
                 <button type="submit" class="btn flap-btn">Flapla 🚀</button>
+                
             </div>
+            @if (TempData["FlapMessage"] != null)
+            {
+                <div class="alert-message alert alert-danger text-center" style="margin-top:10px;">
+                    @TempData["FlapMessage"]
+                </div>
+            }
         </form>
     </div>
 
@@ -331,7 +349,7 @@
                         <span class="text-gray-500 text-sm">@TimeHelper.FormatTime(flap.CreatedDate)</span>
                     </div>
 
-                    <a href="/Flap/@flap.Id" class="text-white block mt-2">@flap.Detail</a>
+                    <a href="/Flap/@flap.Id" class="text-white block mt-2 flap-detail">@flap.Detail</a>
 
                     <div class="d-flex mt-3 gap-3 text-white">
                         <a href="/Flap/@flap.Id" class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 hover:bg-gray-300 transition duration-200">
@@ -355,4 +373,28 @@
         </div>
     }
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const flapInput = document.getElementById("FlapContent");
+            const charCount = document.getElementById("charCount");
+
+            if (flapInput && charCount) {
+                function updateCount() {
+                    let length = flapInput.value.length;
+                    charCount.textContent = `${length} / 200`;
+                    charCount.style.color = length > 200 ? "red" : "white";
+                }
+
+                updateCount();
+                flapInput.addEventListener("input", updateCount);
+            }
+        });
+        document.querySelectorAll('.alert-message').forEach(function (msg) {
+            setTimeout(function () {
+                msg.style.transition = "opacity 0.5s";
+                msg.style.opacity = 0;
+                setTimeout(function () { msg.remove(); }, 500);
+            }, 2000);
+        });
+    </script>
 </div>

@@ -104,20 +104,27 @@ namespace Flappr.Controllers
                     if (isUpdated)
                         TempData["SuccessMessage"] = "Kullanıcı adı başarıyla güncellendi.";
                     else
-                        TempData["UsernameMessage"] = "Kullanıcı adı için değişiklik yapılmadı!";
+                        TempData["UsernameMessage"] = "Kullanıcı için herhangi bir değişiklik yapılmadı.";
                 break;
 
                 case "Biography":
-                    if (!string.IsNullOrWhiteSpace(model.Biography))
+                    if (!string.IsNullOrWhiteSpace(model.Biography) && model.Biography.Length > 80)
                     {
-                        user.Biography = model.Biography;
-                        isUpdated = true;
+                        TempData["BiographyMessage"] = "Biyografi 80 karakteri geçemez!";
                     }
-
-                    if (isUpdated)
-                        TempData["SuccessMessage"] = "Biyografi başarıyla güncellendi.";
                     else
-                        TempData["BiographyMessage"] = "Biyografi için değişiklik yapılmadı!";
+                    {
+                        if (user.Biography == model.Biography)
+                        {
+                            TempData["BiographyMessage"] = "Biyografi için herhangi bir değişiklik yapılmadı.";
+                        }
+                        else
+                        {
+                            user.Biography = model.Biography;
+                            isUpdated = true;
+                            TempData["SuccessMessage"] = "Biyografi başarıyla güncellendi.";
+                        }
+                    }
                     break;
 
                 case "Password":
@@ -130,7 +137,7 @@ namespace Flappr.Controllers
                     if (isUpdated)
                         TempData["SuccessMessage"] = "Şifre başarıyla güncellendi.";
                     else
-                        TempData["PasswordMessage"] = "Şifre için değişiklik yapılmadı!";
+                        TempData["PasswordMessage"] = "Şifre için herhangi bir değişiklik yapılmadı.";
                 break;
 
                 case "Photo":
@@ -225,12 +232,11 @@ namespace Flappr.Controllers
         {
             var flap = _context.Flaps.FirstOrDefault(f => f.Id == flapId);
 
-            if (flap == null)
+            if (!string.IsNullOrWhiteSpace(detail) && detail.Length > 200)
             {
-                TempData["AuthError"] = "Flap bulunamadı.";
-                return RedirectToAction("Profile", "Home");
+                TempData["FlapEditMessage"] = "Flap en fazla 200 karakter olabilir!";
+                return RedirectToAction("flapEdit", "Admin") ;
             }
-
             flap.Detail = detail;
             flap.CreatedDate = DateTime.UtcNow;
             _context.Flaps.Update(flap);
