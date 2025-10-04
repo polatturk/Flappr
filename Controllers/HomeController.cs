@@ -157,12 +157,12 @@ namespace Flappr.Controllers
                 return View("Login");
             }
 
-            //var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
-            //if (!recaptchaValid)
-            //{
-            //    TempData["AuthError"] = "reCAPTCHA doðrulamasý baþarýsýz.";
-            //    return View("Login");
-            //}
+            var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
+            if (!recaptchaValid)
+            {
+                TempData["AuthError"] = "reCAPTCHA doðrulamasý baþarýsýz.";
+                return View("Login");
+            }
 
             var hashedPassword = Helper.Hash(model.Password);
 
