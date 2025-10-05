@@ -67,6 +67,28 @@ namespace Flappr.Controllers
             return RedirectToAction("Notifications"); 
         }
 
+        [HttpPost]
+        public async Task<IActionResult> MarkAsRead()
+        {
+            var userIdString = HttpContext.Session.GetString("userId");
+            if (string.IsNullOrEmpty(userIdString))
+                return RedirectToAction("Login", "Home");
+
+            var unreadNotifications = await _context.Notifications
+                .Where(n => n.UserId == userIdString && !n.IsRead)
+                .ToListAsync();
+
+            if (unreadNotifications.Any())
+            {
+                foreach (var notification in unreadNotifications)
+                    notification.IsRead = true;
+
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Notifications");
+        }
+
         [CustomAuthorize]
         public IActionResult Messages(){return View();}
         [AllowAnonymous]
