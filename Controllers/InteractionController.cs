@@ -47,6 +47,26 @@ namespace Flappr.Controllers
 
             return View(notifications);
         }
+        [HttpPost]
+        public async Task<IActionResult> DeleteNotifications()
+        {
+            var userIdString = HttpContext.Session.GetString("userId");
+            if (string.IsNullOrEmpty(userIdString))
+                return RedirectToAction("Login", "Home");
+
+            var notifications = await _context.Notifications
+                .Where(n => n.UserId == userIdString)
+                .ToListAsync();
+
+            if (notifications.Any())
+            {
+                _context.Notifications.RemoveRange(notifications);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Notifications"); 
+        }
+
         [CustomAuthorize]
         public IActionResult Messages(){return View();}
         [AllowAnonymous]

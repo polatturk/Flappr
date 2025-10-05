@@ -26,7 +26,7 @@ namespace Flappr.Controllers
         private readonly IConfiguration _configuration;
         private readonly IHubContext<NotificationHub> _hubContext;
 
-        //Dependency Injection (DI) ile IConfiguration, DbContext ve SignalR alýyorum
+        // Dependency Injection (DI) ile IConfiguration, DbContext ve SignalR hub context'i alýyorum
         public HomeController(FlapprContext context, IConfiguration configuration, IHubContext<NotificationHub> hubContext)
         {
             _context = context;
@@ -34,7 +34,7 @@ namespace Flappr.Controllers
             _hubContext = hubContext;
         }
 
-        // SMTP ayarlarý sadece burada var diðer metodlarda tekrar yazmamak icin boyle bir helper metodu yaptim
+        // SMTP ayarlarý sadece bu sýnýfta tanýmlý. Diðer metotlarda tekrar etmemek için bu yardýmcý (helper) metodu oluþturdum.
         private async Task SendEmailAsync(string toEmail, string subject, string body, string displayName = "Flappr Ekibi")
         {
             var host = _configuration["Smtp:Host"];

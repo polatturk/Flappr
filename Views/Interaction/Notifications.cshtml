@@ -69,9 +69,21 @@
 }
 
 <div class="min-h-screen bg-gray-900 text-white p-6">
-    <h2 class="text-3xl font-bold mb-6 flex items-center">
-        <i class="fas fa-bell mr-3 text-yellow-400"></i> Bildirimler
-    </h2>
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-3xl font-bold flex items-center">
+            <i class="fas fa-bell mr-3 text-yellow-400"></i> Bildirimler
+        </h2>
+
+        @if (Model.Any())
+        {
+            <form asp-action="DeleteNotifications" asp-controller="Interaction" method="post" class="mb-6">
+                <button type="submit" class="">
+                    <i class="bi bi-trash-fill"></i> Tümünü Temizle
+                </button>
+            </form>
+        }
+    </div>
+    <br />
 
     @if (!Model.Any())
     {
@@ -115,22 +127,12 @@
                         <span class="text-gray-400 text-xs">@TimeHelper.FormatTime(notif.CreatedDate)</span>
                     </div>
 
-                    <!-- Sağ üst butonlar -->
                     <div class="btn-top-right">
-                        <!-- Okundu -->
                         <form asp-action="MarkAsRead" asp-controller="Interaction" method="post">
                             <input type="hidden" name="id" value="@notif.Id" />
                             <button type="submit" class="btn-read @(notif.IsRead ? "text-gray-400" : "text-red-400")">
                                 <i class="fas @(notif.IsRead ? "fa-check" : "fa-circle")"></i>
                                 @(notif.IsRead ? "Okundu" : "Okundu olarak işaretle")
-                            </button>
-                        </form>
-
-                        <!-- Sil -->
-                        <form asp-action="DeleteNotification" asp-controller="Interaction" method="post">
-                            <input type="hidden" name="id" value="@notif.Id" />
-                            <button type="submit" class="btn-delete text-gray-400 hover:text-red-500">
-                                <i class="bi bi-trash-fill"></i>
                             </button>
                         </form>
                     </div>

@@ -10,7 +10,6 @@
 }
 
 <style>
-    /* Sidebar */
     .sidebar {
         position: fixed;
         top: 0;
@@ -24,7 +23,7 @@
         box-shadow: 2px 0 8px rgba(0,0,0,0.3);
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         z-index: 1000;
-    }
+}
 
         .sidebar .logo img {
             width: 150px;
@@ -97,14 +96,12 @@
                     color: #fff;
                 }
 
-    /* Main content */
     .main-content {
         margin-left: 220px;
         padding: 40px 20px;
         min-height: 100vh;
     }
 
-    /* Card styles */
     .card-glass {
         background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
         border-radius: 16px;
@@ -163,7 +160,6 @@
             background: linear-gradient(135deg, #1e80e0, #4da3ff);
         }
 
-    /* Flap items */
     .flap-item {
         background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
         border-radius: 16px;
@@ -179,7 +175,6 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
 
-    /* Avatar */
     .flap-avatar {
         width: 48px;
         height: 48px;
@@ -188,7 +183,6 @@
         object-fit: cover;
     }
 
-    /* Select */
     .flap-select {
         border-radius: 10px;
         font-size: 14px;
@@ -196,10 +190,10 @@
         background: #273444 url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 10px center;
         background-size: 16px;
         border: 1px solid #333;
-        color: #fff; /* yazılar beyaz */
-        appearance: none; /* default select stilini kaldırır */
-        outline: none; /* mavi outline iptal */
-        box-shadow: none; /* glow iptal */
+        color: #fff; 
+        appearance: none; 
+        outline: none; 
+        box-shadow: none; 
     }
 
         .flap-select:focus {
@@ -208,11 +202,10 @@
         }
 
         .flap-select option {
-            background: #273444; /* dropdown içi siyah */
-            color: #fff; /* dropdown yazıları beyaz */
+            background: #273444; 
+            color: #fff; 
         }
 
-            /* Hover ve focus efektlerini iptal */
             .flap-select option:hover,
             .flap-select option:focus {
                 background: #273444 !important;
@@ -223,11 +216,11 @@
 
 
     .flap-detail {
-        white-space: pre-wrap; /* Satır sonu ve boşlukları korur */
-        word-break: break-word; /* Uzun kelime veya linkler satırdan taşarsa kır */
-        max-height: 200px; /* İstersen yüksekliği sınırla */
-        overflow: hidden; /* Taşan kısmı gizle */
-        line-height: 1.6; /* Okunabilir satır yüksekliği */
+        white-space: pre-wrap; 
+        word-break: break-word; 
+        max-height: 200px; 
+        overflow: hidden; 
+        line-height: 1.6; 
     }
     /* Label */
     .flap-label {
@@ -276,7 +269,7 @@
     }
 
 </style>
-
+    
 <!-- Sidebar -->
 <div class="sidebar">
     <a class="logo" asp-area="" asp-controller="Home" asp-action="Index">
@@ -310,7 +303,6 @@
 </div>
 
 <div class="main-content">
-    <!-- Flap Form -->
     <div class="flap-form card-glass">
         <form action="/AddFlap" method="post" autocomplete="off">
             <div class="d-flex align-items-start mb-3">
