@@ -4,10 +4,8 @@ namespace Flappr.Dto
 {
     public class PwResetRequest
     {
-        [Required]
         public string Token { get; set; }
-
-        [Required]
-        public string Pw { get; set; }
+        public string NewPassword { get; set; }
+        public string ConfirmPassword { get; set; }
     }
 }

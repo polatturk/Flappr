@@ -32,20 +32,21 @@ namespace Flappr.Controllers
             if (string.IsNullOrEmpty(userIdString))
                 return RedirectToAction("Login", "Home");
 
-            var notifications = await _context.Notifications
-                .Where(n => n.UserId == userIdString) 
-                .OrderByDescending(n => n.CreatedDate)
-                .ToListAsync();
+            var userNotifications = await _context.Notifications
+            .Where(n => n.UserId == userIdString)
+            .OrderByDescending(n => n.CreatedDate)
+            .ToListAsync();
 
-            ViewBag.UnreadCount = notifications.Count(n => !n.IsRead);
+            ViewBag.UnreadCount = userNotifications.Count(n => !n.IsRead);
 
-            foreach (var n in notifications.Where(n => !n.IsRead))
+
+            foreach (var n in userNotifications.Where(n => !n.IsRead))
             {
                 n.IsRead = true;
             }
             await _context.SaveChangesAsync();
 
-            return View(notifications);
+            return View(userNotifications);
         }
         [HttpPost]
         public async Task<IActionResult> DeleteNotifications()
@@ -74,15 +75,14 @@ namespace Flappr.Controllers
             if (string.IsNullOrEmpty(userIdString))
                 return RedirectToAction("Login", "Home");
 
-            var unreadNotifications = await _context.Notifications
+            var notifications = await _context.Notifications
                 .Where(n => n.UserId == userIdString && !n.IsRead)
                 .ToListAsync();
 
-            if (unreadNotifications.Any())
+            if (notifications.Any())
             {
-                foreach (var notification in unreadNotifications)
-                    notification.IsRead = true;
-
+                foreach (var n in notifications)
+                    n.IsRead = true; 
                 await _context.SaveChangesAsync();
             }
 
@@ -114,8 +114,8 @@ namespace Flappr.Controllers
                 {
                     UserId = followingId.ToString(),          
                     SenderId = followerId.ToString(),         
-                    Type = "Follow",
-                    Message = $"{followerUser?.Nickname ?? followerUser?.Username} seni takip etti.",
+                    Type = "Yeni takipçi 🎉",
+                    Message = $"{followerUser.Nickname}, seni takip etmeye başladı.",
                     CreatedDate = DateTime.UtcNow,
                     IsRead = false
                 };
@@ -183,8 +183,8 @@ namespace Flappr.Controllers
                     {
                         UserId = flap.UserId.ToString(),     
                         SenderId = userId.ToString(),        
-                        Type = "Like",
-                        Message = $"{likerUser?.Nickname ?? likerUser?.Username} gönderini beğendi.",
+                        Type = "Yeni beğeni 🎉",
+                        Message = $"{likerUser?.Nickname ?? likerUser?.Username}, paylaştığın gönderiyi beğendi.",
                         CreatedDate = DateTime.UtcNow,
                         IsRead = false
                     };

@@ -1,0 +1,121 @@
+﻿@model Flappr.Dto.PwResetRequest
+@{
+    ViewData["Title"] = "Şifre Sıfırlama";
+}
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1e1e2a, #282840);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .reset-card {
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(10px);
+        padding: 2rem;
+        border-radius: 15px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+        .reset-card h2 {
+            margin-bottom: 1.5rem;
+            color: #0ff;
+            text-align: center;
+            text-shadow: 0 0 5px #0ff;
+        }
+
+    .form-group {
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #ccc;
+        }
+
+        .form-group input {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+            .form-group input:focus {
+                background: rgba(0,255,255,0.1);
+                box-shadow: 0 0 10px #0ff;
+            }
+
+    .btn-submit {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background-color: #0ff;
+        border: none;
+        border-radius: 10px;
+        font-weight: bold;
+        color: #1e1e2a;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .btn-submit:hover {
+            background-color: #0cc;
+        }
+
+    .error-message {
+        color: #ff6b6b;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .success-message {
+        color: #0f0;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+        text-align: center;
+    }
+</style>
+
+<div class="reset-card">
+    <h2>Şifrenizi Sıfırlayın</h2>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="error-message">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@error.ErrorMessage</div>
+            }
+        </div>
+    }
+
+    <form asp-action="PwResetForm" method="post">
+        <input type="hidden" asp-for="Token" />
+
+        <div class="form-group">
+            <label for="NewPassword">Yeni Şifre</label>
+            <input type="password" asp-for="NewPassword" placeholder="Yeni şifrenizi girin" required />
+        </div>
+
+        <div class="form-group">
+            <label for="ConfirmPassword">Yeni Şifre Tekrar</label>
+            <input type="password" asp-for="ConfirmPassword" placeholder="Şifrenizi tekrar girin" required />
+        </div>
+
+        <button type="submit" class="btn-submit">Şifreyi Sıfırla</button>
+    </form>
+</div>

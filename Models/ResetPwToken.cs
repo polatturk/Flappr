@@ -14,6 +14,7 @@ namespace Flappr.Models
         public string Token { get; set; } = string.Empty;
 
         public DateTime Created { get; set; } = DateTime.UtcNow;
+        public DateTime Expiry { get; set; }
 
         public bool Used { get; set; } = false;
     }

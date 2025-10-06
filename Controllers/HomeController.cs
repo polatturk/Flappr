@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Flappr.Models;
 using System.Net.Mail;
@@ -26,7 +26,7 @@ namespace Flappr.Controllers
         private readonly IConfiguration _configuration;
         private readonly IHubContext<NotificationHub> _hubContext;
 
-        // Dependency Injection (DI) ile IConfiguration, DbContext ve SignalR hub context'i alýyorum
+        // Dependency Injection (DI) ile IConfiguration, DbContext ve SignalR hub context'i alÄ±yorum
         public HomeController(FlapprContext context, IConfiguration configuration, IHubContext<NotificationHub> hubContext)
         {
             _context = context;
@@ -34,7 +34,7 @@ namespace Flappr.Controllers
             _hubContext = hubContext;
         }
 
-        // SMTP ayarlarý sadece bu sýnýfta tanýmlý. Diðer metotlarda tekrar etmemek için bu yardýmcý (helper) metodu oluþturdum.
+        // SMTP ayarlarÄ± sadece bu sÄ±nÄ±fta tanÄ±mlÄ±. DiÄŸer metotlarda tekrar etmemek iÃ§in bu yardÄ±mcÄ± (helper) metodu oluÅŸturdum.
         private async Task SendEmailAsync(string toEmail, string subject, string body, string displayName = "Flappr Ekibi")
         {
             var host = _configuration["Smtp:Host"];
@@ -74,7 +74,8 @@ namespace Flappr.Controllers
             {
                 UserId = userId,
                 Token = token,
-                Created = DateTime.Now,
+                Created = DateTime.UtcNow,
+                Expiry = DateTime.UtcNow.AddMinutes(15),
                 Used = false
             };
 
@@ -157,12 +158,12 @@ namespace Flappr.Controllers
                 return View("Login");
             }
 
-            var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
-            if (!recaptchaValid)
-            {
-                TempData["AuthError"] = "reCAPTCHA doðrulamasý baþarýsýz.";
-                return View("Login");
-            }
+            //var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
+            //if (!recaptchaValid)
+            //{
+            //    TempData["AuthError"] = "reCAPTCHA doÄŸrulamasÄ± baÅŸarÄ±sÄ±z.";
+            //    return View("Login");
+            //}
 
             var hashedPassword = Helper.Hash(model.Password);
 
@@ -179,7 +180,7 @@ namespace Flappr.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            TempData["AuthError"] = "E-Posta veya þifre hatalý";
+            TempData["AuthError"] = "E-Posta veya ÅŸifre hatalÄ±";
             return View("Login");
         }
 
@@ -209,26 +210,20 @@ namespace Flappr.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["AuthError"] = "Form eksik veya hatalý.";
+                TempData["AuthError"] = "Form eksik veya hatalÄ±.";
                 return View("Register");
-            }
-
-            if (string.IsNullOrWhiteSpace(model.RecaptchaToken))
-            {
-                TempData["AuthError"] = "reCAPTCHA doðrulama bilgisi eksik.";
-                return View("Register", model);
             }
 
             var recaptchaValid = await VerifyRecaptchaRegister(model.RecaptchaToken);
             if (!recaptchaValid)
             {
-                TempData["AuthError"] = "reCAPTCHA doðrulamasý baþarýsýz.";
+                TempData["AuthError"] = "reCAPTCHA doÄŸrulamasÄ± baÅŸarÄ±sÄ±z.";
                 return View("Register", model);
             }
 
             if (model.Password != model.Pwconfirmend)
                 {
-                TempData["AuthError"] = "Þifreler Uyuþmuyor.";
+                TempData["AuthError"] = "Åžifreler UyuÅŸmuyor.";
                 return View("Register", model);
             }
 
@@ -244,9 +239,9 @@ namespace Flappr.Controllers
 
                 TempData["AuthError"] = (nicknameTaken, mailTaken) switch
                 {
-                    (true, true) => "Kullanýcý adý ve e-posta zaten kullanýlýyor!",
-                    (true, false) => "Bu kullanýcý adý mevcut!",
-                    (false, true) => "Bu e-posta adresi zaten kullanýlýyor!",
+                    (true, true) => "KullanÄ±cÄ± adÄ± ve e-posta zaten kullanÄ±lÄ±yor!",
+                    (true, false) => "Bu kullanÄ±cÄ± adÄ± mevcut!",
+                    (false, true) => "Bu e-posta adresi zaten kullanÄ±lÄ±yor!",
                     _ => null
                 };
 
@@ -275,7 +270,7 @@ namespace Flappr.Controllers
                 .Replace("{{Nickname}}", model.Nickname)
                 .Replace("{{LoginLink}}", "https://flappr.polatturkk.com.tr/home/login");
 
-            string subject = "Flappr’a Hoþ Geldiniz!";
+            string subject = "Flapprâ€™a HoÅŸ Geldiniz!";
 
             await SendEmailAsync(model.Mail, subject, mailBody);
 
@@ -336,7 +331,7 @@ namespace Flappr.Controllers
 
             if (user == null)
             {
-                TempData["AuthError"] = "Böyle bir hesap bulunamadý! Lütfen kayýt olun veya farklý bir hesapla giriþ yapýn.";
+                TempData["AuthError"] = "BÃ¶yle bir hesap bulunamadÄ±! LÃ¼tfen kayÄ±t olun veya farklÄ± bir hesapla giriÅŸ yapÄ±n.";
                 return View("Login");
             }
 
@@ -368,7 +363,7 @@ namespace Flappr.Controllers
 
             if (string.IsNullOrWhiteSpace(dto.Detail))
             {
-                TempData["FlapMessage"] = "Flap içeriði boþ olamaz!";
+                TempData["FlapMessage"] = "Flap iÃ§eriÄŸi boÅŸ olamaz!";
                 return RedirectToAction("Index");
             }
 
@@ -407,7 +402,7 @@ namespace Flappr.Controllers
 
             if (flapEntity == null)
             {
-                ViewBag.Message = "Böyle bir Flap yok";
+                ViewBag.Message = "BÃ¶yle bir Flap yok";
                 return View("Message");
             }
 
@@ -552,13 +547,13 @@ namespace Flappr.Controllers
 
             if (string.IsNullOrWhiteSpace(Summary))
             {
-                TempData["CommentMessage"] = "Yorum boþ olamaz!";
+                TempData["CommentMessage"] = "Yorum boÅŸ olamaz!";
                 return RedirectToAction("Flap", new { Id = FlapId });
             }
 
             if (Summary.Length > 200)
             {
-                TempData["CommentMessage"] = "Yorum 200 karakteri geçemez!";
+                TempData["CommentMessage"] = "Yorum 200 karakteri geÃ§emez!";
                 return RedirectToAction("Flap", new { Id = FlapId });
             }
             var comment = new Comment
@@ -588,21 +583,20 @@ namespace Flappr.Controllers
                         .Replace("{{Username}}", flapOwner.Username)
                         .Replace("{{FlapDetail}}", flap.Detail);
 
-                    string subject = "Flap’ýnýza yeni bir yorum yapýldý!";
+                    string subject = "Flapâ€™Ä±nÄ±za yeni bir yorum yapÄ±ldÄ±!";
                     await SendEmailAsync(flapOwner.Mail, subject, mailbody);
                 }
                 var notification = new Notification
                 {
                     UserId = flapOwner.Id.ToString(),
                     SenderId = user.Id.ToString(),
-                    Type = "Comment",
-                    Message = $"{user.Nickname} flap’ýnýza yorum yaptý: \"{Summary}\"",
+                    Type = "Yeni yorum ðŸŽ‰",
+                    Message = $"{user.Nickname}, flapâ€™Ä±nÄ±za yorum yaptÄ±.",
                     IsRead = false
                 };
                 _context.Notifications.Add(notification);
                 await _context.SaveChangesAsync();
 
-                //SignalR ile canlý gönderim
                 await _hubContext.Clients.User(flapOwner.Id.ToString())
                     .SendAsync("ReceiveNotification", notification.Message);
             }
@@ -659,7 +653,7 @@ namespace Flappr.Controllers
 
             if (user == null)
             {
-                ViewBag.Message = "Bu e-posta adresiyle kayýtlý bir kullanýcý bulunamadý.";
+                ViewBag.Message = "Bu e-posta adresiyle kayÄ±tlÄ± bir kullanÄ±cÄ± bulunamadÄ±.";
                 return View("Message");
             }
 
@@ -673,7 +667,7 @@ namespace Flappr.Controllers
 
             if (user == null)
             {
-                ViewBag.Message = "Kullanýcý bulunamadý.";
+                ViewBag.Message = "KullanÄ±cÄ± bulunamadÄ±.";
                 return View("Message");
             }
 
@@ -683,13 +677,60 @@ namespace Flappr.Controllers
 
             using var reader = new StreamReader("wwwroot/mailTemp/pwreset.html");
             var template = await reader.ReadToEndAsync();
-            var mailBody = template.Replace("{{Resetlink}}", resetLink);
+            var mailBody = template.Replace("{{Resetlink}}", "https://flappr.polatturkk.com.tr/home/PwResetForm");
 
-            string subject = "Þifre Sýfýrlama Talebi";
+            string subject = "Åžifre SÄ±fÄ±rlama Talebi";
 
             await SendEmailAsync(user.Mail, subject, mailBody);
 
-            ViewBag.Message = "Þifre sýfýrlama mail olarak iletilmiþtir.";
+            ViewBag.Message = "Åžifre sÄ±fÄ±rlama mail olarak iletilmiÅŸtir.";
+            return View("Message");
+        }
+
+        [HttpGet]
+        [Route("/pwresetform")]
+        public IActionResult PwResetForm(string token)
+        {
+            var model = new ResetPwToken { Token = token };
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("/pwresetform")]
+        public async Task<IActionResult> PwResetForm(PwResetRequest model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            if (model.NewPassword != model.ConfirmPassword)
+            {
+                ModelState.AddModelError("", "Åžifreler eÅŸleÅŸmiyor.");
+                return View(model);
+            }
+
+            var userToken = await _context.ResetPwTokens
+                .FirstOrDefaultAsync(t => t.Token == model.Token && !t.Used);
+
+            if (userToken == null || userToken.Expiry < DateTime.UtcNow)
+            {
+                ModelState.AddModelError("", "Token geÃ§ersiz veya sÃ¼resi dolmuÅŸ.");
+                return View(model);
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userToken.UserId);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "KullanÄ±cÄ± bulunamadÄ±.");
+                return View(model);
+            }
+
+            user.Password = Helper.Hash(model.NewPassword);
+
+            userToken.Used = true;
+
+            await _context.SaveChangesAsync();
+
+            ViewBag.Message = "Åžifreniz baÅŸarÄ±yla deÄŸiÅŸtirildi.";
             return View("Message");
         }
 
@@ -701,7 +742,7 @@ namespace Flappr.Controllers
         {
             if (string.IsNullOrWhiteSpace(model.SearchTerm))
             {
-                ModelState.AddModelError("", "Lütfen bir arama terimi girin.");
+                ModelState.AddModelError("", "LÃ¼tfen bir arama terimi girin.");
                 return View(model);
             }
 
