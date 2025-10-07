@@ -64,9 +64,33 @@
         }
 </style>
 
+
+
 <form action="/SifreUnuttum" method="post" autocomplete="off" class="forgot-password-form">
+    @if (TempData["PwResetErrorMessage"] != null)
+    {
+        <div class="alert-message alert alert-danger text-center" style="margin-top:10px;">
+            @TempData["PwResetErrorMessage"]
+        </div>
+    }
+    @if (TempData["PwResetSuccessMessage"] != null)
+    {
+        <div class="alert-message alert alert-success text-center" style="margin-top:10px;">
+            @TempData["PwResetSuccessMessage"]
+        </div>
+    }
     <h3 class="text-center mb-4">Şifremi Unuttum</h3>
     <input required type="email" name="email" placeholder="E-Posta Adresiniz" />
     <hr />
     <button type="submit">Gönder</button>
 </form>
+
+<script>
+    document.querySelectorAll('.alert-message').forEach(function (msg) {
+        setTimeout(function () {
+            msg.style.transition = "opacity 0.5s";
+            msg.style.opacity = 0;
+            setTimeout(function () { msg.remove(); }, 500);
+        }, 2000);
+    });
+</script>

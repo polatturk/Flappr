@@ -158,12 +158,12 @@ namespace Flappr.Controllers
                 return View("Login");
             }
 
-            //var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
-            //if (!recaptchaValid)
-            //{
-            //    TempData["AuthError"] = "reCAPTCHA doğrulaması başarısız.";
-            //    return View("Login");
-            //}
+            var recaptchaValid = await VerifyRecaptchaLogin(model.RecaptchaToken);
+            if (!recaptchaValid)
+            {
+                TempData["AuthError"] = "reCAPTCHA doğrulaması başarısız.";
+                return View("Login");
+            }
 
             var hashedPassword = Helper.Hash(model.Password);
 
@@ -653,8 +653,8 @@ namespace Flappr.Controllers
 
             if (user == null)
             {
-                ViewBag.Message = "Bu e-posta adresiyle kayıtlı bir kullanıcı bulunamadı.";
-                return View("Message");
+                TempData["PwResetErrorMessage"] = "Bu e-posta adresiyle kayıtlı bir kullanıcı bulunamadı !";
+                return View();
             }
 
             return RedirectToAction("PwResetLink", new { userId = user.Id });
@@ -667,8 +667,8 @@ namespace Flappr.Controllers
 
             if (user == null)
             {
-                ViewBag.Message = "Kullanıcı bulunamadı.";
-                return View("Message");
+                TempData["PwResetErrorMessage"] = "Bu e-posta adresiyle kayıtlı bir kullanıcı bulunamadı !";
+                return Redirect("/sifre-unuttum");
             }
 
             var token = TokenUret(userId);
@@ -677,26 +677,26 @@ namespace Flappr.Controllers
 
             using var reader = new StreamReader("wwwroot/mailTemp/pwreset.html");
             var template = await reader.ReadToEndAsync();
-            var mailBody = template.Replace("{{Resetlink}}", "https://flappr.polatturkk.com.tr/home/PwResetForm");
-
+            var resetUrl = $"https://flappr.polatturkk.com.tr/pwresetform?token={token}";
+            var mailBody = template.Replace("{{ResetLink}}", resetUrl);
             string subject = "Şifre Sıfırlama Talebi";
 
             await SendEmailAsync(user.Mail, subject, mailBody);
 
-            ViewBag.Message = "Şifre sıfırlama mail olarak iletilmiştir.";
-            return View("Message");
+            TempData["PwResetSuccessMessage"] = "Şifre sıfırlama mail olarak iletilmiştir.";
+            return Redirect("/sifre-unuttum");
         }
 
         [HttpGet]
-        [Route("/pwresetform")]
+        [Route("/PwResetForm")]
         public IActionResult PwResetForm(string token)
         {
-            var model = new ResetPwToken { Token = token };
+            var model = new PwResetRequest { Token = token };
             return View(model);
         }
 
         [HttpPost]
-        [Route("/pwresetform")]
+        [Route("/PwResetForm")]
         public async Task<IActionResult> PwResetForm(PwResetRequest model)
         {
             if (!ModelState.IsValid)
@@ -704,8 +704,8 @@ namespace Flappr.Controllers
 
             if (model.NewPassword != model.ConfirmPassword)
             {
-                ModelState.AddModelError("", "Şifreler eşleşmiyor.");
-                return View(model);
+                TempData["PwResetErrorMessage"] = "Şifreler eşleşmiyor !";
+                return Redirect("/PwResetForm");
             }
 
             var userToken = await _context.ResetPwTokens
@@ -713,15 +713,15 @@ namespace Flappr.Controllers
 
             if (userToken == null || userToken.Expiry < DateTime.UtcNow)
             {
-                ModelState.AddModelError("", "Token geçersiz veya süresi dolmuş.");
-                return View(model);
+                TempData["PwResetErrorMessage"] = "Token geçersiz veya süresi dolmuş !";
+                return Redirect("/PwResetForm");
             }
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userToken.UserId);
             if (user == null)
             {
-                ModelState.AddModelError("", "Kullanıcı bulunamadı.");
-                return View(model);
+                TempData["PwResetErrorMessage"] = "Kullanıcı bulunamadı !";
+                return Redirect("/PwResetForm");
             }
 
             user.Password = Helper.Hash(model.NewPassword);
@@ -730,8 +730,8 @@ namespace Flappr.Controllers
 
             await _context.SaveChangesAsync();
 
-            ViewBag.Message = "Şifreniz başarıyla değiştirildi.";
-            return View("Message");
+            TempData["PwResetSuccessMessage"] = "Şifreniz başarıyla değiştirildi.";
+            return Redirect("/PwResetForm");
         }
 
         [CustomAuthorize][HttpGet]
@@ -742,7 +742,7 @@ namespace Flappr.Controllers
         {
             if (string.IsNullOrWhiteSpace(model.SearchTerm))
             {
-                ModelState.AddModelError("", "Lütfen bir arama terimi girin.");
+                TempData["PwResetErrorMessage"] = "Lütfen bir arama terimi girin.";
                 return View(model);
             }
 

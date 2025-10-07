@@ -104,6 +104,19 @@
     }
 
     <form asp-action="PwResetForm" method="post">
+
+        @if (TempData["PwResetErrorMessage"] != null)
+        {
+            <div class="alert-message alert alert-danger text-center" style="margin-top:10px;">
+                @TempData["PwResetErrorMessage"]
+            </div>
+        }
+        @if (TempData["PwResetSuccessMessage"] != null)
+        {
+            <div class="alert-message alert alert-success text-center" style="margin-top:10px;">
+                @TempData["PwResetSuccessMessage"]
+            </div>
+        }
         <input type="hidden" asp-for="Token" />
 
         <div class="form-group">
@@ -118,4 +131,18 @@
 
         <button type="submit" class="btn-submit">Şifreyi Sıfırla</button>
     </form>
+    <div style="margin-top:15px;">
+        <a href="/Home/Login" class="btn btn-primary">Giriş Yap</a>
+    </div>
 </div>
+
+<script>
+    document.querySelectorAll('.alert-message').forEach(function (msg) {
+        setTimeout(function () {
+            msg.style.transition = "opacity 0.5s";
+            msg.style.opacity = 0;
+            setTimeout(function () { msg.remove(); }, 500);
+        }, 2000);
+    });
+</script>
+
