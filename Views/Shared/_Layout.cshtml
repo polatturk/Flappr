@@ -3,24 +3,19 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] Flappr </title>
+    <title>@ViewData["Title"] Flappr</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Flappr.styles.css" asp-append-version="true" />
     <link rel="icon" href="/Img/Flappr-logo2.png" type="image/jpeg" />
-    <link rel="preload" as="image" href="/Img/back2.jpg">
 
     @RenderSection("Styles", false)
-
 </head>
-<body style="
-    background-color: #1a1a1a;
-    background-image: url('/Img/back2.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center;
-    min-height: 100vh;">
+<body class="dark-mode">
+    <button id="theme-toggle" class="theme-btn">
+        🌙
+    </button>
 
     <div class="container">
         <main role="main" class="pb-3">

@@ -10,267 +10,244 @@
 }
 
 <style>
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        width: 220px;
-        background-color: rgba(0, 0, 0, 0.85);
-        display: flex;
-        flex-direction: column;
-        padding: 20px 15px;
-        box-shadow: 2px 0 8px rgba(0,0,0,0.3);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        z-index: 1000;
+    body.light-mode {
+        color: #000 !important;
+        background-color: #fff !important;
+    }
+
+    body.dark-mode {
+        color: #fff !important;
+        background-color: #000 !important;
+    }
+
+    body.light-mode #charCount {
+        color: #000 !important;
+    }
+
+    body.dark-mode #charCount {
+        color: #fff !important;
+    }
+
+    .flap-item,
+    .flap-detail,
+    .card-glass,
+    .flap-textarea,
+    .flap-select {
+        color: inherit !important; 
+        background: none !important; 
+    }
+
+    body.light-mode .flap-item,
+    body.light-mode .card-glass {
+        background-color: #fff !important;
+        border: 1px solid #ddd !important;
+    }
+
+    body.dark-mode .flap-item,
+    body.dark-mode .card-glass {
+        background-color: #000 !important;
+        border: 1px solid #2f3336 !important;
+    }
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 220px;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 15px;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.3);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 1000;
 }
 
-        .sidebar .logo img {
-            width: 150px;
-            height: auto;
-            margin-bottom: 30px;
-            user-select: none;
-        }
+.sidebar .logo img {
+    width: 150px;
+    height: auto;
+    margin-bottom: 30px;
+    user-select: none;
+}
 
-        .sidebar .menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            flex-grow: 1;
-        }
+.sidebar .menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+}
 
-            .sidebar .menu li {
-                margin-bottom: 15px;
-            }
+.sidebar .menu li {
+    margin-bottom: 15px;
+}
 
-            .sidebar .menu a {
-                color: #eee;
-                text-decoration: none;
-                font-size: 1rem;
-                font-weight: 600;
-                padding: 10px 14px;
-                border-radius: 12px;
-                display: block;
-                transition: all 0.3s ease;
-                border: 2px solid transparent;
-            }
+.sidebar .menu a {
+    color: #eee;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 10px 14px;
+    border-radius: 12px;
+    display: block;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
 
-                .sidebar .menu a:hover {
-                    background-color: #4da3ff;
-                    color: #fff;
-                    border-color: #4da3ff;
-                }
+.sidebar .menu a:hover {
+    background-color: #4da3ff;
+    color: #fff;
+    border-color: #4da3ff;
+}
 
-            .sidebar .menu .profile-link a {
-                font-weight: 700;
-                color: #1e80e0;
-            }
+.sidebar .user-info {
+    margin-top: auto;
+    font-size: 0.9rem;
+    color: #ccc;
+    font-weight: 600;
+}
 
-        .sidebar .user-info {
-            margin-top: auto;
-            font-size: 0.9rem;
-            color: #ccc;
-            font-weight: 600;
-        }
+.sidebar .user-info a {
+    color: #ff6b6b;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
 
-    .sidebar .user-info span {
-        color: #4da3ff;
-        display: block;
-        margin-bottom: 8px;
-    }
+.sidebar .user-info a:hover {
+    background-color: #ff4c4c;
+    border-color: #ff4c4c;
+    color: #fff;
+}
 
-            .sidebar .user-info a {
-                color: #ff6b6b;
-                font-weight: 700;
-                text-decoration: none;
-                padding: 6px 14px;
-                border-radius: 12px;
-                border: 2px solid transparent;
-                transition: all 0.3s ease;
-                display: inline-block;
-            }
+.main-content {
+    margin-left: 220px;
+    padding: 40px 20px;
+    min-height: 100vh;
+}
 
-                .sidebar .user-info a:hover {
-                    background-color: #ff4c4c;
-                    border-color: #ff4c4c;
-                    color: #fff;
-                }
+/* Card */
+.card-glass {
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    margin-bottom: 25px;
+    max-width: 600px;
+    transition: box-shadow 0.3s ease;
+}
 
-    .main-content {
-        margin-left: 220px;
-        padding: 40px 20px;
-        min-height: 100vh;
-    }
+.card-glass:hover {
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
 
-    .card-glass {
-        background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-        border-radius: 16px;
-        padding: 25px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
-        color: #fff;
-        margin-bottom: 25px;
-        max-width: 600px;
-        transition: box-shadow 0.3s ease;
-    }
+/* Flap item */
+.flap-item {
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    backdrop-filter: blur(6px);
+    margin-bottom: 20px;
+    transition: box-shadow 0.3s ease;
+    max-width: 600px;
+    color: inherit;
+}
 
-        .card-glass:hover {
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-        }
+.flap-item:hover {
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
 
-    .flap-avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        margin-right: 12px;
-        object-fit: cover;
-    }
+.flap-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+}
 
-    .flap-textarea {
-        width: 100%;
-        border: none;
-        resize: none;
-        font-size: 15px;
-        padding: 12px;
-        border-radius: 12px;
-        background: rgba(255,255,255,0.05);
-        color: #fff !important;
-        transition: background 0.2s ease, box-shadow 0.3s ease;
-    }
+.flap-textarea {
+    width: 100%;
+    border: none;
+    resize: none;
+    font-size: 15px;
+    padding: 12px;
+    border-radius: 12px;
+    color: inherit !important;
+    transition: background 0.2s ease, box-shadow 0.3s ease;
+}
 
-        .flap-textarea:focus {
-            background: rgba(255,255,255,0.1);
-            outline: none;
-            box-shadow: 0 0 8px 2px rgba(77, 163, 255, 0.5);
-        }
+.flap-textarea:focus {
+    outline: none;
+    box-shadow: 0 0 8px 2px rgba(77, 163, 255,0.5);
+}
 
-    .flap-btn {
-        background: linear-gradient(135deg, #4da3ff, #1e80e0);
-        border: none;
-        padding: 8px 18px;
-        border-radius: 25px;
-        color: #fff;
-        font-weight: 600;
-        transition: transform 0.2s ease, background 0.3s ease;
-    }
+.flap-btn {
+    background: linear-gradient(135deg, #4da3ff, #1e80e0);
+    border: none;
+    padding: 8px 18px;
+    border-radius: 25px;
+    color: #fff;
+    font-weight: 600;
+    transition: transform 0.2s ease, background 0.3s ease;
+}
 
-        .flap-btn:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, #1e80e0, #4da3ff);
-        }
+.flap-btn:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #1e80e0, #4da3ff);
+}
 
-    .flap-item {
-        background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-        border-radius: 16px;
-        padding: 25px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-        backdrop-filter: blur(6px);
-        margin-bottom: 20px;
-        transition: box-shadow 0.3s ease;
-        max-width: 600px;
-    }
+.flap-select {
+    border-radius: 10px;
+    font-size: 14px;
+    padding: 6px 30px 6px 10px;
+    appearance: none;
+    outline: none;
+    box-shadow: none;
+    background: #273444 url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 10px center;
+    background-size: 16px;
+    border: 1px solid #333;
+    color: #fff;
+}
 
-        .flap-item:hover {
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-        }
+.flap-detail {
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 200px;
+    overflow: hidden;
+    line-height: 1.6;
+    color: inherit;
+}
 
-    .flap-avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        margin-right: 12px;
-        object-fit: cover;
-    }
+.flap-label {
+    font-size: 14px;
+    color: #ccc;
+}
 
-    .flap-select {
-        border-radius: 10px;
-        font-size: 14px;
-        padding: 6px 30px 6px 10px;
-        background: #273444 url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 10px center;
-        background-size: 16px;
-        border: 1px solid #333;
-        color: #fff; 
-        appearance: none; 
-        outline: none; 
-        box-shadow: none; 
-    }
-
-        .flap-select:focus {
-            outline: none;
-            box-shadow: none;
-        }
-
-        .flap-select option {
-            background: #273444; 
-            color: #fff; 
-        }
-
-            .flap-select option:hover,
-            .flap-select option:focus {
-                background: #273444 !important;
-                color: #fff !important;
-                outline: none;
-                box-shadow: none;
-            }
-
-
-    .flap-detail {
-        white-space: pre-wrap; 
-        word-break: break-word; 
-        max-height: 200px; 
-        overflow: hidden; 
-        line-height: 1.6; 
-    }
-    /* Label */
-    .flap-label {
-        font-size: 14px;
-        color: #ccc;
-    }
-
-    body, .flap-item {
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        color: #fff;
-    }
-
-        .flap-item h2 a {
-            font-weight: 700;
-            font-size: 15px;
-            color: #fff;
-            text-decoration: none;
-        }
-
-            .flap-item h2 a:hover {
-                color: #1d9bf0; 
-            }
-
-    .text-muted {
-        font-size: 14px;
-        color: #1f2937 !important;
-
-    /* Responsive */
+/* Responsive */
     @@media (max-width: 768px) {
-        .sidebar {
-            width: 50%;
-            height: auto;
-            position: relative;
-        }
-
-        .main-content {
-            display: flex;
-            padding: 20px;
-            flex-direction: column;
-            align-items: center; /* ortala */
-
-        }
-        .flap-form, .flap-item {
-            max-width: 150%;
-        }
+    .sidebar {
+        width: 50%;
+        height: auto;
+        position: relative;
     }
-
+    .main-content {
+        display: flex;
+        padding: 20px;
+        flex-direction: column;
+        align-items: center;
+    }
+    .flap-form, .flap-item {
+        max-width: 150%;
+    }
+}
 </style>
-    
-<!-- Sidebar -->
+
 <div class="sidebar">
     <a class="logo" asp-area="" asp-controller="Home" asp-action="Index">
         <img src="/Img/Flappr-logo.png" alt="Flappr Logo" />
@@ -287,7 +264,7 @@
                 <span class="ml-2">Bildirimler</span>
                 @if (ViewBag.UnreadCount > 0)
                 {
-                    <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    <span class="absolute top-0 right-0 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         @ViewBag.UnreadCount
                     </span>
                 }
@@ -308,7 +285,6 @@
             <div class="d-flex align-items-start mb-3">
                 <img src="@(ViewBag.CurrentUser?.ImgUrl)" alt="User Avatar" class="flap-avatar" />
                 <textarea id="FlapContent" name="detail" class="form-control flap-textarea" rows="3" required placeholder="Neler oluyor?"></textarea>
-                
             </div>
             
             <div class="d-flex justify-content-between align-items-center">
@@ -317,14 +293,11 @@
                         <option value="true">🌍 Herkese Açık</option>
                         <option value="false">🔒 Gizli</option>
                     </select>
-
                 </div>
-                
-                <div class="flex justify-between items-center text-sm text-white">
+                <div class="flex justify-between items-center text-sm">
                     <span id="charCount">0 / 200</span>
                 </div>
                 <button type="submit" class="btn flap-btn">Flapla 🚀</button>
-                
             </div>
             @if (TempData["FlapMessage"] != null)
             {
@@ -352,9 +325,9 @@
                         <span class="text-gray-500 text-sm">@TimeHelper.FormatTime(flap.CreatedDate)</span>
                     </div>
 
-                    <a href="/Flap/@flap.Id" class="text-white block mt-2 flap-detail">@flap.Detail</a>
+                    <a href="/Flap/@flap.Id" class="flap-detail block mt-2">@flap.Detail</a>
 
-                    <div class="d-flex mt-3 gap-3 text-white">
+                    <div class="d-flex mt-3 gap-3">
                         <a href="/Flap/@flap.Id" class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 hover:bg-gray-300 transition duration-200">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4.3-.93L3 20l1.14-3.42A7.96 7.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -376,28 +349,31 @@
         </div>
     }
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const flapInput = document.getElementById("FlapContent");
-            const charCount = document.getElementById("charCount");
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Karakter sayacı
+    const flapInput = document.getElementById("FlapContent");
+    const charCount = document.getElementById("charCount");
 
-            if (flapInput && charCount) {
-                function updateCount() {
-                    let length = flapInput.value.length;
-                    charCount.textContent = `${length} / 200`;
-                    charCount.style.color = length > 200 ? "red" : "white";
-                }
+    if (flapInput && charCount) {
+        function updateCount() {
+            let length = flapInput.value.length;
+            charCount.textContent = `${length} / 200`;
+            charCount.style.color = length > 200 ? "red" : (document.body.classList.contains("dark-mode") ? "#e7e9ea" : "#000");
+        }
 
-                updateCount();
-                flapInput.addEventListener("input", updateCount);
-            }
-        });
-        document.querySelectorAll('.alert-message').forEach(function (msg) {
-            setTimeout(function () {
-                msg.style.transition = "opacity 0.5s";
-                msg.style.opacity = 0;
-                setTimeout(function () { msg.remove(); }, 500);
-            }, 2000);
-        });
-    </script>
+        updateCount();
+        flapInput.addEventListener("input", updateCount);
+    }
+
+    // Alert mesaj kaybolma
+    document.querySelectorAll('.alert-message').forEach(function (msg) {
+        setTimeout(function () {
+            msg.style.transition = "opacity 0.5s";
+            msg.style.opacity = 0;
+            setTimeout(function () { msg.remove(); }, 500);
+        }, 2000);
+    });
+});
+</script>
 </div>

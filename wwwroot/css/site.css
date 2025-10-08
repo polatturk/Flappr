@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -19,4 +19,73 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+
+    body.dark-mode {
+        background-color: #000;
+        color: #000;
+    }
+
+    body.light-mode {
+        background-color: #fff;
+        color: #000;
+    }
+
+.card,
+.card-glass,
+.flap-form,
+.flap-item {
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    transition: 0.3s ease;
+}
+
+body.light-mode .card {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    color: #000;
+}
+
+body.dark-mode .card {
+    background-color: #000; 
+    border: 1px solid #2f3336; 
+    color: #e7e9ea;
+}
+
+.card:hover {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode .card:hover {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05); 
+}
+
+.theme-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    color: #e7e9ea;
+    border: 1px solid #444;
+    padding: 8px 14px;
+    font-size: 1.2rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+body.light-mode .theme-btn {
+    color: #000;
+    border: 1px solid #ccc;
+}
+
+.theme-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+h1, h2, h3, h4, h5, h6, p, span, a, label, button {
+    color: inherit;
 }

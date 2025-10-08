@@ -127,8 +127,8 @@
     .card .bio {
         max-width: 40ch;
         white-space: pre-wrap; 
-        word-break: break-word; 
-        color: #fff;
+        word-break: break-word;
+        color: inherit !important;
         font-size: 15px;
         line-height: 1.6;
     }
@@ -137,12 +137,12 @@
         display: flex;
         gap: 1rem;
         margin-top: 0.5rem;
-        color: #ffffff;
+        color: inherit !important;
         font-size: 0.875rem;
     }
 
     .card h3 {
-        color: #ffffff;
+        color: inherit !important;
     }
 
     .card .flap-detail {
@@ -172,6 +172,8 @@
                 background-color: #e5e7eb;
             }
 
+            
+
  </style>
 
 <body class="bg-gray-200">
@@ -191,7 +193,7 @@
                     <span class="ml-2">Bildirimler</span>
                     @if (ViewBag.UnreadCount > 0)
                     {
-                        <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        <span class="absolute top-0 right-0 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">
                             @ViewBag.UnreadCount
                         </span>
                     }
@@ -220,7 +222,7 @@
 
             <div class="ml-6 flex-1">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-bold text-white">@Model.User.Username</h2>
+                    <h2 class="text-xl font-bold">@Model.User.Username</h2>
 
 
                     @if (ViewBag.profile)
@@ -240,7 +242,7 @@
                                 <button type="submit"
                                         class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium
                                                @(ViewBag.IsFollowing ? "bg-red-500 text-white hover:bg-red-600" : "bg-green-500 text-white hover:bg-green-600")">
-                                    <i class="bi @(ViewBag.IsFollowing ? "bi-person-x-fill" : "bi-person-fill-add") text-white"></i>
+                                    <i class="bi @(ViewBag.IsFollowing ? "bi-person-x-fill" : "bi-person-fill-add")"></i>
                                     <span>@(ViewBag.IsFollowing ? "Takipten Çık" : "Takip Et")</span>
                                 </button>
                             </form>
@@ -253,7 +255,7 @@
                 <p class="bio"> @Model.User.Biography</p>
 
                 <div class="followers-info">
-                    <div class="flex items-center gap-1">
+                    <div class="follows flex items-center gap-1">
                         <i class="bi bi-people-fill"></i>
                         <span>Takipçi <strong>@Model.FollowersCount</strong></span>
                     </div>
@@ -272,7 +274,7 @@
                     @if (ViewBag.profile)
                     {
                         <div class="absolute top-2 right-2">
-                            <button type="button" class="menu-btn p-2 rounded-full focus:outline-none text-white hover:bg-transparent" data-id="@item.Id">
+                            <button type="button" class="menu-btn p-2 rounded-full focus:outline-none hover:bg-transparent" data-id="@item.Id">
                                 <i class="bi bi-three-dots-vertical"></i>
                             </button>
 
@@ -288,14 +290,14 @@
                     <div class="flex items-center gap-3 mb-2">
                         <img src="@(Model.User.ImgUrl)" alt="Profil" class="w-10 h-10 rounded-full">
                         <div class="flex items-center">
-                            <h3 class="text-white font-semibold">@item.Username</h3>
+                            <h3 class="font-semibold">@item.Username</h3>
                             <span class="text-gray-400 text-base ml-2">@("@" + item.Nickname)</span>
                             <span class="text-gray-400 text-sm ml-2">•</span>
                             <span class="text-gray-400 text-base ml-2">@TimeHelper.FormatTime(item.CreatedDate)</span>
                         </div>
                     </div>
 
-                    <p class="text-white mt-1">@item.Detail</p>
+                    <p class="t mt-1">@item.Detail</p>
 
                     <div class="flex items-center mt-3 space-x-6 text-gray-500">
                         <a href="/Flap/@item.Id"
