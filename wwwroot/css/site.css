@@ -89,3 +89,25 @@ body.light-mode .theme-btn {
 h1, h2, h3, h4, h5, h6, p, span, a, label, button {
     color: inherit;
 }
+
+/* Hamburger ikon butonu */
+.sidebar {
+    background-color: #1a1a1a;
+    width: 250px;
+    height: 100vh;
+    transition: transform 0.3s ease;
+}
+
+.hamburger {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+}
+
+@media (min-width: 768px) {
+    #menu-toggle {
+        display: none;
+    }
+}
+
