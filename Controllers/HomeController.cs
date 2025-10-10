@@ -85,7 +85,7 @@ namespace Flappr.Controllers
             return token;
         }
 
-        //[CustomAuthorize]
+        [CustomAuthorize]
         public IActionResult Index()
         {
             var userIdString = HttpContext.Session.GetString("userId");

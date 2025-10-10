@@ -4,6 +4,45 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
+
+        body.light-mode {
+            color: #000 !important;
+            background-color: #fff !important;
+        }
+
+        body.dark-mode {
+            color: #fff !important;
+            background-color: #000 !important;
+        }
+
+        body.light-mode #charCount {
+            color: #000 !important;
+        }
+
+        body.dark-mode #charCount {
+            color: #fff !important;
+        }
+
+        .flap-item,
+        .flap-detail,
+        .card-glass,
+        .flap-textarea,
+        .flap-select {
+            color: inherit !important;
+            background: none !important;
+        }
+
+        body.light-mode .flap-item,
+        body.light-mode .card-glass {
+            background-color: #fff !important;
+            border: 1px solid #ddd !important;
+        }
+
+        body.dark-mode .flap-item,
+        body.dark-mode .card-glass {
+            background-color: #000 !important;
+            border: 1px solid #2f3336 !important;
+        }
         .card {
             width: min(420px, 92vw);
             background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
@@ -24,12 +63,12 @@
         }
 
             .tabs button.active {
-                color: white;
+                color: color: inherit !important;
                 border-bottom: 2px solid #3B82F6; 
             }
 
             .tabs button:not(.active) {
-                color: #9aa4b2; 
+                color: inherit !important;
             }
     </style>
 }
@@ -58,7 +97,7 @@
        title="Geri">
         <i class="bi bi-arrow-left text-lg"></i>
     </a>
-    <h2 class="text-2xl font-bold mb-6 text-white">Profil Güncelle</h2>
+    <h2 class="text-2xl font-bold mb-6">Profil Güncelle</h2>
 
     <div class="tabs flex justify-around mb-6 border-b border-gray-700">
         <button class="text-gray-400 font-semibold" data-tab-target="#nameTab">Ad Soyad</button>
@@ -74,12 +113,12 @@
                 <input type="hidden" name="FormType" value="Username" />
 
                 <div class="mb-4 text-left">
-                    <label for="name" class="tab-content-label text-white">Ad Soyad</label>
+                    <label for="name" class="tab-content-label">Ad Soyad</label>
                     <input type="text" id="name" name="Username" value="@Model.Username"
-                           class="w-full px-3 py-2 border border-gray-700 rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                           class="w-full px-3 py-2 border border-gray-700 rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
                 </div>
                 <button type="submit"
-                        class="w-full bg-blue-500 text-white py-2 rounded-lg shadow-md hover:bg-blue-600">
+                        class="w-full bg-blue-500 py-2 rounded-lg shadow-md hover:bg-blue-600">
                     Güncelle
                 </button>
                 @if (TempData["UsernameMessage"] != null)
@@ -96,15 +135,15 @@
                 <input type="hidden" name="FormType" value="Biography" />
 
                 <div class="mb-4 text-left">
-                    <label for="Biography" class="tab-content-label text-white">Biyografi</label>
+                    <label for="Biography" class="tab-content-label">Biyografi</label>
                     <textarea id="Biography" name="Biography" rows="4"
-                              class="w-full px-3 py-2 border border-gray-700 rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">@Model.Biography</textarea>
-                    <div class="flex justify-between items-center text-sm text-white">
+                              class="w-full px-3 py-2 border border-gray-700 rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">@Model.Biography</textarea>
+                    <div class="flex justify-between items-center text-sm">
                         <span id="charCount">0 / 80</span>
                     </div>
                 </div>
                 <button type="submit"
-                        class="w-full bg-blue-500 text-white py-2 rounded-lg shadow-md hover:bg-blue-600">
+                        class="w-full bg-blue-500 py-2 rounded-lg shadow-md hover:bg-blue-600">
                     Güncelle
                 </button>
                 @if (TempData["BiographyMessage"] != null)
@@ -121,12 +160,12 @@
                 <input type="hidden" name="FormType" value="Password" />
 
                 <div class="mb-4 text-left">
-                    <label for="password" class="tab-content-label text-white">Yeni Şifre</label>
+                    <label for="password" class="tab-content-label">Yeni Şifre</label>
                     <input type="password" id="password" name="Password"
-                           class="w-full px-3 py-2 border border-gray-700 rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                           class="w-full px-3 py-2 border border-gray-700 rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
                 </div>
                 <button type="submit"
-                        class="w-full bg-blue-500 text-white py-2 rounded-lg shadow-md hover:bg-blue-600">
+                        class="w-full bg-blue-500 py-2 rounded-lg shadow-md hover:bg-blue-600">
                     Güncelle
                 </button>
                 @if (TempData["PasswordMessage"] != null)
@@ -143,9 +182,9 @@
                 <input type="hidden" name="FormType" value="Photo" />
 
                 <div class="mb-4 text-left">
-                    <label for="photo" class="tab-content-label text-white">Profil Fotoğrafı</label>
+                    <label for="photo" class="tab-content-label">Profil Fotoğrafı</label>
                     <input type="file" id="photo" name="Image" accept="image/png, image/jpeg"
-                           class="w-full px-3 py-2 border border-gray-700 rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                           class="w-full px-3 py-2 border border-gray-700 rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
                     <small class="text-gray-400">Maksimum boyut: 2MB</small>
                 </div>
 
@@ -153,7 +192,7 @@
                 <input type="hidden" name="Nickname" value="@Model.Nickname" />
 
                 <button type="submit"
-                        class="w-full bg-blue-500 text-white py-2 rounded-lg shadow-md hover:bg-blue-600">
+                        class="w-full bg-blue-500 py-2 rounded-lg shadow-md hover:bg-blue-600">
                     Güncelle
                 </button>
                 @if (TempData["PhotoMessage"] != null)

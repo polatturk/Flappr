@@ -90,24 +90,78 @@ h1, h2, h3, h4, h5, h6, p, span, a, label, button {
     color: inherit;
 }
 
-/* Hamburger ikon butonu */
-.sidebar {
-    background-color: #1a1a1a;
-    width: 250px;
-    height: 100vh;
-    transition: transform 0.3s ease;
-}
+@media (max-width: 767px) {
+    .sidebar {
+        width: 256px; /* Daha kolay görünür bir genişlik */
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        box-shadow: none; /* Mobil slayt menülerde gölgeye gerek yok */
+        background-color: #000; /* Sidebarın rengi */
+    }
 
-.hamburger {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-}
+    /* Sidebar açıkken içeriği maskelemek için */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 30%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 39; /* Sidebar'dan (z-index: 40) hemen alt */
+        display: none; /* Başlangıçta gizli */
+    }
 
-@media (min-width: 768px) {
+    /* Sidebar'ın açık durumunu tanımla */
+    .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 2px 0 8px rgba(0,0,0,0.5);
+    }
+
+    /* Hamburger butonu */
     #menu-toggle {
-        display: none;
+        display: block; /* Mobil cihazlarda göster */
+        color: #fff; /* Buton rengini ayarla */
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+    }
+
+    /* Form ve Flap öğelerini mobil genişliğe ayarla */
+    .flap-item, .card-glass {
+        max-width: 400%; /* Tüm genişliği kapla */
+        width: 400%;
+        padding: 15px; /* Daha küçük padding */
+    }
+
+    .d-flex.justify-content-between.align-items-center {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+        .d-flex.justify-content-between.align-items-center > * {
+            margin-bottom: 10px;
+        }
+
+    .flap-btn {
+        width: 100%;
     }
 }
 
+@media (min-width: 768px) {
+    .sidebar {
+        /* Masaüstünde daima görünür */
+        transform: translateX(0) !important;
+        position: fixed;
+        width: 260px; /* Sabit bir genişlik */
+        background-color: #000; /* Siyah arkaplanı geri getir */
+        box-shadow: 2px 0 8px rgba(0,0,0,0.3);
+    }
+
+    .main-content {
+        margin-left: 260px; /* Sidebar kadar boşluk */
+        padding: 40px 20px;
+    }
+
+    #menu-toggle {
+        display: none !important; /* Masaüstünde gizle */
+    }
+}

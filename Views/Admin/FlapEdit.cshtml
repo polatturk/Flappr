@@ -7,6 +7,45 @@
 }
 
 <style>
+    body.light-mode {
+        color: #000 !important;
+        background-color: #fff !important;
+    }
+
+    body.dark-mode {
+        color: #fff !important;
+        background-color: #000 !important;
+    }
+
+    body.light-mode #charCount {
+        color: #000 !important;
+    }
+
+    body.dark-mode #charCount {
+        color: #fff !important;
+    }
+
+    .flap-item,
+    .flap-detail,
+    .card-glass,
+    .flap-textarea,
+    .flap-select {
+        color: inherit !important;
+        background: none !important;
+    }
+
+    body.light-mode .flap-item,
+    body.light-mode .card-glass {
+        background-color: #fff !important;
+        border: 1px solid #ddd !important;
+    }
+
+    body.dark-mode .flap-item,
+    body.dark-mode .card-glass {
+        background-color: #000 !important;
+        border: 1px solid #2f3336 !important;
+    }
+
     .card{
         background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
         border-radius: 16px;
@@ -15,7 +54,7 @@
         backdrop-filter: blur(6px);
         transition: box-shadow 0.3s ease;
         margin-bottom: 20px;
-        color: #fff;
+        color: inherit !important;
     }
 
     .card-textarea{
@@ -27,7 +66,7 @@
         backdrop-filter: blur(6px);
         transition: box-shadow 0.3s ease;
         margin-bottom: 20px;
-        color: #fff;
+        color: inherit !important;
     }
 </style>
 <body class="bg-gray-200">
@@ -36,7 +75,7 @@
             <div class="flex items-center gap-3 mb-4">
                 <img src="@(Model.UserImgUrl)" alt="Profil" class="w-12 h-12 rounded-full">
                 <div class="flex items-center space-x-2 text-sm text-gray-600">
-                    <span class="font-sm text-white">@Model.UserUsername</span>
+                    <span class="font-sm">@Model.UserUsername</span>
                     <span>@("@" + Model.UserNickname)</span>
                     <span>•</span>
                     <span>@TimeHelper.FormatTime(Model.CreatedDate)</span>
@@ -46,7 +85,7 @@
 
             <form method="post" action="/FlapEdit/@Model.Id">
                 <textarea id="FlapEdit" name="detail" class="card-textarea" rows="5">@Model.Detail</textarea>
-                <div class="flex justify-between items-center text-sm text-white">
+                <div class="flex justify-between items-center text-sm">
                     <span id="charCount">0 / 200</span>
                 </div>
                 <div class="flex justify-end gap-2">
@@ -56,7 +95,7 @@
                     </a>
 
                     <button type="submit"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                            class="px-4 py-2 bg-blue-600 rounded-md hover:bg-blue-700 transition">
                         Kaydet
                     </button>
                 </div>
