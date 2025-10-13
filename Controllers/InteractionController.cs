@@ -70,6 +70,11 @@ namespace Flappr.Controllers
 
         [AllowAnonymous]
         public IActionResult ErrorMessages(){return View();}
+        public IActionResult ServiceUnavailable()
+        {
+            Response.StatusCode = 503;
+            return View();
+        }
         public IActionResult Contact() 
         {
             return View(); 
@@ -122,7 +127,7 @@ namespace Flappr.Controllers
         {
             var userIdString = HttpContext.Session.GetString("userId");
             if (string.IsNullOrEmpty(userIdString))
-                return RedirectToAction("Login", "Home");
+                return RedirectToAction("Login", "Home");       
 
             var userId = Guid.Parse(userIdString);
 
