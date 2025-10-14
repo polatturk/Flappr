@@ -24,8 +24,6 @@ namespace Flappr.Controllers
         }
 
         [CustomAuthorize]
-        public IActionResult Explore(){return View();}
-        [CustomAuthorize]
         public async Task<IActionResult> Notifications()
         {
             var userIdString = HttpContext.Session.GetString("userId");

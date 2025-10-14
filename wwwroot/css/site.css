@@ -1,43 +1,31 @@
-﻿html {
-  font-size: 14px;
+﻿body {
+    margin-bottom: 60px;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+body.light-mode {
+    color: #000 !important;
+    background-color: #fff !important;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+body.dark-mode {
+    color: #fff !important;
+    background-color: #000 !important;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+body.light-mode #charCount {
+    color: #000 !important;
 }
 
-body {
-  margin-bottom: 60px;
+body.dark-mode #charCount {
+    color: #fff !important;
 }
-
-
-    body.dark-mode {
-        background-color: #000;
-        color: #000;
-    }
-
-    body.light-mode {
-        background-color: #fff;
-        color: #000;
-    }
 
 .card,
 .card-glass,
 .flap-form,
 .flap-item {
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 12px;
+        border-radius: 12px;
     padding: 16px;
     margin-bottom: 20px;
     transition: 0.3s ease;
@@ -53,10 +41,6 @@ body.dark-mode .card {
     background-color: #000; 
     border: 1px solid #2f3336; 
     color: #e7e9ea;
-}
-
-.card:hover {
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
 }
 
 body.dark-mode .card:hover {
@@ -75,93 +59,72 @@ body.dark-mode .card:hover {
     border-radius: 50px;
     cursor: pointer;
     transition: 0.3s ease;
-}
+    }
 
 body.light-mode .theme-btn {
     color: #000;
     border: 1px solid #ccc;
 }
 
-.theme-btn:hover {
-    background: rgba(0, 0, 0, 0.05);
+.main-content {
+    margin-left: 230px;
+}
+
+.card:hover {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
 }
 
 h1, h2, h3, h4, h5, h6, p, span, a, label, button {
     color: inherit;
 }
 
+#menu-toggle {
+    display: none; /* Hamburger menü masaüstünde görünmez */
+}
+
+/* Mobil (767px ve altı) */
 @media (max-width: 767px) {
+    .main-content {
+        margin-left: 0 !important;
+        padding: 15px; /* İçeriğe kenarlardan biraz boşluk verir */
+    }
+
     .sidebar {
-        width: 256px; /* Daha kolay görünür bir genişlik */
-        transform: translateX(-100%);
+        transform: translateX(-100%); /* Başlangıçta ekran dışına gizli */
         transition: transform 0.3s ease-in-out;
-        box-shadow: none; /* Mobil slayt menülerde gölgeye gerek yok */
-        background-color: #000; /* Sidebarın rengi */
     }
 
-    /* Sidebar açıkken içeriği maskelemek için */
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 30%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 39; /* Sidebar'dan (z-index: 40) hemen alt */
-        display: none; /* Başlangıçta gizli */
-    }
+        .sidebar.open {
+            transform: translateX(0); /* Açıkken görünür */
+        }
 
-    /* Sidebar'ın açık durumunu tanımla */
-    .sidebar.open {
-        transform: translateX(0);
-        box-shadow: 2px 0 8px rgba(0,0,0,0.5);
-    }
-
-    /* Hamburger butonu */
     #menu-toggle {
-        display: block; /* Mobil cihazlarda göster */
-        color: #fff; /* Buton rengini ayarla */
-        background-color: rgba(0, 0, 0, 0.5);
+        display: flex; /* Hamburger menü mobilde görünür */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        width: 44px;
+        height: 44px;
+        border: none;
+        background: rgba(25, 25, 25, 0.7);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        transition: transform 0.3s ease;
+        z-index: 1100; /* Sidebar ve overlay'den üstte */
         border-radius: 50%;
     }
 
-    /* Form ve Flap öğelerini mobil genişliğe ayarla */
-    .flap-item, .card-glass {
-        max-width: 400%; /* Tüm genişliği kapla */
-        width: 400%;
-        padding: 15px; /* Daha küçük padding */
-    }
-
-    .d-flex.justify-content-between.align-items-center {
-        flex-direction: column;
-        align-items: stretch !important;
-    }
-
-        .d-flex.justify-content-between.align-items-center > * {
-            margin-bottom: 10px;
+        #menu-toggle .icon-close {
+            display: none;
         }
 
-    .flap-btn {
-        width: 100%;
-    }
-}
+        #menu-toggle.active .icon-open {
+            display: none;
+        }
 
-@media (min-width: 768px) {
-    .sidebar {
-        /* Masaüstünde daima görünür */
-        transform: translateX(0) !important;
-        position: fixed;
-        width: 260px; /* Sabit bir genişlik */
-        background-color: #000; /* Siyah arkaplanı geri getir */
-        box-shadow: 2px 0 8px rgba(0,0,0,0.3);
-    }
-
-    .main-content {
-        margin-left: 260px; /* Sidebar kadar boşluk */
-        padding: 40px 20px;
-    }
-
-    #menu-toggle {
-        display: none !important; /* Masaüstünde gizle */
-    }
+        #menu-toggle.active .icon-close {
+            display: block;
+        }
 }

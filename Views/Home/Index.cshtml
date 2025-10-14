@@ -17,7 +17,7 @@
         color: #000 !important;
         background-color: #fff !important;
     }
-
+   
     body.dark-mode {
         color: #fff !important;
         background-color: #000 !important;
@@ -240,21 +240,15 @@
 </style>
 
 
-
-<div class="overlay" onclick="toggleSidebar()"></div>
-
-
-<!-- Hamburger Butonu (Sadece Mobilde Görünür) -->
 <button id="menu-toggle" class="hamburger p-4 text-2xl fixed top-4 left-4 z-50">
-    <i class="fas fa-bars"></i>
+    <i class="fas fa-bars icon-open"></i>
+    <i class="fas fa-times icon-close"></i>
 </button>
 
-<!-- Sidebar -->
 <div id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-gray-900 text-white transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-40">
     <a class="logo block p-4" asp-area="" asp-controller="Home" asp-action="Index">
         <img src="/Img/Flappr-logo.png" alt="Flappr Logo" />
     </a>
-
     <ul class="menu p-4 space-y-3">
         <li><a asp-controller="Home" asp-action="Index" class="flex items-center space-x-2"><i class="fas fa-home"></i><span>Anasayfa</span></a></li>
         <li><a asp-controller="Home" asp-action="Profile" class="flex items-center space-x-2"><i class="fas fa-user"></i><span>Profil</span></a></li>
@@ -266,16 +260,19 @@
                 <span>Bildirimler</span>
                 @if (ViewBag.UnreadCount > 0)
                 {
-                    <span class="absolute top-0 right-0 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                        @ViewBag.UnreadCount
-                    </span>
+                    <span class="absolute top-0 right-0 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">@ViewBag.UnreadCount</span>
                 }
             </a>
         </li>
         <li><a asp-controller="Interaction" asp-action="ServiceUnavailable" class="flex items-center space-x-2"><i class="fas fa-envelope"></i><span>Mesajlar</span></a></li>
         <li><a asp-controller="Interaction" asp-action="ServiceUnavailable" class="flex items-center space-x-2"><i class="fas fa-cog"></i><span>Ayarlar</span></a></li>
+        <li>
+            <button id="theme-toggle" class="flex items-center space-x-2 w-full text-left">
+                <span id="theme-icon" class="w-5 text-center text-lg">🌙</span>
+                <span>Tema Değiştir</span>
+            </button>
+        </li>
     </ul>
-
     <div class="user-info p-4 border-t border-gray-700">
         <a href="/Home/Cikis" class="flex items-center space-x-2"><i class="fas fa-sign-out-alt"></i><span>Çıkış Yap</span></a>
     </div>
@@ -354,73 +351,76 @@
     }
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    // Karakter sayacı
-    const flapInput = document.getElementById("FlapContent");
-    const charCount = document.getElementById("charCount");
+        document.addEventListener('DOMContentLoaded', function () {
 
-    if (flapInput && charCount) {
-        function updateCount() {
-            let length = flapInput.value.length;
-            charCount.textContent = `${length} / 200`;
-            charCount.style.color = length > 200 ? "red" : (document.body.classList.contains("dark-mode") ? "#e7e9ea" : "#000");
-        }
+            initSidebar();
+            initThemeToggle();
+            initCharCounter();
+            initAlerts();
 
-        updateCount();
-        flapInput.addEventListener("input", updateCount);
-    }
+            function initSidebar() {
+                const menuToggle = document.getElementById('menu-toggle');
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('overlay');
 
-    // Alert mesaj kaybolma
-    document.querySelectorAll('.alert-message').forEach(function (msg) {
-        setTimeout(function () {
-            msg.style.transition = "opacity 0.5s";
-            msg.style.opacity = 0;
-            setTimeout(function () { msg.remove(); }, 500);
-        }, 2000);
-    });
-});
+                if (!menuToggle || !sidebar || !overlay) {
+                    console.error("Sidebar için gerekli HTML elementleri bulunamadı.");
+                    return;
+                }
 
-        const menuToggle = document.getElementById('menu-toggle');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay'); // Yeni eklenen overlay
+                const toggleSidebar = () => {
+                    sidebar.classList.toggle('open');
+                    menuToggle.classList.toggle('active');
 
-        function toggleSidebar() {
-            // Sidebar'ın 'open' sınıfını açıp/kapat
-            sidebar.classList.toggle('open');
+                    if (sidebar.classList.contains('open')) {
+                        overlay.style.display = 'block';
+                        setTimeout(() => overlay.classList.add('visible'), 10);
+                    } else {
+                        overlay.classList.remove('visible');
+                        setTimeout(() => {
+                            if (!sidebar.classList.contains('open')) {
+                                overlay.style.display = 'none';
+                            }
+                        }, 300);
+                    }
+                };
 
-            // Overlay'i görünür/gizli yap
-            if (sidebar.classList.contains('open')) {
-                overlay.style.display = 'block';
-            } else {
-                overlay.style.display = 'none';
+                menuToggle.addEventListener('click', toggleSidebar);
+                overlay.addEventListener('click', toggleSidebar);
+
+                window.addEventListener('resize', () => {
+                    if (window.innerWidth >= 768 && sidebar.classList.contains('open')) {
+                        toggleSidebar(); 
+                    }
+                });
             }
-        }
 
-        // Buton ve Overlay'e olay dinleyicileri ekle
-        if (menuToggle) {
-            menuToggle.addEventListener('click', toggleSidebar);
-        }
+            function initCharCounter() {
+                const flapInput = document.getElementById("FlapContent");
+                const charCount = document.getElementById("charCount");
 
-        // Overlay'e tıklanıldığında menüyü kapatmak için
-        if (overlay) {
-            overlay.addEventListener('click', toggleSidebar);
-        }
+                if (!flapInput || !charCount) return;
 
-        // Pencere boyutu değiştiğinde overlay'i gizle (masaüstü moduna geçişte)
-        window.addEventListener('resize', function () {
-            if (window.innerWidth >= 768) {
-                sidebar.classList.remove('open');
-                overlay.style.display = 'none';
+                const updateCount = () => {
+                    const length = flapInput.value.length;
+                    charCount.textContent = `${length} / 200`;
+                    charCount.style.color = length > 200 ? "red" : ""; 
+                };
+
+                flapInput.addEventListener("input", updateCount);
+                updateCount();
+            }
+
+            function initAlerts() {
+                document.querySelectorAll('.alert-message').forEach(function (msg) {
+                    setTimeout(() => {
+                        msg.style.transition = "opacity 0.5s";
+                        msg.style.opacity = 0;
+                        setTimeout(() => msg.remove(), 500);
+                    }, 3000);
+                });
             }
         });
 </script>
-    @* <script>
-        const menuToggle = document.getElementById('menu-toggle');
-        const sidebar = document.getElementById('sidebar');
-
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-        });
-    </script> *@
 
 </div>
