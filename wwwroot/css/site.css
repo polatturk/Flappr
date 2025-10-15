@@ -88,13 +88,13 @@ h1, h2, h3, h4, h5, h6, p, span, a, label, button {
         padding: 50px; 
     }
 
-
+    .card,
     .card-glass,
     .flap-item {
         max-width: 100% !important;
-        border-left: none !important; 
-        border-right: none !important; 
-        padding: 2px !important;
+        border-left: none !important;
+        border-right: none !important;
+        padding: 4px !important;
     }
 
     .sidebar {
