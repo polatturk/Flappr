@@ -117,7 +117,12 @@
                 function updateCount() {
                     let length = flapEditInput.value.length;
                     charCount.textContent = `${length} / 200`;
-                    charCount.style.color = length > 200 ? "red" : "white";
+
+                    if (length > 200) {
+                        charCount.style.setProperty("color", "red", "important");
+                    } else {
+                        charCount.style.setProperty("color", "", "");
+                    }
                 }
 
                 updateCount();

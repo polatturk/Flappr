@@ -132,12 +132,11 @@
 }
 
 .main-content {
-    margin-left: 220px;
+    margin-left: 250px;
     padding: 40px 20px;
     min-height: 100vh;
 }
 
-/* Card */
 .card-glass {
     border-radius: 16px;
     padding: 25px;
@@ -145,7 +144,7 @@
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     margin-bottom: 25px;
-    max-width: 600px;
+    max-width: 550px;
     transition: box-shadow 0.3s ease;
 }
 
@@ -161,7 +160,7 @@
     backdrop-filter: blur(6px);
     margin-bottom: 20px;
     transition: box-shadow 0.3s ease;
-    max-width: 600px;
+        max-width: 550px;
     color: inherit;
 }
 
@@ -234,9 +233,6 @@
     font-size: 14px;
     color: #ccc;
 }
-
-/* Responsive */ 
-    
 </style>
 
 
@@ -354,7 +350,6 @@
         document.addEventListener('DOMContentLoaded', function () {
 
             initSidebar();
-            initThemeToggle();
             initCharCounter();
             initAlerts();
 
@@ -401,14 +396,19 @@
 
                 if (!flapInput || !charCount) return;
 
-                const updateCount = () => {
+                function updateCount() {
                     const length = flapInput.value.length;
                     charCount.textContent = `${length} / 200`;
-                    charCount.style.color = length > 200 ? "red" : ""; 
-                };
 
-                flapInput.addEventListener("input", updateCount);
+                    if (length > 200) {
+                        charCount.style.setProperty("color", "red", "important");
+                    } else {
+                        charCount.style.removeProperty("color");
+                    }
+                }
+
                 updateCount();
+                flapInput.addEventListener("input", updateCount);
             }
 
             function initAlerts() {

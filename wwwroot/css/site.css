@@ -25,7 +25,7 @@ body.dark-mode #charCount {
 .flap-form,
 .flap-item {
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 12px;
+    border-radius: 12px;
     padding: 16px;
     margin-bottom: 20px;
     transition: 0.3s ease;
@@ -79,27 +79,35 @@ h1, h2, h3, h4, h5, h6, p, span, a, label, button {
 }
 
 #menu-toggle {
-    display: none; /* Hamburger menü masaüstünde görünmez */
+    display: none;
 }
 
-/* Mobil (767px ve altı) */
 @media (max-width: 767px) {
     .main-content {
         margin-left: 0 !important;
-        padding: 15px; /* İçeriğe kenarlardan biraz boşluk verir */
+        padding: 50px; 
+    }
+
+
+    .card-glass,
+    .flap-item {
+        max-width: 100% !important;
+        border-left: none !important; 
+        border-right: none !important; 
+        padding: 2px !important;
     }
 
     .sidebar {
-        transform: translateX(-100%); /* Başlangıçta ekran dışına gizli */
+        transform: translateX(-100%); 
         transition: transform 0.3s ease-in-out;
     }
 
         .sidebar.open {
-            transform: translateX(0); /* Açıkken görünür */
+            transform: translateX(0); 
         }
 
     #menu-toggle {
-        display: flex; /* Hamburger menü mobilde görünür */
+        display: flex; 
         align-items: center;
         justify-content: center;
         position: fixed;
@@ -112,7 +120,7 @@ h1, h2, h3, h4, h5, h6, p, span, a, label, button {
         backdrop-filter: blur(5px);
         -webkit-backdrop-filter: blur(5px);
         transition: transform 0.3s ease;
-        z-index: 1100; /* Sidebar ve overlay'den üstte */
+        z-index: 1100; 
         border-radius: 50%;
     }
 

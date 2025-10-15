@@ -213,8 +213,12 @@
                     function updateCount() {
                         let length = bioInput.value.trim().length;
                         charCount.textContent = `${length} / 80`;
-                        charCount.style.color = length > 80 ? "red" : "white";
 
+                        if (length > 80) {
+                            charCount.style.setProperty("color", "red", "important");
+                        } else {
+                            charCount.style.setProperty("color", "", "");
+                        }
                     }
 
                     updateCount();

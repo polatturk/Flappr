@@ -106,7 +106,7 @@
             <form action="/AddYorum" method="post" class="flex flex-col gap-2" onsubmit="return checkWordLimit()">
                 <textarea id="commentTextarea" name="Summary" rows="4"
                           class="flap-textarea" placeholder="Yorumunuzu buraya yazın... (max 200 karakter)"></textarea>
-                <div class="flex justify-between items-center text-sm text-white">
+                <div class="flex justify-between items-center text-sm">
                     <span id="charCount">0 / 200</span>
                 </div>
                 <input type="hidden" name="FlapId" value="@Model.Flap.Id" />
@@ -306,7 +306,7 @@
             padding: 12px;
             border-radius: 12px;
             background: rgba(255,255,255,0.05);
-            color: #fff !important;
+            color: inherit !important;
             transition: background 0.2s ease, box-shadow 0.3s ease;
         }
 
@@ -347,7 +347,12 @@
                 function updateCount() {
                     let length = commentInput.value.trim().length;
                     charCount.textContent = `${length} / 200`;
-                    charCount.style.color = length > 200 ? "red" : "white";
+
+                    if (length > 200) {
+                        charCount.style.setProperty("color", "red", "important");
+                    } else {
+                        charCount.style.setProperty("color", "", ""); 
+                    }
                 }
 
                 updateCount();
@@ -360,7 +365,6 @@
         const overlay = document.getElementById('overlay');
 
         function toggleSidebar() {
-            // Hem sidebar'a hem de butona 'open' ve 'active' class'larını ekle/kaldır
             sidebar.classList.toggle('open');
             menuToggle.classList.toggle('active');
 
@@ -390,7 +394,7 @@
             if (window.innerWidth >= 768) {
                 if (sidebar.classList.contains('open')) {
                     sidebar.classList.remove('open');
-                    menuToggle.classList.remove('active'); // Boyut değiştiğinde butonun da durumunu sıfırla
+                    menuToggle.classList.remove('active'); 
                     overlay.classList.remove('visible');
                     overlay.style.display = 'none';
                 }
