@@ -768,7 +768,7 @@ namespace Flappr.Controllers
         }
 
         [AllowAnonymous]
-        public IActionResult Info(){return View();}
+        public IActionResult Landing(){return View();}
         [AllowAnonymous]
         public IActionResult Privacy() { return View(); }
         [AllowAnonymous]

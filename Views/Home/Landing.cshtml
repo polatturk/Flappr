@@ -1,0 +1,323 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappr - Anında Bağlantı Kur, Anında Paylaş</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<style>
+:root {
+    --primary-color: #007BFF;
+    --primary-hover-color: #0056b3;
+    --dark-color: #222831;
+    --light-color: #f8f9fa;
+    --text-color: #333;
+    --grey-color: #6c757d;
+    --section-padding: 80px 0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: #fff;
+}
+
+.container {
+    max-width: 2000px;
+    max-height: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+h1, h2, h3 {
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+.section-padding {
+    padding: var(--section-padding);
+}
+
+.bg-light {
+    background-color: var(--light-color);
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--dark-color);
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: #fff;
+    border: 1px solid var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover-color);
+    transform: translateY(-2px);
+}
+
+.btn-light {
+    background-color: var(--light-color);
+    color: var(--dark-color);
+    border: 1px solid var(--light-color);
+}
+
+.btn-light:hover {
+    background-color: #e2e6ea;
+}
+
+.btn-large {
+    font-size: 1.1rem;
+    padding: 15px 35px;
+}
+
+#hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://via.placeholder.com/1920x1080.png?text=Uygulama+Arka+Planı') no-repeat center center/cover;
+    height: 90vh;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.hero-content {
+    max-width: 800px;
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.feature-card img {
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    color: var(--dark-color);
+    font-size: 1.4rem;
+}
+
+/* How It Works Section */
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    text-align: center;
+}
+
+.step .step-number {
+    width: 60px;
+    height: 60px;
+    background-color: var(--primary-color);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0 auto 1rem;
+}
+
+.step h3 {
+    color: var(--dark-color);
+    font-size: 1.5rem;
+}
+
+#cta {
+    background: var(--primary-color);
+    color: #fff;
+    text-align: center;
+}
+
+.cta-content p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+#cta h2 {
+    color: #fff;
+}
+
+#footer {
+    background-color: var(--dark-color);
+    color: #fff;
+    padding: 50px 0;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.footer-col .logo {
+    color: #fff;
+}
+
+.footer-col h4 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.footer-col ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-col ul a {
+    color: var(--grey-color);
+}
+.footer-col ul a:hover {
+    color: #fff;
+}
+
+    .detail{
+        color:darkgray;
+    }
+
+    .detailtwo {
+        color: darkgray;
+    }
+</style>
+<body>
+
+    <section id="hero">
+        <div class="container hero-content">
+            <h1>Anında Bağlantı Kur, Anında Paylaş.</h1>
+            <p>Flappr, fikirlerinizi "Flap"larla özgürce paylaştığınız, ilgi alanlarınıza uygun kişilerle tanıştığınız yeni nesil sosyal medya platformu.</p>
+            <a href="Home/register" class="btn btn-primary btn-large">ÜCRETSİZ KAYDOL</a>
+        </div>
+    </section>
+
+    <section id="features" class="section-padding">
+        <div class="container">
+            <h2 class="section-title text-white">Flappr'ı Özel Kılan Özellikler</h2>
+            <div class="features-grid">
+
+                <div class="feature-card">
+                    <img src="~/Img/landing3.png" alt="Flap Gönderme Ekran Görüntüsü">
+                    <img src="~/Img/landing6.png" alt="Gönderilmiş Flap Örneği">
+                    <h3>Kendini İfade Et: Flap Gönder</h3>
+                    <p class="detail">Fikirlerinizi saniyeler içinde dünyaya duyurun. Paylaşımlarınızı isterseniz herkese açık yapın, isterseniz yalnızca siz görün. Kontrol tamamen sizde.</p>
+                </div>
+
+                <div class="feature-card">
+                    <img src="~/Img/landing5.png" alt="Kullanıcı Profili Ekran Görüntüsü">
+                    <img src="~/Img/landing.png" alt="Profil Düzenleme Ekranı">
+                    <h3>Profilini Kişiselleştir</h3>
+                    <p class="detail">İlgi alanlarınıza uyan profilleri keşfedip takip ederek sosyal çevrenizi oluşturun. Biyografinizden profil resminize kadar her detayı yönetin. Bir Flap'ı düzenlemek veya silmek mi istiyorsunuz? Tek bir dokunuşla mümkün.</p>
+                </div>
+
+                <div class="feature-card">
+                    <img src="~/Img/landing4.png" alt="Yorumlar ve Beğeniler Ekran Görüntüsü">
+                    <h3>Etkileşime Geç, Sohbete Yön Ver</h3>
+                    <p class="detail">Bir Flap'a yorum yaparak fikrinizi belirtin, beğeniyle takdirinizi gösterin Gerçek zamanlı tartışmaların bir parçası olun.</p>
+                </div>
+
+                <div class="feature-card">
+                    <img src="~/Img/landing2.png" alt="Bildirimler Ekran Görüntüsü">
+                    <h3>Anında Haberdar Ol</h3>
+                    <p class="detail">Yeni bir takipçi, beğeni veya yorum geldiğinde anında bildirim alın.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="section-padding bg-light">
+        <div class="container">
+            <h2 class="section-title">3 Basit Adımda Flappr Dünyası</h2>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Hesap Oluştur</h3>
+                    <p class="detailtwo">E-posta ile saniyeler içinde ücretsiz ve güvenli bir şekilde kaydolun.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Profilini Kişiselleştir</h3>
+                    <p class="detailtwo">Kendinizi tanıtan bir profil fotoğrafı ve biyografi ekleyerek ilgi alanlarınızı belirtin.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Flap'lamaya Başla!</h3>
+                    <p class="detailtwo">İlk Flap'ınızı gönderin, insanları takip etmeye başlayın ve anın tadını çıkarın.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cta" class="section-padding">
+        <div class="container cta-content">
+            <h2>Düşüncelerini Paylaşmaya Hazır Mısın?</h2>
+            <p>kullanıcılar arasında sizde olun ve Flappr'da kendi sesinizi duyurun.</p>
+            <a href="Home/register" class="btn btn-light btn-large">FLAPPR'A ŞİMDİ KATIL</a>
+        </div>
+    </section>
+
+</body>
+</html>

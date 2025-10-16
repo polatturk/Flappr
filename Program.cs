@@ -70,7 +70,7 @@ namespace Flappr
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Login}/{id?}");
+                pattern: "{controller=Home}/{action=Landing}/{id?}");
 
             app.Run();
         }
