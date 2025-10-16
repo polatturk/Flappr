@@ -135,4 +135,27 @@ h1, h2, h3, h4, h5, h6, p, span, a, label, button {
         #menu-toggle.active .icon-close {
             display: block;
         }
+
+
+
+    .hero-content h1 {
+        font-size: 2rem !important;
+    }
+
+    .section-title {
+        font-size: 1rem !important;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+
+    .steps-grid {
+        display: block !important; /* Grid yapısını mobil için iptal et */
+    }
+
+    .step:not(:last-child) {
+        margin-bottom: 2.5rem !important; /* Boşluğu biraz artırarak daha okunaklı yapalım */
+    }
 }

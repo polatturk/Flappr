@@ -138,6 +138,13 @@
     <div class="card">
         <h3 class="text-center mb-4">Giriş Yap</h3>
 
+        @if (TempData["SuccessMessageRegister"] != null)
+        {
+            <div id="formMessage" class="alert alert-success text-center">
+                @TempData["SuccessMessageRegister"]
+            </div>
+        }
+
         @if (TempData["AuthError"] != null)
         {
             <div id="formMessage" class="alert alert-danger text-center">

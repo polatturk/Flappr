@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flappr - Anında Bağlantı Kur, Anında Paylaş</title>
-    <link rel="stylesheet" href="style.css">
+    @{
+
+        ViewData["Title"] = "Landing - ";
+    }
+
+    <link rel="stylesheet" href="~/css/site.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <style>
+
 :root {
     --primary-color: #007BFF;
     --primary-hover-color: #0056b3;
@@ -36,7 +41,6 @@ body {
 
 .container {
     max-width: 2000px;
-    max-height: 1000px;
     margin: 0 auto;
     padding: 0 20px;
 }
@@ -112,7 +116,6 @@ h1, h2, h3 {
 }
 
 #hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://via.placeholder.com/1920x1080.png?text=Uygulama+Arka+Planı') no-repeat center center/cover;
     height: 90vh;
     color: #fff;
     display: flex;
@@ -160,7 +163,6 @@ h1, h2, h3 {
     font-size: 1.4rem;
 }
 
-/* How It Works Section */
 .steps-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

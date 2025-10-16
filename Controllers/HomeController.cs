@@ -274,6 +274,7 @@ namespace Flappr.Controllers
 
             await SendEmailAsync(model.Mail, subject, mailBody);
 
+            TempData["SuccessMessageRegister"] = "Kaydınız başarılı bir şekilde oluşturuldu.";
             return View("Login");
         }
 
