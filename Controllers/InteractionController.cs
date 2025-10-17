@@ -125,64 +125,65 @@ namespace Flappr.Controllers
         {
             var userIdString = HttpContext.Session.GetString("userId");
             if (string.IsNullOrEmpty(userIdString))
-                return RedirectToAction("Login", "Home");       
-
-            var userId = Guid.Parse(userIdString);
-
-            var existingLike = await _context.FlapLike
-                .FirstOrDefaultAsync(l => l.FlapId == flapId && l.UserId == userId);
-
-            var flap = await _context.Flaps
-                .Include(f => f.User)
-                .FirstOrDefaultAsync(f => f.Id == flapId);
-
-            if (flap == null) return RedirectToAction("Index", "Home");
-
-            if (existingLike != null)
             {
-                _context.FlapLike.Remove(existingLike);
-                flap.LikeCount -= 1;
+                return Json(new { success = false, message = "Lütfen giriş yapın." });
             }
-            else
+
+            try
             {
-                var newLike = new FlapLike
+                var userId = Guid.Parse(userIdString);
+                var existingLike = await _context.FlapLike.FirstOrDefaultAsync(l => l.FlapId == flapId && l.UserId == userId);
+                var flap = await _context.Flaps.Include(f => f.User).FirstOrDefaultAsync(f => f.Id == flapId);
+
+                if (flap == null)
                 {
-                    Id = Guid.NewGuid(),
-                    FlapId = flapId,
-                    UserId = userId,
-                    CreatedDate = DateTime.UtcNow
-                };
-                _context.FlapLike.Add(newLike);
-                flap.LikeCount += 1;
-
-                if (flap.UserId != userId)
-                {
-                    var likerUser = await _context.Users.FindAsync(userId);
-
-                    var notification = new Notification
-                    {
-                        UserId = flap.UserId.ToString(),     
-                        SenderId = userId.ToString(),        
-                        Type = "Yeni beğeni 🎉",
-                        Message = $"{likerUser?.Nickname ?? likerUser?.Username}, paylaştığın gönderiyi beğendi.",
-                        CreatedDate = DateTime.UtcNow,
-                        IsRead = false
-                    };
-
-                    _context.Notifications.Add(notification);
-                    await _context.SaveChangesAsync();
-
-                    await _hubContext.Clients.User(flap.UserId.ToString())
-                        .SendAsync("ReceiveNotification", notification.Message);
+                    return Json(new { success = false, message = "Gönderi bulunamadı." });
                 }
+
+                bool isNowLiked;
+
+                if (existingLike != null)
+                {
+                    _context.FlapLike.Remove(existingLike);
+                    flap.LikeCount = Math.Max(0, flap.LikeCount - 1);
+                    isNowLiked = false;
+                }
+                else
+                {
+                    var newLike = new FlapLike { FlapId = flapId, UserId = userId };
+                    _context.FlapLike.Add(newLike);
+                    flap.LikeCount += 1;
+                    isNowLiked = true;
+
+                    if (flap.UserId != userId)
+                    {
+                        var likerUser = await _context.Users.FindAsync(userId);
+                        var notification = new Notification
+                        {
+                            UserId = flap.UserId.ToString(),
+                            SenderId = userId.ToString(),
+                            Type = "Yeni beğeni 🎉",
+                            Message = $"{likerUser?.Nickname ?? likerUser?.Username}, paylaştığın gönderiyi beğendi.",
+                            IsRead = false
+                        };
+                        _context.Notifications.Add(notification);
+                        await _hubContext.Clients.User(flap.UserId.ToString()).SendAsync("ReceiveNotification", notification.Message);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Json(new
+                {
+                    success = true,
+                    likeCount = flap.LikeCount,
+                    isLikedByCurrentUser = isNowLiked
+                });
             }
-
-            await _context.SaveChangesAsync();
-
-            if (!string.IsNullOrEmpty(returnUrl))
-                return Redirect(returnUrl);
-
-            return RedirectToAction("Index", "Home");
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "İşlem sırasında bir hata oluştu." });
+            }
         }
 
     }

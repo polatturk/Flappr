@@ -332,12 +332,13 @@
                             <span>@flap.CommentsCount</span>
                         </a>
 
-                        <form method="post" action="/Interaction/Likes">
+                        <form method="post" action="/Interaction/Likes" class="like-form">
                             <input type="hidden" name="flapId" value="@flap.Id" />
-                            <button type="submit" class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium
-                                    @(flap.IsLikedByCurrentUser ? "bg-gray-200 text-gray-800 hover:bg-gray-300" : "bg-gray-200 text-gray-800 hover:bg-gray-300")">
-                                <i class="bi @(flap.IsLikedByCurrentUser ? "bi-suit-heart-fill text-danger" : "bi-suit-heart-fill text-white")"></i>
-                                <span>@flap.LikeCount</span>
+                            <button type="submit" class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 hover:bg-gray-300">
+
+                                <i class="bi like-icon @(flap.IsLikedByCurrentUser ? "bi-suit-heart-fill text-danger" : "bi-suit-heart-fill text-white")"></i>
+
+                                <span class="like-count">@flap.LikeCount</span>
                             </button>
                         </form>
                     </div>
@@ -420,6 +421,49 @@
                     }, 3000);
                 });
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            document.querySelectorAll('.like-form').forEach(form => {
+
+                form.addEventListener('submit', function (event) {
+
+                    event.preventDefault();
+
+                    const currentForm = this;
+                    const url = currentForm.action;
+                    const formData = new FormData(currentForm);
+
+                    const likeIcon = currentForm.querySelector('.like-icon');
+                    const likeCountSpan = currentForm.querySelector('.like-count');
+
+
+                    fetch(url, {
+                        method: 'POST',
+                        body: formData,
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                likeCountSpan.textContent = data.likeCount;
+
+                                if (data.isLikedByCurrentUser) {
+                                    likeIcon.classList.add('text-danger');
+                                    likeIcon.classList.remove('text-white');
+                                } else {
+                                    likeIcon.classList.remove('text-danger');
+                                    likeIcon.classList.add('text-white');
+                                }
+                            } else {
+                                console.error('İşlem başarısız: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('AJAX hatası:', error);
+                        });
+                });
+            });
         });
 </script>
 
