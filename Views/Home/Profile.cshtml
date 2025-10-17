@@ -312,13 +312,13 @@
                             <span>@item.CommentsCount</span>
                         </a>
 
-                        <form method="post" action="/Interaction/Likes">
+                        <form method="post" action="/Interaction/Likes" class="like-form">
                             <input type="hidden" name="flapId" value="@item.Id" />
-                            <button type="submit"
-                                    class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium
-                                           bg-gray-200 text-gray-800 hover:bg-gray-300">
-                                <i class="bi @(item.IsLikedByCurrentUser ? "bi-suit-heart-fill text-danger" : "bi-suit-heart")"></i>
-                                <span>@item.LikeCount</span>
+                            <button type="submit" class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 hover:bg-gray-300">
+
+                                <i class="bi like-icon @(item.IsLikedByCurrentUser ? "bi-suit-heart-fill text-danger" : "bi-suit-heart-fill text-white")"></i>
+
+                                <span class="like-count">@item.LikeCount</span>
                             </button>
                         </form>
                     </div>
@@ -404,15 +404,56 @@
                 if (window.innerWidth >= 768) {
                     if (sidebar.classList.contains('open')) {
                         sidebar.classList.remove('open');
-                        menuToggle.classList.remove('active'); // Boyut değiştiğinde butonun da durumunu sıfırla
+                        menuToggle.classList.remove('active');
                         overlay.classList.remove('visible');
                         overlay.style.display = 'none';
                     }
                 }
             });
 
+
+            document.addEventListener('DOMContentLoaded', function () {
+
+                document.querySelectorAll('.like-form').forEach(form => {
+
+                    form.addEventListener('submit', function (event) {
+
+                        event.preventDefault();
+
+                        const currentForm = this;
+                        const url = currentForm.action;
+                        const formData = new FormData(currentForm);
+
+                        const likeIcon = currentForm.querySelector('.like-icon');
+                        const likeCountSpan = currentForm.querySelector('.like-count');
+
+
+                        fetch(url, {
+                            method: 'POST',
+                            body: formData,
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    likeCountSpan.textContent = data.likeCount;
+
+                                    if (data.isLikedByCurrentUser) {
+                                        likeIcon.classList.add('text-danger');
+                                        likeIcon.classList.remove('text-white');
+                                    } else {
+                                        likeIcon.classList.remove('text-danger');
+                                        likeIcon.classList.add('text-white');
+                                    }
+                                } else {
+                                    console.error('İşlem başarısız: ' + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('AJAX hatası:', error);
+                            });
+                    });
+                });
+            });
         </script>
-
-
     </div>  
 </body>

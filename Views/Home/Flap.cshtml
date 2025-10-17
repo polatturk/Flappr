@@ -87,13 +87,14 @@
                             <span>@Model.Comments.Count</span>
                         </a>
 
-                        <form method="post" action="/Interaction/Likes">
+                        <form method="post" action="/Interaction/Likes" class="like-form">
                             <input type="hidden" name="flapId" value="@Model.Flap.Id" />
-                            <input type="hidden" name="returnUrl" value="@Url.Action("Flap", "Home", new { id = Model.Flap.Id })" />
-                            <button type="submit" class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium
-                                    @(Model.IsLikedByCurrentUser ? "bg-gray-200 text-gray-800 hover:bg-gray-300" : "bg-gray-200 text-gray-800 hover:bg-gray-300")">
-                                <i class="bi @(Model.IsLikedByCurrentUser ? "bi-suit-heart-fill text-danger" : "bi-suit-heart-fill text-white")"></i>
-                                <span>@Model.LikeCount</span>
+
+                            <button type="submit" class="flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 hover:bg-gray-300">
+
+                                <i class="bi like-icon @(Model.IsLikedByCurrentUser ? "bi-suit-heart-fill text-danger" : "bi-suit-heart-fill text-white")"></i>
+
+                                <span class="like-count">@Model.LikeCount</span>
                             </button>
                         </form>
                     </div>
@@ -398,6 +399,49 @@
                     overlay.style.display = 'none';
                 }
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            document.querySelectorAll('.like-form').forEach(form => {
+
+                form.addEventListener('submit', function (event) {
+
+                    event.preventDefault();
+
+                    const currentForm = this;
+                    const url = currentForm.action;
+                    const formData = new FormData(currentForm);
+
+                    const likeIcon = currentForm.querySelector('.like-icon');
+                    const likeCountSpan = currentForm.querySelector('.like-count');
+
+
+                    fetch(url, {
+                        method: 'POST',
+                        body: formData,
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                likeCountSpan.textContent = data.likeCount;
+
+                                if (data.isLikedByCurrentUser) {
+                                    likeIcon.classList.add('text-danger');
+                                    likeIcon.classList.remove('text-white');
+                                } else {
+                                    likeIcon.classList.remove('text-danger');
+                                    likeIcon.classList.add('text-white');
+                                }
+                            } else {
+                                console.error('İşlem başarısız: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('AJAX hatası:', error);
+                        });
+                });
+            });
         });
     </script>
 
