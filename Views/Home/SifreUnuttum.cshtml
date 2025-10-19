@@ -1,4 +1,7 @@
-﻿@{
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+@{
     ViewData["Title"] = "PasswordReset - ";
 }
 
@@ -10,7 +13,7 @@
         color: #fff;
         width: 100%;
         max-width: 400px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);  
         backdrop-filter: blur(8px);
         margin: 0 auto;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -77,12 +80,15 @@
     {
         <div class="alert-message alert alert-success text-center" style="margin-top:10px;">
             @TempData["PwResetSuccessMessage"]
-        </div>
+        </div>  
     }
     <h3 class="text-center mb-4">Şifremi Unuttum</h3>
     <input required type="email" name="email" placeholder="E-Posta Adresiniz" />
     <hr />
     <button type="submit">Gönder</button>
+    <hr />
+    <a href="/home/login" class="auth-btn"><i class="bi bi-arrow-left-circle-fill"></i> Geri Dön</a>
+
 </form>
 
 <script>
