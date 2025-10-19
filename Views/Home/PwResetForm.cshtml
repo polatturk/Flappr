@@ -111,12 +111,6 @@
                 @TempData["PwResetErrorMessage"]
             </div>
         }
-        @if (TempData["PwResetSuccessMessage"] != null)
-        {
-            <div class="alert-message alert alert-success text-center" style="margin-top:10px;">
-                @TempData["PwResetSuccessMessage"]
-            </div>
-        }
         <input type="hidden" asp-for="Token" />
 
         <div class="form-group">
@@ -132,7 +126,7 @@
         <button type="submit" class="btn-submit">Şifreyi Sıfırla</button>
     </form>
     <div style="margin-top:15px;">
-        <a href="/Home/Login" class="btn btn-primary">Giriş Yap</a>
+        <a href="/Home/Sifre-unuttum" class="btn btn-primary">Geri Dön</a>
     </div>
 </div>
 

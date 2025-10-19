@@ -706,7 +706,7 @@ namespace Flappr.Controllers
             if (model.NewPassword != model.ConfirmPassword)
             {
                 TempData["PwResetErrorMessage"] = "Şifreler eşleşmiyor !";
-                return Redirect("/PwResetForm");
+                return Redirect($"/PwResetForm?token={model.Token}");
             }
 
             var userToken = await _context.ResetPwTokens
@@ -714,15 +714,15 @@ namespace Flappr.Controllers
 
             if (userToken == null || userToken.Expiry < DateTime.UtcNow)
             {
-                TempData["PwResetErrorMessage"] = "Token geçersiz veya süresi dolmuş !";
-                return Redirect("/PwResetForm");
+                TempData["PwResetErrorMessage"] = "Bağlantınız geçersiz veya süresi dolmuş. Lütfen yeni bir sıfırlama talebi gönderin.";
+                return Redirect($"/sifre-unuttum");
             }
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userToken.UserId);
             if (user == null)
             {
                 TempData["PwResetErrorMessage"] = "Kullanıcı bulunamadı !";
-                return Redirect("/PwResetForm");
+                return Redirect($"/sifre-unuttum");
             }
 
             user.Password = Helper.Hash(model.NewPassword);
@@ -732,7 +732,7 @@ namespace Flappr.Controllers
             await _context.SaveChangesAsync();
 
             TempData["PwResetSuccessMessage"] = "Şifreniz başarıyla değiştirildi.";
-            return Redirect("/PwResetForm");
+            return Redirect("/Home/Login");
         }
 
         [CustomAuthorize][HttpGet]

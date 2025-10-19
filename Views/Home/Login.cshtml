@@ -144,14 +144,18 @@
                 @TempData["SuccessMessageRegister"]
             </div>
         }
-
+        @if (TempData["PwResetSuccessMessage"] != null)
+        {
+            <div id="formMessage" class="alert alert-success text-center">
+                @TempData["PwResetSuccessMessage"]
+            </div>
+        }
         @if (TempData["AuthError"] != null)
         {
             <div id="formMessage" class="alert alert-danger text-center">
                 @TempData["AuthError"]
             </div>
         }
-
         <form action="/Login" method="post" autocomplete="off">
             <div class="text-left">
                 <label for="email">E-Posta Adresiniz</label>
